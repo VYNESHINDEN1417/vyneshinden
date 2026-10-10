@@ -4,7 +4,7 @@ import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import title from "@/assets/title.png.asset.json";
 import placeholderWorld from "@/assets/placeholder-world.jpg";
-import clickSound from "@/assets/click-trim.wav";
+import clickSound from "@/assets/button-trim.wav";
 
 // Run the sequence in the persistent root, independently of route mounting.
 const BUTTON_ANIMATION_MS = 150;
