@@ -197,7 +197,7 @@ body { font-family: var(--font-portfolio); margin: 0; letter-spacing: 0; }
     linear-gradient(rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0.85)),
     url("/__l5e/assets-v1/cd740a81-e21b-4d01-aab3-2f05e9076bc9/tile-2.jpg");
   background-repeat: repeat;
-  background-size: auto;
+  background-size: 256px 256px;
 }
 .detail-header { display: flex; align-items: center; justify-content: space-between; padding: 22px 24px; border-bottom: 1px solid var(--loading-track); }
 .detail-logo { width: 160px; height: auto; }
@@ -205,7 +205,8 @@ body { font-family: var(--font-portfolio); margin: 0; letter-spacing: 0; }
 .detail-content { max-width: 1000px; margin: 0 auto; padding: 48px 24px 64px; }
 .section-label { color: var(--muted-foreground); font-size: 11px; font-weight: 500; }
 .detail-content h1 { margin: 12px 0 32px; font-size: 40px; font-weight: 600; }
-.placeholder-copy { padding-top: 28px; max-width: 600px; }
+.placeholder-image { display: block; width: 100%; max-width: 600px; margin: 0 0 28px; border-radius: 10px; border: 1px solid var(--loading-track); }
+.placeholder-copy { padding-top: 0; max-width: 600px; }
 .placeholder-copy h2 { font-size: 24px; margin: 10px 0 12px; }
 .placeholder-copy p { color: var(--muted-foreground); line-height: 1.7; font-size: 15px; }
 @media (max-width: 600px) {
