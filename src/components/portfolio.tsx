@@ -5,23 +5,42 @@ import { Button } from "@/components/ui/button";
 import title from "@/assets/title.png.asset.json";
 import placeholder from "@/assets/placeholder-world.jpg";
 
-// The btn-174 press animation runs 100ms; wait for it to finish before covering the screen.
+// The btn-174 press animation runs 100ms; wait for it to finish, then pause 400ms
+// before covering the screen. Going back home never shows the loading screen.
 const BUTTON_ANIMATION_MS = 150;
-const LOADING_MS = 1000;
+const DELAY_AFTER_BUTTON_MS = 400;
+const LOADING_MS = 1300;
 
-export function LoadingScreen() {
+// Tracks the previous route so navigating back to "/" skips the loading screen,
+// and the last button click so the delay counts from the press, not from page mount.
+let lastPathname: string | null = null;
+let lastButtonClickAt = 0;
+
+export function markButtonClick() {
+  lastButtonClickAt = performance.now();
+}
+
+export function LoadingScreen({ pathname }: { pathname: string }) {
   const [visible, setVisible] = useState(false);
   const [done, setDone] = useState(false);
+  const isReturningHome = lastPathname !== null && pathname === "/";
   useEffect(() => {
-    const showTimer = window.setTimeout(() => setVisible(true), BUTTON_ANIMATION_MS);
+    lastPathname = pathname;
+  }, [pathname]);
+  useEffect(() => {
+    if (isReturningHome) return;
+    const sinceClick = lastButtonClickAt ? performance.now() - lastButtonClickAt : Infinity;
+    const total = BUTTON_ANIMATION_MS + DELAY_AFTER_BUTTON_MS;
+    const wait = sinceClick <= total ? total - sinceClick : total;
+    const showTimer = window.setTimeout(() => setVisible(true), wait);
     return () => window.clearTimeout(showTimer);
-  }, []);
+  }, [isReturningHome]);
   useEffect(() => {
     if (!visible) return;
     const timer = window.setTimeout(() => setDone(true), LOADING_MS);
     return () => window.clearTimeout(timer);
   }, [visible]);
-  if (!visible || done) return null;
+  if (isReturningHome || !visible || done) return null;
   return (
     <div className="loading-screen" role="status" aria-label="Loading level, building terrain">
       <div className="loading-center">

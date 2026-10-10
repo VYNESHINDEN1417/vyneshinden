@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
-import { portfolioHead } from "@/components/portfolio";
+import { portfolioHead, markButtonClick } from "@/components/portfolio";
 import hero from "@/assets/hero.gif.asset.json";
 import title from "@/assets/title.png.asset.json";
 
@@ -19,9 +19,9 @@ function Index() {
         <h1 className="hero-title"><img src={title.url} alt="VYNESHINDEN" width={1920} height={480} /></h1>
       </div>
       <nav className="main-menu" aria-label="Portfolio">
-        <Button variant="game" size="game" asChild><Link to="/about"><span>About me</span></Link></Button>
-        <Button variant="game" size="game" asChild><Link to="/works"><span>My works</span></Link></Button>
-        <Button variant="game" size="game" asChild><Link to="/social"><span>Social</span></Link></Button>
+        <Button variant="game" size="game" asChild><Link to="/about" onClick={markButtonClick}><span>About me</span></Link></Button>
+        <Button variant="game" size="game" asChild><Link to="/works" onClick={markButtonClick}><span>My works</span></Link></Button>
+        <Button variant="game" size="game" asChild><Link to="/social" onClick={markButtonClick}><span>Social</span></Link></Button>
       </nav>
       <footer className="portfolio-footer">VYNESHINDEN</footer>
     </main>
