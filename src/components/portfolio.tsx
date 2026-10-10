@@ -4,13 +4,27 @@ import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import title from "@/assets/title.png.asset.json";
 import placeholderWorld from "@/assets/placeholder-world.jpg";
+import clickSound from "@/assets/click.mp3.asset.json";
 
 // Run the sequence in the persistent root, independently of route mounting.
 const BUTTON_ANIMATION_MS = 150;
 const LOADING_MS = 1300;
 
+let clickAudio: HTMLAudioElement | null = null;
+
+export function playClickSound() {
+  try {
+    if (!clickAudio) clickAudio = new Audio(clickSound.url);
+    clickAudio.currentTime = 0;
+    void clickAudio.play().catch(() => {});
+  } catch {
+    // Sound is a nice-to-have; ignore playback failures.
+  }
+}
+
 export function markButtonClick(event: MouseEvent<HTMLAnchorElement>) {
   if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+  playClickSound();
   window.dispatchEvent(new CustomEvent("portfolio:enter", {
     detail: new URL(event.currentTarget.href).pathname,
   }));
