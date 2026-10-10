@@ -1,5 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState, type MouseEvent } from "react";
+import { createPortal } from "react-dom";
 import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { portfolioHead, markButtonClick, playClickSoundOnPointerDown } from "@/components/portfolio";
@@ -15,6 +16,15 @@ function Index() {
   const navigate = useNavigate();
   const timer = useRef<number | null>(null);
   const [pressed, setPressed] = useState<string | null>(null);
+  const [messageOpen, setMessageOpen] = useState(false);
+  useEffect(() => {
+    if (!messageOpen) return;
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setMessageOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [messageOpen]);
   useEffect(() => () => {
     if (timer.current !== null) window.clearTimeout(timer.current);
   }, []);
@@ -40,6 +50,21 @@ function Index() {
         <Button variant="game" size="game" className={pressed === "/works" ? "is-pressed" : undefined} asChild><Link to="/works" onPointerDown={playClickSoundOnPointerDown} onClick={(event) => enter(event, "/works")}><span>My works</span></Link></Button>
         <Button variant="game" size="game" className={pressed === "/social" ? "is-pressed" : undefined} asChild><Link to="/social" onPointerDown={playClickSoundOnPointerDown} onClick={(event) => enter(event, "/social")}><span>Social</span></Link></Button>
       </nav>
+      <nav className="secondary-menu" aria-label="More">
+        <Button variant="game" size="game" type="button" onPointerDown={playClickSoundOnPointerDown}><span>Resume</span></Button>
+        <Button variant="game" size="game" type="button" onPointerDown={playClickSoundOnPointerDown} onClick={() => setMessageOpen(true)}><span>Message me</span></Button>
+      </nav>
+      {messageOpen &&
+        createPortal(
+          <div className="modal-overlay" role="dialog" aria-modal="true" aria-label="Message me" onClick={() => setMessageOpen(false)}>
+            <div className="modal-card" onClick={(event) => event.stopPropagation()}>
+              <h2>Message me</h2>
+              <p>Placeholder text. Your message form will live here — drop your details in and this popup will be wired up next.</p>
+              <Button variant="game" size="game" type="button" onPointerDown={playClickSoundOnPointerDown} onClick={() => setMessageOpen(false)}><span>Close</span></Button>
+            </div>
+          </div>,
+          document.body,
+        )}
       <footer className="portfolio-footer">VYNESHINDEN</footer>
     </main>
   );
