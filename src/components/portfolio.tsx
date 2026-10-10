@@ -11,8 +11,14 @@ const BUTTON_ANIMATION_MS = 150;
 const DELAY_AFTER_BUTTON_MS = 400;
 const LOADING_MS = 1300;
 
-// Tracks the previous route so navigating back to "/" skips the loading screen.
+// Tracks the previous route so navigating back to "/" skips the loading screen,
+// and the last button click so the delay counts from the press, not from page mount.
 let lastPathname: string | null = null;
+let lastButtonClickAt = 0;
+
+export function markButtonClick() {
+  lastButtonClickAt = performance.now();
+}
 
 export function LoadingScreen({ pathname }: { pathname: string }) {
   const [visible, setVisible] = useState(false);
@@ -23,10 +29,9 @@ export function LoadingScreen({ pathname }: { pathname: string }) {
   }, [pathname]);
   useEffect(() => {
     if (isReturningHome) return;
-    const showTimer = window.setTimeout(
-      () => setVisible(true),
-      BUTTON_ANIMATION_MS + DELAY_AFTER_BUTTON_MS,
-    );
+    const sinceClick = lastButtonClickAt ? performance.now() - lastButtonClickAt : Infinity;
+    const wait = sinceClick <= BUTTON_ANIMATION_MS ? BUTTON_ANIMATION_MS + DELAY_AFTER_BUTTON_MS - sinceClick : BUTTON_ANIMATION_MS + DELAY_AFTER_BUTTON_MS;
+    const showTimer = window.setTimeout(() => setVisible(true), wait);
     return () => window.clearTimeout(showTimer);
   }, [isReturningHome]);
   useEffect(() => {
