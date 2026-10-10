@@ -186,7 +186,7 @@ body { font-family: var(--font-portfolio); margin: 0; letter-spacing: 0; }
 .loading-center p { margin: 0 0 9px; }
 .loading-center p + p { margin-bottom: 25px; }
 .loading-track { height: 15px; border: 2px solid var(--loading-border); padding: 2px; background: var(--loading-track); }
-.loading-fill { height: 100%; background: var(--loading-green); transform-origin: left; animation: load-level 1000ms linear forwards; }
+.loading-fill { height: 100%; background: var(--loading-green); transform-origin: left; animation: load-level 1300ms linear forwards; }
 @keyframes load-level { from { transform: scaleX(0); } to { transform: scaleX(1); } }
 .detail-page { min-height: 100svh; }
 .detail-header { display: flex; align-items: center; justify-content: space-between; padding: 22px 24px; border-bottom: 1px solid var(--loading-track); }
