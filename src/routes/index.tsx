@@ -2,7 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState, type MouseEvent } from "react";
 import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
-import { portfolioHead, markButtonClick } from "@/components/portfolio";
+import { portfolioHead, markButtonClick, playClickSoundOnPointerDown } from "@/components/portfolio";
 import hero from "@/assets/hero.gif.asset.json";
 import title from "@/assets/title.png.asset.json";
 

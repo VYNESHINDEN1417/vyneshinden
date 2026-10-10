@@ -119,8 +119,8 @@ export function PortfolioPage({ section }: { section: "About me" | "My works" | 
   return (
     <main className="detail-page">
       <header className="detail-header">
-        <Button variant="ghost" asChild><Link to="/" onClick={playClickSound}><ArrowLeft /> Back</Link></Button>
-        <Link to="/" onClick={playClickSound} aria-label="VYNESHINDEN home"><img className="detail-logo" src={title.url} alt="VYNESHINDEN" /></Link>
+        <Button variant="ghost" asChild><Link to="/" onPointerDown={playClickSoundOnPointerDown}><ArrowLeft /> Back</Link></Button>
+        <Link to="/" onPointerDown={playClickSoundOnPointerDown} aria-label="VYNESHINDEN home"><img className="detail-logo" src={title.url} alt="VYNESHINDEN" /></Link>
         <span className="header-spacer" aria-hidden="true" />
       </header>
       <div className="detail-content">
