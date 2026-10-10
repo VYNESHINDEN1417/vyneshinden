@@ -10,5 +10,5 @@
 <!-- LOVABLE:END -->
 
 - Keep portfolio detail screens in separate file-based routes and reuse the shared PortfolioPage presentation so navigation opens real pages.
-- Mount the pathname-keyed loading screen in the root with an immediate opaque cover that remains through the delayed loading sequence; snapshot return-home detection per mount so rerenders cannot prematurely reveal content, and skip the sequence when returning home.
+- Keep the loading controller mounted in the root and start its timers from normal navigation clicks, not route arrivals; route changes must not restart a click's sequence, and returning home cancels it so navigation latency cannot extend the delay.
 - Use the game Button variant for dimensional navigation links so the supplied button treatment remains part of the design system.
