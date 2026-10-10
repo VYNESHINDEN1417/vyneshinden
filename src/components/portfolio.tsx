@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState, type MouseEvent, type PointerEvent as ReactPointerEvent } from "react";
+import { useCallback, useEffect, useRef, useState, type MouseEvent } from "react";
 import { Link } from "@tanstack/react-router";
 import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -16,9 +16,6 @@ function getClickAudio(): HTMLAudioElement | null {
   if (typeof window === "undefined") return null;
   if (!clickAudio) {
     clickAudio = new Audio(clickSound);
-    // Warm the file up so the first press never waits on a download.
-    clickAudio.preload = "auto";
-    clickAudio.load();
   }
   return clickAudio;
 }
@@ -32,11 +29,6 @@ export function playClickSound() {
   } catch {
     // Sound is a nice-to-have; ignore playback failures.
   }
-}
-
-export function playClickSoundOnPointerDown(event: ReactPointerEvent) {
-  if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
-  playClickSound();
 }
 
 export function markButtonClick(event: MouseEvent<HTMLAnchorElement>) {
@@ -119,8 +111,8 @@ export function PortfolioPage({ section }: { section: "About me" | "My works" | 
   return (
     <main className="detail-page">
       <header className="detail-header">
-        <Button variant="ghost" asChild><Link to="/" onPointerDown={playClickSoundOnPointerDown}><ArrowLeft /> Back</Link></Button>
-        <Link to="/" onPointerDown={playClickSoundOnPointerDown} aria-label="VYNESHINDEN home"><img className="detail-logo" src={title.url} alt="VYNESHINDEN" /></Link>
+        <Button variant="ghost" asChild><Link to="/" onClick={playClickSound}><ArrowLeft /> Back</Link></Button>
+        <Link to="/" onClick={playClickSound} aria-label="VYNESHINDEN home"><img className="detail-logo" src={title.url} alt="VYNESHINDEN" /></Link>
         <span className="header-spacer" aria-hidden="true" />
       </header>
       <div className="detail-content">
