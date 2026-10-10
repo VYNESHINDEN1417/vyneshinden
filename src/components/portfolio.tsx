@@ -21,11 +21,10 @@ export function LoadingScreen() {
     const timer = window.setTimeout(() => setDone(true), LOADING_MS);
     return () => window.clearTimeout(timer);
   }, [visible]);
-  if (done) return null;
+  if (!visible) return null;
   return (
-    <div className={visible ? "loading-screen" : "loading-screen loading-screen--waiting"} role="status" aria-label="Loading level, building terrain">
-      {visible && (
-        <div className="loading-center">
+    <div className="loading-screen" role="status" aria-label="Loading level, building terrain">
+      <div className="loading-center">
           <p>Loading level</p>
           <p>Building terrain</p>
           <div className="loading-track" aria-hidden="true"><div className="loading-fill" /></div>
