@@ -34,7 +34,7 @@ export function playClickSound() {
   }
 }
 
-export function playClickSoundOnPointerDown(event: React.PointerEvent) {
+export function playClickSoundOnPointerDown(event: ReactPointerEvent) {
   if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
   playClickSound();
 }
