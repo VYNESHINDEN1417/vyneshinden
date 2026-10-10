@@ -6,7 +6,7 @@ import title from "@/assets/title.png.asset.json";
 import placeholder from "@/assets/placeholder-world.jpg";
 
 // The btn-174 press animation runs 100ms; wait for it to finish, then pause 400ms
-// before covering the screen. Going back home never shows the loading screen.
+// before showing the loading artwork. The black cover hides content immediately.
 const BUTTON_ANIMATION_MS = 150;
 const DELAY_AFTER_BUTTON_MS = 400;
 const LOADING_MS = 1300;
@@ -23,7 +23,7 @@ export function markButtonClick() {
 export function LoadingScreen({ pathname }: { pathname: string }) {
   const [visible, setVisible] = useState(false);
   const [done, setDone] = useState(false);
-  const isReturningHome = lastPathname !== null && pathname === "/";
+  const [isReturningHome] = useState(() => lastPathname !== null && pathname === "/");
   useEffect(() => {
     lastPathname = pathname;
   }, [pathname]);
@@ -40,14 +40,18 @@ export function LoadingScreen({ pathname }: { pathname: string }) {
     const timer = window.setTimeout(() => setDone(true), LOADING_MS);
     return () => window.clearTimeout(timer);
   }, [visible]);
-  if (isReturningHome || !visible || done) return null;
+  if (isReturningHome || done) return null;
   return (
+    <div className="loading-cover" aria-busy="true">
+      {visible && (
     <div className="loading-screen" role="status" aria-label="Loading level, building terrain">
       <div className="loading-center">
         <p>Loading level</p>
         <p>Building terrain</p>
         <div className="loading-track" aria-hidden="true"><div className="loading-fill" /></div>
       </div>
+    </div>
+      )}
     </div>
   );
 }
