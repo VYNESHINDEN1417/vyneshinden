@@ -173,6 +173,11 @@ body { font-family: var(--font-portfolio); margin: 0; letter-spacing: 0; }
 .hero-title { position: absolute; top: 13%; left: 50%; transform: translateX(-50%); width: min(84%, 1000px); margin: 0; }
 .hero-title img { width: 100%; height: auto; }
 .main-menu { position: relative; margin: -16px 24px 0; display: grid; gap: 27px; }
+.secondary-menu { position: relative; margin: 16px 24px 0; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.modal-overlay { position: fixed; inset: 0; z-index: 90; display: grid; place-items: center; padding: 24px; background: oklch(0 0 0 / 35%); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+.modal-card { width: min(420px, 100%); padding: 28px 24px 24px; border-radius: 10px; background-color: var(--button-face); box-shadow: 0 -1px var(--button-highlight), 0 1px 1px var(--button-highlight), var(--button-shadow); color: var(--button-ink); text-align: center; }
+.modal-card h2 { margin: 0 0 10px; font-size: 22px; text-transform: uppercase; }
+.modal-card p { margin: 0 0 20px; font-size: 14px; line-height: 1.6; color: var(--button-ink); }
 .btn-174 { position: relative; border-radius: 10px; box-shadow: var(--button-shadow); transition: box-shadow .1s ease-in-out; font-family: Arial, Helvetica, sans-serif; text-decoration: none; user-select: none; display: inline-flex; justify-content: center; align-items: center; border: none; padding: 0; background: none; }
 .game-button-size { width: 100%; height: 54px; }
 .btn-174 span { width: 100%; height: 100%; background-color: var(--button-face); box-shadow: 0 -1px var(--button-highlight), 0 1px 1px var(--button-highlight); border-radius: 10px; transition: transform .1s ease-in-out; display: flex; align-items: center; justify-content: center; padding: 12px 20px; color: var(--button-ink); text-transform: uppercase; font-size: 18px; font-weight: 400; }
@@ -214,6 +219,7 @@ body { font-family: var(--font-portfolio); margin: 0; letter-spacing: 0; }
   .hero-scene { height: 49svh; min-height: 300px; }
   .hero-title { top: 16%; width: 94%; }
   .main-menu { margin: -12px 18px 0; gap: 25px; }
+  .secondary-menu { margin: 16px 18px 0; gap: 14px; }
   .game-button-size { height: 52px; }
   .detail-header { padding: 16px 12px; }
   .detail-logo { width: 135px; }
