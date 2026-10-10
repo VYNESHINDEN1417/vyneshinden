@@ -25,11 +25,10 @@ export function LoadingScreen() {
   return (
     <div className="loading-screen" role="status" aria-label="Loading level, building terrain">
       <div className="loading-center">
-          <p>Loading level</p>
-          <p>Building terrain</p>
-          <div className="loading-track" aria-hidden="true"><div className="loading-fill" /></div>
-        </div>
-      )}
+        <p>Loading level</p>
+        <p>Building terrain</p>
+        <div className="loading-track" aria-hidden="true"><div className="loading-fill" /></div>
+      </div>
     </div>
   );
 }
