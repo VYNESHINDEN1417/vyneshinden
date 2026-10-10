@@ -1,24 +1,29 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { Link } from "@tanstack/react-router";
+import { Button } from "@/components/ui/button";
+import { portfolioHead } from "@/components/portfolio";
+import hero from "@/assets/hero.gif.asset.json";
+import title from "@/assets/title.png.asset.json";
 
-// No head() here: the home route inherits title/description/og/twitter from
-// __root.tsx, and ships no og:image so serve-time hosting can inject the
-// project's social preview (explicit og:image or latest screenshot).
 export const Route = createFileRoute("/")({
+  head: () => portfolioHead("VYNESHINDEN — Portfolio", "Enter VYNESHINDEN's world. Discover the creator, explore their works, and find their social spaces."),
   component: Index,
 });
 
-// IMPORTANT: Replace this placeholder. See ./README.md for routing conventions.
 function Index() {
   return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
-    </div>
+    <main className="home-page">
+      <div className="hero-scene">
+        <img className="hero-image" src={hero.url} alt="An animated block-built forest lit by lanterns and fireflies" width={540} height={304} />
+        <div className="hero-fade" />
+        <h1 className="hero-title"><img src={title.url} alt="VYNESHINDEN" width={1920} height={480} /></h1>
+      </div>
+      <nav className="main-menu" aria-label="Portfolio">
+        <Button variant="game" size="game" asChild><Link to="/about"><span>About me</span></Link></Button>
+        <Button variant="game" size="game" asChild><Link to="/works"><span>My works</span></Link></Button>
+        <Button variant="game" size="game" asChild><Link to="/social"><span>Social</span></Link></Button>
+      </nav>
+      <footer className="portfolio-footer">VYNESHINDEN</footer>
+    </main>
   );
 }
