@@ -1,46 +1,73 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState, type MouseEvent } from "react";
 import { Link } from "@tanstack/react-router";
 import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import title from "@/assets/title.png.asset.json";
 import placeholder from "@/assets/placeholder-world.jpg";
 
-// The btn-174 press animation runs 100ms; wait for it to finish, then pause 400ms
-// before showing the loading artwork. The black cover hides content immediately.
+// Run the sequence in the persistent root, independently of route mounting.
 const BUTTON_ANIMATION_MS = 150;
 const DELAY_AFTER_BUTTON_MS = 400;
 const LOADING_MS = 1300;
 
-// Tracks the previous route so navigating back to "/" skips the loading screen,
-// and the last button click so the delay counts from the press, not from page mount.
-let lastPathname: string | null = null;
-let lastButtonClickAt = 0;
-
-export function markButtonClick() {
-  lastButtonClickAt = performance.now();
+export function markButtonClick(event: MouseEvent<HTMLAnchorElement>) {
+  if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+  window.dispatchEvent(new CustomEvent("portfolio:enter", {
+    detail: new URL(event.currentTarget.href).pathname,
+  }));
 }
 
 export function LoadingScreen({ pathname }: { pathname: string }) {
   const [visible, setVisible] = useState(false);
-  const [done, setDone] = useState(false);
-  const [isReturningHome] = useState(() => lastPathname !== null && pathname === "/");
+  const [covered, setCovered] = useState(true);
+  const timers = useRef<number[]>([]);
+  const previousPath = useRef(pathname);
+  const pendingPath = useRef<string | null>(null);
+  const clearTimers = useCallback(() => {
+    timers.current.forEach(window.clearTimeout);
+    timers.current = [];
+  }, []);
+  const start = useCallback(() => {
+    clearTimers();
+    setCovered(true);
+    setVisible(false);
+    timers.current.push(window.setTimeout(() => {
+      setVisible(true);
+      timers.current.push(window.setTimeout(() => {
+        setCovered(false);
+        setVisible(false);
+      }, LOADING_MS));
+    }, BUTTON_ANIMATION_MS + DELAY_AFTER_BUTTON_MS));
+  }, [clearTimers]);
   useEffect(() => {
-    lastPathname = pathname;
-  }, [pathname]);
+    const enter = (event: Event) => {
+      pendingPath.current = (event as CustomEvent<string>).detail;
+      start();
+    };
+    window.addEventListener("portfolio:enter", enter);
+    start();
+    return () => {
+      window.removeEventListener("portfolio:enter", enter);
+      clearTimers();
+    };
+  }, [start, clearTimers]);
   useEffect(() => {
-    if (isReturningHome) return;
-    const sinceClick = lastButtonClickAt ? performance.now() - lastButtonClickAt : Infinity;
-    const total = BUTTON_ANIMATION_MS + DELAY_AFTER_BUTTON_MS;
-    const wait = sinceClick <= total ? total - sinceClick : total;
-    const showTimer = window.setTimeout(() => setVisible(true), wait);
-    return () => window.clearTimeout(showTimer);
-  }, [isReturningHome]);
-  useEffect(() => {
-    if (!visible) return;
-    const timer = window.setTimeout(() => setDone(true), LOADING_MS);
-    return () => window.clearTimeout(timer);
-  }, [visible]);
-  if (isReturningHome || done) return null;
+    if (previousPath.current === pathname) return;
+    previousPath.current = pathname;
+    if (pendingPath.current === pathname) {
+      pendingPath.current = null;
+      return; // The click already started the timer; never restart it on arrival.
+    }
+    pendingPath.current = null;
+    if (pathname === "/") {
+      clearTimers();
+      setCovered(false);
+      setVisible(false);
+    } else {
+      start();
+    }
+  }, [pathname, start, clearTimers]);
+  if (!covered) return null;
   return (
     <div className="loading-cover" aria-busy="true">
       {visible && (
