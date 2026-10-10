@@ -158,6 +158,7 @@
   --button-step-6: oklch(0.425 0 0);
   --button-pressed: oklch(0.733 0 0);
   --loading-overlay: oklch(0 0 0 / 60%);
+  --loading-cover: oklch(0 0 0);
   --loading-track: oklch(0.17 0 0);
   --loading-border: oklch(0.52 0 0);
   --loading-green: oklch(0.71 0.2 137);
@@ -180,7 +181,8 @@ body { font-family: var(--font-portfolio); margin: 0; letter-spacing: 0; }
 .btn-174:active span { transform: translateY(5px); }
 .btn-174:disabled { pointer-events: none; opacity: .65; box-shadow: none; }
 .portfolio-footer { padding: 40px 24px 25px; text-align: center; color: var(--muted-foreground); font-size: 10px; }
-.loading-screen { position: fixed; inset: 0; z-index: 100; display: grid; place-items: center; background-repeat: repeat; background-size: 160px 160px; color: var(--button-highlight); }
+.loading-cover { position: fixed; inset: 0; z-index: 100; background: var(--loading-cover); }
+.loading-screen { position: fixed; inset: 0; z-index: 100; display: grid; place-items: center; background-color: var(--loading-cover); background-repeat: repeat; background-size: 160px 160px; color: var(--button-highlight); }
 .loading-screen::before { content: ""; position: absolute; inset: 0; background: var(--loading-overlay); }
 .loading-center { position: relative; width: min(340px, calc(100% - 64px)); text-align: center; font-family: monospace; font-size: 18px; text-shadow: 2px 2px var(--background); }
 .loading-center p { margin: 0 0 9px; }
