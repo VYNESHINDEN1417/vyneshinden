@@ -177,8 +177,8 @@ body { font-family: var(--font-portfolio); margin: 0; letter-spacing: 0; }
 .game-button-size { width: 100%; height: 54px; }
 .btn-174 span { width: 100%; height: 100%; background-color: var(--button-face); box-shadow: 0 -1px var(--button-highlight), 0 1px 1px var(--button-highlight); border-radius: 10px; transition: transform .1s ease-in-out; display: flex; align-items: center; justify-content: center; padding: 12px 20px; color: var(--button-ink); text-transform: uppercase; font-size: 18px; font-weight: 400; }
 .btn-174:hover span { color: var(--button-hover-ink); text-shadow: 0 -1px var(--button-text-shadow); }
-.btn-174:active { box-shadow: 0 10px 0 -2px var(--button-pressed); }
-.btn-174:active span { transform: translateY(5px); }
+.btn-174:active, .btn-174.is-pressed { box-shadow: 0 10px 0 -2px var(--button-pressed); }
+.btn-174:active span, .btn-174.is-pressed span { transform: translateY(5px); }
 .btn-174:disabled { pointer-events: none; opacity: .65; box-shadow: none; }
 .portfolio-footer { padding: 40px 24px 25px; text-align: center; color: var(--muted-foreground); font-size: 10px; }
 .loading-cover { position: fixed; inset: 0; z-index: 100; background: var(--loading-cover); }

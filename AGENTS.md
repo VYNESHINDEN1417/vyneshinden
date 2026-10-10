@@ -10,5 +10,5 @@
 <!-- LOVABLE:END -->
 
 - Keep portfolio detail screens in separate file-based routes and reuse the shared PortfolioPage presentation so navigation opens real pages.
-- Keep the loading controller mounted in the root and start its timers from normal navigation clicks, not route arrivals; route changes must not restart a click's sequence, and returning home cancels it so navigation latency cannot extend the delay.
+- Keep the loading controller mounted in the root and start its timers from normal navigation clicks, not route arrivals; defer navigation and the cover until the visible button press completes, never restart the sequence on route arrival, and cancel it when returning home so navigation latency cannot extend the delay.
 - Use the game Button variant for dimensional navigation links so the supplied button treatment remains part of the design system.
