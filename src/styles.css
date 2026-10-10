@@ -4,6 +4,14 @@
 
 @custom-variant dark (&:is(.dark *));
 
+@font-face {
+  font-family: "Minecraft";
+  src: url("/__l5e/assets-v1/bab1626d-4e7e-4a62-b5a4-3ef20b5bbf64/Minecraft.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
 /*
  * Design system definition.
  *
@@ -19,6 +27,8 @@
  */
 
 @theme inline {
+  --font-sans: var(--font-portfolio);
+  --font-mono: var(--font-portfolio);
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -144,7 +154,7 @@
 }
 
 :root {
-  --font-portfolio: "Space Grotesk", Arial, sans-serif;
+  --font-portfolio: "Minecraft", monospace;
   --button-face: oklch(0.932 0 0);
   --button-ink: oklch(0.39 0.015 230);
   --button-hover-ink: oklch(0.329 0 0);
@@ -166,6 +176,7 @@
   --button-shadow: 0 3px var(--button-step-1), 0 4px var(--button-step-2), 0 5px var(--button-step-3), 0 6px var(--button-step-4), 0 7px var(--button-step-5), 0 8px var(--button-step-6), 0 14px 6px -1px var(--background);
 }
 body { font-family: var(--font-portfolio); margin: 0; letter-spacing: 0; }
+button, input, textarea, select { font-family: inherit; }
 .home-page { min-height: 100svh; overflow: hidden; }
 .hero-scene { position: relative; height: 58svh; min-height: 320px; max-height: 650px; }
 .hero-image { width: 100%; height: 100%; object-fit: cover; object-position: center 55%; }
@@ -180,7 +191,7 @@ body:has(.modal-overlay) .home-page { filter: blur(8px); }
 .modal-card { width: min(420px, 100%); padding: 28px 24px 24px; border-radius: 10px; background-color: var(--button-face); box-shadow: 0 -1px var(--button-highlight), 0 1px 1px var(--button-highlight), var(--button-shadow); color: var(--button-ink); text-align: center; }
 .modal-card h2 { margin: 0 0 10px; font-size: 22px; text-transform: uppercase; }
 .modal-card p { margin: 0 0 20px; font-size: 14px; line-height: 1.6; color: var(--button-ink); }
-.btn-174 { position: relative; border-radius: 10px; box-shadow: var(--button-shadow); transition: box-shadow .1s ease-in-out; font-family: Arial, Helvetica, sans-serif; text-decoration: none; user-select: none; display: inline-flex; justify-content: center; align-items: center; border: none; padding: 0; background: none; }
+.btn-174 { position: relative; border-radius: 10px; box-shadow: var(--button-shadow); transition: box-shadow .1s ease-in-out; font-family: var(--font-portfolio); text-decoration: none; user-select: none; display: inline-flex; justify-content: center; align-items: center; border: none; padding: 0; background: none; }
 .game-button-size { width: 100%; height: 54px; }
 .btn-174 span { width: 100%; height: 100%; background-color: var(--button-face); box-shadow: 0 -1px var(--button-highlight), 0 1px 1px var(--button-highlight); border-radius: 10px; transition: transform .1s ease-in-out; display: flex; align-items: center; justify-content: center; padding: 12px 20px; color: var(--button-ink); text-transform: uppercase; font-size: 18px; font-weight: 400; }
 .btn-174:hover span { color: var(--button-hover-ink); text-shadow: 0 -1px var(--button-text-shadow); }
@@ -191,7 +202,7 @@ body:has(.modal-overlay) .home-page { filter: blur(8px); }
 .loading-cover { position: fixed; inset: 0; z-index: 100; background: var(--loading-cover); }
 .loading-screen { position: fixed; inset: 0; z-index: 100; display: grid; place-items: center; background-color: var(--loading-cover); background-repeat: repeat; background-size: 160px 160px; color: var(--button-highlight); }
 .loading-screen::before { content: ""; position: absolute; inset: 0; background: var(--loading-overlay); }
-.loading-center { position: relative; width: min(340px, calc(100% - 64px)); text-align: center; font-family: monospace; font-size: 18px; text-shadow: 2px 2px var(--background); }
+.loading-center { position: relative; width: min(340px, calc(100% - 64px)); text-align: center; font-family: var(--font-portfolio); font-size: 18px; text-shadow: 2px 2px var(--background); }
 .loading-center p { margin: 0 0 9px; }
 .loading-center p + p { margin-bottom: 25px; }
 .loading-track { height: 15px; border: 2px solid var(--loading-border); padding: 2px; background: var(--loading-track); }
