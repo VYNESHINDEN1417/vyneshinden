@@ -2,7 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState, type MouseEvent } from "react";
 import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
-import { portfolioHead, markButtonClick, playClickSound } from "@/components/portfolio";
+import { portfolioHead, markButtonClick, playClickSoundOnPointerDown } from "@/components/portfolio";
 import hero from "@/assets/hero.gif.asset.json";
 import title from "@/assets/title.png.asset.json";
 
@@ -23,7 +23,6 @@ function Index() {
     event.preventDefault();
     if (timer.current !== null) return;
     setPressed(to);
-    playClickSound();
     markButtonClick(event);
     timer.current = window.setTimeout(() => {
       void navigate({ to });
@@ -37,9 +36,9 @@ function Index() {
         <h1 className="hero-title"><img src={title.url} alt="VYNESHINDEN" width={1920} height={480} /></h1>
       </div>
       <nav className="main-menu" aria-label="Portfolio">
-        <Button variant="game" size="game" className={pressed === "/about" ? "is-pressed" : undefined} asChild><Link to="/about" onClick={(event) => enter(event, "/about")}><span>About me</span></Link></Button>
-        <Button variant="game" size="game" className={pressed === "/works" ? "is-pressed" : undefined} asChild><Link to="/works" onClick={(event) => enter(event, "/works")}><span>My works</span></Link></Button>
-        <Button variant="game" size="game" className={pressed === "/social" ? "is-pressed" : undefined} asChild><Link to="/social" onClick={(event) => enter(event, "/social")}><span>Social</span></Link></Button>
+        <Button variant="game" size="game" className={pressed === "/about" ? "is-pressed" : undefined} asChild><Link to="/about" onPointerDown={playClickSoundOnPointerDown} onClick={(event) => enter(event, "/about")}><span>About me</span></Link></Button>
+        <Button variant="game" size="game" className={pressed === "/works" ? "is-pressed" : undefined} asChild><Link to="/works" onPointerDown={playClickSoundOnPointerDown} onClick={(event) => enter(event, "/works")}><span>My works</span></Link></Button>
+        <Button variant="game" size="game" className={pressed === "/social" ? "is-pressed" : undefined} asChild><Link to="/social" onPointerDown={playClickSoundOnPointerDown} onClick={(event) => enter(event, "/social")}><span>Social</span></Link></Button>
       </nav>
       <footer className="portfolio-footer">VYNESHINDEN</footer>
     </main>
