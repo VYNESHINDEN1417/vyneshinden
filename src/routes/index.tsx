@@ -1,5 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState, type MouseEvent } from "react";
+import { createPortal } from "react-dom";
 import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { portfolioHead, markButtonClick, playClickSoundOnPointerDown } from "@/components/portfolio";
@@ -53,15 +54,17 @@ function Index() {
         <Button variant="game" size="game" type="button" onPointerDown={playClickSoundOnPointerDown}><span>Resume</span></Button>
         <Button variant="game" size="game" type="button" onPointerDown={playClickSoundOnPointerDown} onClick={() => setMessageOpen(true)}><span>Message me</span></Button>
       </nav>
-      {messageOpen && (
-        <div className="modal-overlay" role="dialog" aria-modal="true" aria-label="Message me" onClick={() => setMessageOpen(false)}>
-          <div className="modal-card" onClick={(event) => event.stopPropagation()}>
-            <h2>Message me</h2>
-            <p>Placeholder text. Your message form will live here — drop your details in and this popup will be wired up next.</p>
-            <Button variant="game" size="game" type="button" onPointerDown={playClickSoundOnPointerDown} onClick={() => setMessageOpen(false)}><span>Close</span></Button>
-          </div>
-        </div>
-      )}
+      {messageOpen &&
+        createPortal(
+          <div className="modal-overlay" role="dialog" aria-modal="true" aria-label="Message me" onClick={() => setMessageOpen(false)}>
+            <div className="modal-card" onClick={(event) => event.stopPropagation()}>
+              <h2>Message me</h2>
+              <p>Placeholder text. Your message form will live here — drop your details in and this popup will be wired up next.</p>
+              <Button variant="game" size="game" type="button" onPointerDown={playClickSoundOnPointerDown} onClick={() => setMessageOpen(false)}><span>Close</span></Button>
+            </div>
+          </div>,
+          document.body,
+        )}
       <footer className="portfolio-footer">VYNESHINDEN</footer>
     </main>
   );
