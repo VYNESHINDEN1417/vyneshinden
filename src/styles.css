@@ -219,6 +219,7 @@ body { font-family: var(--font-portfolio); margin: 0; letter-spacing: 0; }
   .header-spacer { width: 55px; }
   .detail-content { padding: 35px 20px 48px; }
   .detail-content h1 { font-size: 32px; }
+  .detail-page { background-size: 170px 170px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .btn-174, .btn-174 span { transition: none; }
