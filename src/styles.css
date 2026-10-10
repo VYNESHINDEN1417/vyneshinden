@@ -174,7 +174,9 @@ body { font-family: var(--font-portfolio); margin: 0; letter-spacing: 0; }
 .hero-title img { width: 100%; height: auto; }
 .main-menu { position: relative; margin: -16px 24px 0; display: grid; gap: 27px; }
 .secondary-menu { position: relative; margin: 16px 24px 0; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-.modal-overlay { position: fixed; inset: 0; z-index: 90; display: grid; place-items: center; padding: 24px; background: oklch(0 0 0 / 35%); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+.modal-overlay { position: fixed; inset: 0; z-index: 90; display: grid; place-items: center; padding: 24px; background: oklch(0 0 0 / 35%); }
+.home-page { transition: filter 0.2s ease; }
+body:has(.modal-overlay) .home-page { filter: blur(8px); }
 .modal-card { width: min(420px, 100%); padding: 28px 24px 24px; border-radius: 10px; background-color: var(--button-face); box-shadow: 0 -1px var(--button-highlight), 0 1px 1px var(--button-highlight), var(--button-shadow); color: var(--button-ink); text-align: center; }
 .modal-card h2 { margin: 0 0 10px; font-size: 22px; text-transform: uppercase; }
 .modal-card p { margin: 0 0 20px; font-size: 14px; line-height: 1.6; color: var(--button-ink); }
