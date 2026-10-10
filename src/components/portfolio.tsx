@@ -27,9 +27,12 @@ export function LoadingScreen({ pathname }: { pathname: string }) {
     timers.current.forEach(window.clearTimeout);
     timers.current = [];
   }, []);
-  const start = useCallback(() => {
+  const start = useCallback((waitForPress = false) => {
     clearTimers();
-    setCovered(true);
+    setCovered(!waitForPress);
+    if (waitForPress) {
+      timers.current.push(window.setTimeout(() => setCovered(true), BUTTON_ANIMATION_MS));
+    }
     setVisible(false);
     timers.current.push(window.setTimeout(() => {
       setVisible(true);
@@ -42,7 +45,7 @@ export function LoadingScreen({ pathname }: { pathname: string }) {
   useEffect(() => {
     const enter = (event: Event) => {
       pendingPath.current = (event as CustomEvent<string>).detail;
-      start();
+      start(true);
     };
     window.addEventListener("portfolio:enter", enter);
     start();
