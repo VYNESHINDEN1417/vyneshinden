@@ -209,6 +209,7 @@ body { font-family: var(--font-portfolio); margin: 0; letter-spacing: 0; }
 .placeholder-copy { padding-top: 0; max-width: 600px; }
 .placeholder-copy h2 { font-size: 24px; margin: 10px 0 12px; }
 .placeholder-copy p { color: var(--muted-foreground); line-height: 1.7; font-size: 15px; }
+.social-menu { display: grid; gap: 27px; max-width: 600px; }
 @media (max-width: 600px) {
   .hero-scene { height: 49svh; min-height: 300px; }
   .hero-title { top: 16%; width: 94%; }
