@@ -16,9 +16,6 @@ function getClickAudio(): HTMLAudioElement | null {
   if (typeof window === "undefined") return null;
   if (!clickAudio) {
     clickAudio = new Audio(clickSound);
-    // Warm the file up so the first press never waits on a download.
-    clickAudio.preload = "auto";
-    clickAudio.load();
   }
   return clickAudio;
 }
@@ -32,11 +29,6 @@ export function playClickSound() {
   } catch {
     // Sound is a nice-to-have; ignore playback failures.
   }
-}
-
-export function playClickSoundOnPointerDown(event: ReactPointerEvent) {
-  if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
-  playClickSound();
 }
 
 export function markButtonClick(event: MouseEvent<HTMLAnchorElement>) {
