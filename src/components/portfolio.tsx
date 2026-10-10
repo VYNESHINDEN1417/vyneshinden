@@ -21,7 +21,7 @@ export function LoadingScreen() {
     const timer = window.setTimeout(() => setDone(true), LOADING_MS);
     return () => window.clearTimeout(timer);
   }, [visible]);
-  if (!visible) return null;
+  if (!visible || done) return null;
   return (
     <div className="loading-screen" role="status" aria-label="Loading level, building terrain">
       <div className="loading-center">
