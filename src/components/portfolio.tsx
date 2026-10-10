@@ -7,7 +7,6 @@ import placeholder from "@/assets/placeholder-world.jpg";
 
 // Run the sequence in the persistent root, independently of route mounting.
 const BUTTON_ANIMATION_MS = 150;
-const DELAY_AFTER_BUTTON_MS = 400;
 const LOADING_MS = 1300;
 
 export function markButtonClick(event: MouseEvent<HTMLAnchorElement>) {
@@ -40,7 +39,7 @@ export function LoadingScreen({ pathname }: { pathname: string }) {
         setCovered(false);
         setVisible(false);
       }, LOADING_MS));
-    }, BUTTON_ANIMATION_MS + DELAY_AFTER_BUTTON_MS));
+    }, BUTTON_ANIMATION_MS));
   }, [clearTimers]);
   useEffect(() => {
     const enter = (event: Event) => {
