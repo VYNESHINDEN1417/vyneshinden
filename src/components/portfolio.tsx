@@ -30,7 +30,8 @@ export function LoadingScreen({ pathname }: { pathname: string }) {
   useEffect(() => {
     if (isReturningHome) return;
     const sinceClick = lastButtonClickAt ? performance.now() - lastButtonClickAt : Infinity;
-    const wait = sinceClick <= BUTTON_ANIMATION_MS ? BUTTON_ANIMATION_MS + DELAY_AFTER_BUTTON_MS - sinceClick : BUTTON_ANIMATION_MS + DELAY_AFTER_BUTTON_MS;
+    const total = BUTTON_ANIMATION_MS + DELAY_AFTER_BUTTON_MS;
+    const wait = sinceClick <= total ? total - sinceClick : total;
     const showTimer = window.setTimeout(() => setVisible(true), wait);
     return () => window.clearTimeout(showTimer);
   }, [isReturningHome]);
