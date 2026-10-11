@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Music2, X } from "lucide-react";
+import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { playClickSoundOnPointerDown } from "@/components/portfolio";
 import music from "@/assets/sweden.mp3.asset.json";
@@ -26,7 +26,7 @@ export function BackgroundMusic() {
       popupTimer.current = null;
       setPressed(false);
       setWelcomeOpen(true);
-    }, 900); // Complete the supplied 700ms press animation, then wait 200ms.
+    }, 740); // Complete the supplied 700ms press animation, then wait 40ms.
   }
 
   useEffect(() => {
@@ -58,7 +58,7 @@ export function BackgroundMusic() {
 
   return <>
     <audio ref={audioRef} src={music.url} loop preload="auto" aria-hidden="true" />
-    <Button variant="music" size="music" className={pressed ? "music-corner is-pressed" : "music-corner"} type="button" aria-haspopup="dialog" aria-expanded={welcomeOpen} onPointerDown={playClickSoundOnPointerDown} onClick={openMusic}><Music2 aria-hidden="true" />Music</Button>
+    <Button variant="music" size="music" className={pressed ? "music-corner is-pressed" : "music-corner"} type="button" aria-haspopup="dialog" aria-expanded={welcomeOpen} onPointerDown={playClickSoundOnPointerDown} onClick={openMusic}><span>Music</span></Button>
     {welcomeOpen && <dialog ref={dialogRef} className="modal-card music-welcome" aria-label="Welcome to my portfolio" aria-describedby="music-welcome-message" onCancel={(event) => event.preventDefault()}>
       <p id="music-welcome-message">Welcome to my portfolio, a music will be played</p>
       <div className="music-welcome-actions">
