@@ -53,7 +53,7 @@ export function BackgroundMusic() {
       <div className="music-welcome-actions">
         <Button variant="game" size="game" type="button" onPointerDown={playClickSoundOnPointerDown} onClick={enter}><span>play music</span></Button>
         <div className="music-disabled-option">
-          <Button variant="game" size="game" type="button" disabled><span>don't play music</span></Button>
+          <Button variant="game" size="game" type="button" className="music-disabled-button" disabled aria-disabled="true"><span>don't play music</span></Button>
           <X className="music-disabled-cross" aria-hidden="true" strokeWidth={4} />
         </div>
       </div>

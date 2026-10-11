@@ -209,6 +209,8 @@ body:has(.modal-overlay) .home-page { filter: blur(8px); }
 .music-welcome-actions { display: grid; gap: 24px; padding-bottom: 8px; }
 .music-disabled-option { position: relative; }
 .music-disabled-cross { position: absolute; inset: 0; margin: auto; width: 58px; height: 58px; color: var(--music-cross); pointer-events: none; }
+.music-disabled-option .music-disabled-button:disabled { opacity: 1; box-shadow: var(--button-shadow); }
+.music-disabled-option .music-disabled-button:disabled span { transform: none; }
 .music-button { display: inline-flex; align-items: center; justify-content: center; text-align: center; position: relative; border: 0; border-radius: 0; background: var(--music-button-face); color: var(--music-button-ink); text-shadow: 0 2px var(--music-button-text-shadow); font-size: 18px; font-weight: 900; text-transform: uppercase; letter-spacing: 0; user-select: none; z-index: 1; transition: transform .7s cubic-bezier(0,.8,.26,.99); }
 .music-button-size { height: auto; padding: .8rem 1.5rem; }
 .music-corner { position: fixed; left: max(16px, env(safe-area-inset-left)); bottom: max(16px, env(safe-area-inset-bottom)); z-index: 80; }
