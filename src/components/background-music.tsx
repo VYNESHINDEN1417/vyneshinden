@@ -1,12 +1,21 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import { X } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { playClickSoundOnPointerDown } from "@/components/portfolio";
 import music from "@/assets/sweden.mp3.asset.json";
 
 export function BackgroundMusic() {
   const audioRef = useRef<HTMLAudioElement>(null);
+  const dialogRef = useRef<HTMLDialogElement>(null);
+  const [welcomeOpen, setWelcomeOpen] = useState(true);
+
+  useEffect(() => {
+    if (welcomeOpen) dialogRef.current?.showModal();
+  }, [welcomeOpen]);
 
   useEffect(() => {
     const audio = audioRef.current;
-    if (!audio) return;
+    if (!audio || welcomeOpen) return;
     const start = () => {
       if (audio.paused) void audio.play().catch(() => {
         // Browsers may block autoplay until a visitor interacts with the site.
@@ -20,7 +29,25 @@ export function BackgroundMusic() {
       document.removeEventListener("keydown", start, true);
       audio.pause();
     };
-  }, []);
+  }, [welcomeOpen]);
 
-  return <audio ref={audioRef} src={music.url} autoPlay loop preload="auto" aria-hidden="true" />;
+  function enter() {
+    const audio = audioRef.current;
+    if (audio) void audio.play().catch(() => {});
+    setWelcomeOpen(false);
+  }
+
+  return <>
+    <audio ref={audioRef} src={music.url} loop preload="auto" aria-hidden="true" />
+    {welcomeOpen && <dialog ref={dialogRef} className="modal-card music-welcome" aria-label="Welcome to my portfolio" aria-describedby="music-welcome-message" onCancel={(event) => event.preventDefault()}>
+      <p id="music-welcome-message">Welcome to my portfolio, a music will be played</p>
+      <div className="music-welcome-actions">
+        <Button variant="game" size="game" type="button" onPointerDown={playClickSoundOnPointerDown} onClick={enter}><span>play music</span></Button>
+        <div className="music-disabled-option">
+          <Button variant="game" size="game" type="button" disabled><span>don't play music</span></Button>
+          <X className="music-disabled-cross" aria-hidden="true" strokeWidth={4} />
+        </div>
+      </div>
+    </dialog>}
+  </>;
 }

@@ -172,6 +172,7 @@
   --loading-track: oklch(0.17 0 0);
   --loading-border: oklch(0.52 0 0);
   --loading-green: oklch(0.71 0.2 137);
+  --music-cross: oklch(0.6 0.25 27);
   --hero-transition: linear-gradient(to bottom, oklch(0 0 0 / 0%) 40%, var(--background) 100%);
   --button-shadow: 0 3px var(--button-step-1), 0 4px var(--button-step-2), 0 5px var(--button-step-3), 0 6px var(--button-step-4), 0 7px var(--button-step-5), 0 8px var(--button-step-6), 0 14px 6px -1px var(--background);
 }
@@ -194,6 +195,11 @@ body:has(.modal-overlay) .home-page { filter: blur(8px); }
 .modal-card { width: min(420px, 100%); padding: 28px 24px 24px; border-radius: 10px; background-color: var(--button-face); box-shadow: 0 -1px var(--button-highlight), 0 1px 1px var(--button-highlight), var(--button-shadow); color: var(--button-ink); text-align: center; }
 .modal-card h2 { margin: 0 0 10px; font-size: 22px; text-transform: uppercase; }
 .modal-card p { margin: 0 0 20px; font-size: 14px; line-height: 1.6; color: var(--button-ink); }
+.music-welcome { position: fixed; inset: 0; margin: auto; border: none; max-height: calc(100svh - 48px); overflow-y: auto; }
+.music-welcome::backdrop { background: var(--loading-overlay); backdrop-filter: blur(8px); }
+.music-welcome-actions { display: grid; gap: 24px; padding-bottom: 8px; }
+.music-disabled-option { position: relative; }
+.music-disabled-cross { position: absolute; inset: 0; margin: auto; width: 58px; height: 58px; color: var(--music-cross); pointer-events: none; }
 .btn-174 { position: relative; border-radius: 10px; box-shadow: var(--button-shadow); transition: box-shadow .1s ease-in-out; font-family: var(--font-portfolio); text-decoration: none; user-select: none; display: inline-flex; justify-content: center; align-items: center; border: none; padding: 0; background: none; }
 .game-button-size { width: 100%; height: 54px; }
 .btn-174 span { width: 100%; height: 100%; background-color: var(--button-face); box-shadow: 0 -1px var(--button-highlight), 0 1px 1px var(--button-highlight); border-radius: 10px; transition: transform .1s ease-in-out; display: flex; align-items: center; justify-content: center; padding: 12px 20px; color: var(--button-ink); text-transform: uppercase; font-size: 18px; font-weight: 400; }
