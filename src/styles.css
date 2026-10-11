@@ -5,8 +5,8 @@
 @custom-variant dark (&:is(.dark *));
 
 @font-face {
-  font-family: "Minecraft";
-  src: url("/__l5e/assets-v1/a0658774-25d1-458b-9d5e-f20097c5a740/Minecraft.ttf") format("truetype");
+  font-family: "Minecraftia";
+  src: url("/media/Minecraftia-Regular.ttf") format("truetype");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -154,7 +154,7 @@
 }
 
 :root {
-  --font-portfolio: "Minecraft", monospace;
+  --font-portfolio: "Minecraftia", monospace;
   --button-face: oklch(0.932 0 0);
   --button-ink: oklch(0.39 0.015 230);
   --button-hover-ink: oklch(0.329 0 0);
@@ -242,7 +242,7 @@ body:has(.modal-overlay) .home-page { filter: blur(8px); }
   background-color: #000;
   background-image:
     linear-gradient(rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0.85)),
-    url("/__l5e/assets-v1/cd740a81-e21b-4d01-aab3-2f05e9076bc9/tile-2.jpg");
+    url("/media/tile-2.jpg");
   background-repeat: repeat;
   background-size: 256px 256px;
 }
@@ -277,4 +277,4 @@ body:has(.modal-overlay) .home-page { filter: blur(8px); }
   .music-button, .music-button::before, .music-button::after { transition: none; }
 }
 
-.loading-screen { background-image: url("/__l5e/assets-v1/6a72dc83-9a74-4648-9b89-ed3d98d8dfbb/tile.jpg"); }
+.loading-screen { background-image: url("/media/tile.jpg"); }

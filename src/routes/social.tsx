@@ -2,7 +2,6 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { playClickSoundOnPointerDown, portfolioHead } from "@/components/portfolio";
-import title from "@/assets/title.png.asset.json";
 
 export const Route = createFileRoute("/social")({
   head: () => portfolioHead("Social — VYNESHINDEN", "Find VYNESHINDEN's social spaces and stay connected."),
@@ -21,7 +20,7 @@ function SocialPage() {
     <main className="detail-page">
       <header className="detail-header">
         <Button variant="ghost" asChild><Link to="/" onPointerDown={playClickSoundOnPointerDown}><ArrowLeft /> Back</Link></Button>
-        <Link to="/" onPointerDown={playClickSoundOnPointerDown} aria-label="VYNESHINDEN home"><img className="detail-logo" src={title.url} alt="VYNESHINDEN" /></Link>
+        <Link to="/" onPointerDown={playClickSoundOnPointerDown} aria-label="VYNESHINDEN home"><img className="detail-logo" src="/media/title.png" alt="VYNESHINDEN" /></Link>
         <span className="header-spacer" aria-hidden="true" />
       </header>
       <div className="detail-content">
