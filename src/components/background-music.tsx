@@ -1,10 +1,11 @@
 import { useEffect, useRef, useState } from "react";
+import { useRouterState } from "@tanstack/react-router";
 import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { playClickSoundOnPointerDown } from "@/components/portfolio";
-import music from "@/assets/sweden.mp3.asset.json";
 
 export function BackgroundMusic() {
+  const isHome = useRouterState({ select: (state) => state.location.pathname === "/" });
   const audioRef = useRef<HTMLAudioElement>(null);
   const dialogRef = useRef<HTMLDialogElement>(null);
   const [welcomeOpen, setWelcomeOpen] = useState(true);
@@ -46,8 +47,8 @@ export function BackgroundMusic() {
   }
 
   return <>
-    <audio ref={audioRef} src={music.url} loop preload="auto" aria-hidden="true" />
-    <Button variant="music" size="music" className="music-corner" type="button" aria-haspopup="dialog" aria-expanded={welcomeOpen} onPointerDown={playClickSoundOnPointerDown} onClick={openMusic}><span>Music</span></Button>
+    <audio ref={audioRef} src="/media/sweden.mp3" loop preload="auto" aria-hidden="true" />
+    {isHome && <Button variant="music" size="music" className="music-corner" type="button" aria-haspopup="dialog" aria-expanded={welcomeOpen} onPointerDown={playClickSoundOnPointerDown} onClick={openMusic}><span>Music</span></Button>}
     {welcomeOpen && <dialog ref={dialogRef} className="modal-card music-welcome" aria-label="Welcome to my portfolio" aria-describedby="music-welcome-message" onCancel={(event) => event.preventDefault()}>
       <p id="music-welcome-message">Welcome to my portfolio, a music will be played</p>
       <div className="music-welcome-actions">

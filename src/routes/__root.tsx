@@ -12,7 +12,6 @@ import {
 import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
-import minecraftFont from "@/assets/Minecraft.ttf.asset.json";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { LoadingScreen } from "@/components/portfolio";
 import { BackgroundMusic } from "@/components/background-music";
@@ -93,7 +92,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         href: appCss,
       },
       { rel: "icon", href: "/favicon.png", type: "image/png" },
-      { rel: "preload", href: minecraftFont.url, as: "font", type: "font/ttf", crossOrigin: "anonymous" },
+      { rel: "preload", href: "/media/Minecraftia-Regular.ttf", as: "font", type: "font/ttf", crossOrigin: "anonymous" },
     ],
   }),
   shellComponent: RootShell,
