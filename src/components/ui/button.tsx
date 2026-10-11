@@ -17,6 +17,7 @@ const buttonVariants = cva(
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
         game: "btn-174",
+        music: "music-button",
       },
       size: {
         default: "h-9 px-4 py-2",
@@ -24,6 +25,7 @@ const buttonVariants = cva(
         lg: "h-10 rounded-md px-8",
         icon: "h-9 w-9",
         game: "game-button-size",
+        music: "music-button-size",
       },
     },
     defaultVariants: {
