@@ -173,6 +173,15 @@
   --loading-border: oklch(0.52 0 0);
   --loading-green: oklch(0.71 0.2 137);
   --music-cross: oklch(0.6 0.25 27);
+  --music-button-face: #008542;
+  --music-button-ink: #fff;
+  --music-button-text-shadow: rgb(0 0 0 / 25%);
+  --music-button-lowlight: rgb(21 108 0 / 50%);
+  --music-button-highlight: rgb(100 253 31 / 99%);
+  --music-button-side-highlight: rgb(100 253 31 / 50%);
+  --music-button-shadow: rgb(0 0 0 / 15%);
+  --music-button-hover-lowlight: rgb(0 0 0 / 50%);
+  --music-button-hover-highlight: rgb(255 255 255 / 20%);
   --hero-transition: linear-gradient(to bottom, oklch(0 0 0 / 0%) 40%, var(--background) 100%);
   --button-shadow: 0 3px var(--button-step-1), 0 4px var(--button-step-2), 0 5px var(--button-step-3), 0 6px var(--button-step-4), 0 7px var(--button-step-5), 0 8px var(--button-step-6), 0 14px 6px -1px var(--background);
 }
@@ -184,7 +193,7 @@ button, input, textarea, select { font-family: inherit; }
 .hero-fade { position: absolute; inset: 0; background: var(--hero-transition); }
 .hero-title { position: absolute; top: 13%; left: 50%; transform: translateX(-50%); width: min(84%, 1000px); margin: 0; }
 .hero-title img { width: 100%; height: auto; }
-.home-menu { position: relative; width: calc((100% - 48px) * .85); margin: max(-208px, calc(210px - clamp(320px, 58svh, 650px))) auto 0; }
+.home-menu { position: relative; width: calc((100% - 48px) * .85); margin: calc(max(-208px, calc(210px - clamp(320px, 58svh, 650px))) + 96px) auto 0; }
 .main-menu { position: relative; display: grid; gap: 22.95px; }
 .secondary-menu { position: relative; margin-top: 13.6px; display: grid; grid-template-columns: 1fr 1fr; gap: 13.6px; }
 .home-menu .game-button-size { height: 45.9px; }
@@ -200,6 +209,15 @@ body:has(.modal-overlay) .home-page { filter: blur(8px); }
 .music-welcome-actions { display: grid; gap: 24px; padding-bottom: 8px; }
 .music-disabled-option { position: relative; }
 .music-disabled-cross { position: absolute; inset: 0; margin: auto; width: 58px; height: 58px; color: var(--music-cross); pointer-events: none; }
+.music-button { position: relative; border: 0; border-radius: 0; background: var(--music-button-face); color: var(--music-button-ink); text-shadow: 0 2px var(--music-button-text-shadow); font-size: 18px; font-weight: 900; text-transform: uppercase; letter-spacing: 0; user-select: none; z-index: 1; transition: transform .7s cubic-bezier(0,.8,.26,.99); }
+.music-button-size { height: auto; padding: .8rem 1.5rem; }
+.music-corner { position: fixed; left: max(16px, env(safe-area-inset-left)); bottom: max(16px, env(safe-area-inset-bottom)); z-index: 80; }
+.music-button::before, .music-button::after { position: absolute; inset: 0; content: ""; pointer-events: none; transition: box-shadow .7s cubic-bezier(0,.8,.26,.99); }
+.music-button::before { z-index: -1; background: var(--music-button-face); box-shadow: 0 -4px var(--music-button-lowlight) inset, 0 4px var(--music-button-highlight) inset, -4px 0 var(--music-button-side-highlight) inset, 4px 0 var(--music-button-lowlight) inset; }
+.music-button::after { box-shadow: 0 4px var(--music-button-shadow); }
+.music-button:hover::before { box-shadow: 0 -4px var(--music-button-hover-lowlight) inset, 0 4px var(--music-button-hover-highlight) inset, -4px 0 var(--music-button-hover-highlight) inset, 4px 0 var(--music-button-hover-lowlight) inset; }
+.music-button:active, .music-button.is-pressed { transform: translateY(4px); }
+.music-button:active::after, .music-button.is-pressed::after { box-shadow: 0 0 var(--music-button-shadow); }
 .btn-174 { position: relative; border-radius: 10px; box-shadow: var(--button-shadow); transition: box-shadow .1s ease-in-out; font-family: var(--font-portfolio); text-decoration: none; user-select: none; display: inline-flex; justify-content: center; align-items: center; border: none; padding: 0; background: none; }
 .game-button-size { width: 100%; height: 54px; }
 .btn-174 span { width: 100%; height: 100%; background-color: var(--button-face); box-shadow: 0 -1px var(--button-highlight), 0 1px 1px var(--button-highlight); border-radius: 10px; transition: transform .1s ease-in-out; display: flex; align-items: center; justify-content: center; padding: 12px 20px; color: var(--button-ink); text-transform: uppercase; font-size: 18px; font-weight: 400; }
@@ -240,7 +258,7 @@ body:has(.modal-overlay) .home-page { filter: blur(8px); }
 @media (max-width: 600px) {
   .hero-scene { height: 49svh; min-height: 300px; }
   .hero-title { top: 16%; width: 94%; }
-  .home-menu { width: calc((100% - 36px) * .85); margin-top: max(-204px, calc(170px - max(300px, 49svh))); }
+  .home-menu { width: calc((100% - 36px) * .85); margin-top: calc(max(-204px, calc(170px - max(300px, 49svh))) + 96px); }
   .main-menu { gap: 21.25px; }
   .secondary-menu { gap: 11.9px; }
   .home-menu .game-button-size { height: 44.2px; }
@@ -254,6 +272,7 @@ body:has(.modal-overlay) .home-page { filter: blur(8px); }
 }
 @media (prefers-reduced-motion: reduce) {
   .btn-174, .btn-174 span { transition: none; }
+  .music-button, .music-button::before, .music-button::after { transition: none; }
 }
 
 .loading-screen { background-image: url("/__l5e/assets-v1/6a72dc83-9a74-4648-9b89-ed3d98d8dfbb/tile.jpg"); }
