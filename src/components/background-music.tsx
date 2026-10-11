@@ -8,25 +8,14 @@ export function BackgroundMusic() {
   const audioRef = useRef<HTMLAudioElement>(null);
   const dialogRef = useRef<HTMLDialogElement>(null);
   const [welcomeOpen, setWelcomeOpen] = useState(true);
-  const [pressed, setPressed] = useState(false);
-  const popupTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     const audio = audioRef.current;
-    return () => {
-      audio?.pause();
-      if (popupTimer.current !== null) clearTimeout(popupTimer.current);
-    };
+    return () => audio?.pause();
   }, []);
 
   function openMusic() {
-    if (popupTimer.current !== null) return;
-    setPressed(true);
-    popupTimer.current = setTimeout(() => {
-      popupTimer.current = null;
-      setPressed(false);
-      setWelcomeOpen(true);
-    }, 740); // Complete the supplied 700ms press animation, then wait 40ms.
+    setWelcomeOpen(true);
   }
 
   useEffect(() => {
@@ -58,7 +47,7 @@ export function BackgroundMusic() {
 
   return <>
     <audio ref={audioRef} src={music.url} loop preload="auto" aria-hidden="true" />
-    <Button variant="music" size="music" className={pressed ? "music-corner is-pressed" : "music-corner"} type="button" aria-haspopup="dialog" aria-expanded={welcomeOpen} onPointerDown={playClickSoundOnPointerDown} onClick={openMusic}><span>Music</span></Button>
+    <Button variant="music" size="music" className="music-corner" type="button" aria-haspopup="dialog" aria-expanded={welcomeOpen} onPointerDown={playClickSoundOnPointerDown} onClick={openMusic}><span>Music</span></Button>
     {welcomeOpen && <dialog ref={dialogRef} className="modal-card music-welcome" aria-label="Welcome to my portfolio" aria-describedby="music-welcome-message" onCancel={(event) => event.preventDefault()}>
       <p id="music-welcome-message">Welcome to my portfolio, a music will be played</p>
       <div className="music-welcome-actions">
