@@ -183,8 +183,11 @@ button, input, textarea, select { font-family: inherit; }
 .hero-fade { position: absolute; inset: 0; background: var(--hero-transition); }
 .hero-title { position: absolute; top: 13%; left: 50%; transform: translateX(-50%); width: min(84%, 1000px); margin: 0; }
 .hero-title img { width: 100%; height: auto; }
-.main-menu { position: relative; margin: -16px 24px 0; display: grid; gap: 27px; }
-.secondary-menu { position: relative; margin: 16px 24px 0; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.home-menu { position: relative; width: calc((100% - 48px) * .85); margin: max(-208px, calc(210px - clamp(320px, 58svh, 650px))) auto 0; }
+.main-menu { position: relative; display: grid; gap: 22.95px; }
+.secondary-menu { position: relative; margin-top: 13.6px; display: grid; grid-template-columns: 1fr 1fr; gap: 13.6px; }
+.home-menu .game-button-size { height: 45.9px; }
+.home-menu .btn-174 span { font-size: 15.3px; padding: 10.2px 17px; }
 .modal-overlay { position: fixed; inset: 0; z-index: 90; display: grid; place-items: center; padding: 24px; background: oklch(0 0 0 / 35%); }
 .home-page { transition: filter 0.2s ease; }
 body:has(.modal-overlay) .home-page { filter: blur(8px); }
@@ -231,8 +234,10 @@ body:has(.modal-overlay) .home-page { filter: blur(8px); }
 @media (max-width: 600px) {
   .hero-scene { height: 49svh; min-height: 300px; }
   .hero-title { top: 16%; width: 94%; }
-  .main-menu { margin: -12px 18px 0; gap: 25px; }
-  .secondary-menu { margin: 16px 18px 0; gap: 14px; }
+  .home-menu { width: calc((100% - 36px) * .85); margin-top: max(-204px, calc(170px - max(300px, 49svh))); }
+  .main-menu { gap: 21.25px; }
+  .secondary-menu { gap: 11.9px; }
+  .home-menu .game-button-size { height: 44.2px; }
   .game-button-size { height: 52px; }
   .detail-header { padding: 16px 12px; }
   .detail-logo { width: 135px; }

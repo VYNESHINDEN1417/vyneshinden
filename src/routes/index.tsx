@@ -45,6 +45,7 @@ function Index() {
         <div className="hero-fade" />
         <h1 className="hero-title"><img src={title.url} alt="VYNESHINDEN" width={1920} height={480} /></h1>
       </div>
+      <div className="home-menu">
       <nav className="main-menu" aria-label="Portfolio">
         <Button variant="game" size="game" className={pressed === "/about" ? "is-pressed" : undefined} asChild><Link to="/about" onPointerDown={playClickSoundOnPointerDown} onClick={(event) => enter(event, "/about")}><span>About me</span></Link></Button>
         <Button variant="game" size="game" className={pressed === "/works" ? "is-pressed" : undefined} asChild><Link to="/works" onPointerDown={playClickSoundOnPointerDown} onClick={(event) => enter(event, "/works")}><span>My works</span></Link></Button>
@@ -54,6 +55,7 @@ function Index() {
         <Button variant="game" size="game" type="button" onPointerDown={playClickSoundOnPointerDown}><span>Resume</span></Button>
         <Button variant="game" size="game" type="button" onPointerDown={playClickSoundOnPointerDown} onClick={() => setMessageOpen(true)}><span>Message me</span></Button>
       </nav>
+      </div>
       {messageOpen &&
         createPortal(
           <div className="modal-overlay" role="dialog" aria-modal="true" aria-label="Message me" onClick={() => setMessageOpen(false)}>
