@@ -15,6 +15,7 @@ import appCss from "../styles.css?url";
 import minecraftFont from "@/assets/Minecraft.ttf.asset.json";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { LoadingScreen } from "@/components/portfolio";
+import { BackgroundMusic } from "@/components/background-music";
 
 function NotFoundComponent() {
   return (
@@ -121,6 +122,7 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
+      <BackgroundMusic />
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       <Outlet />
       <LoadingScreen pathname={pathname} />
