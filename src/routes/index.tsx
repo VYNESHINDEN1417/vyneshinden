@@ -3,6 +3,7 @@ import { useEffect, useRef, useState, type MouseEvent } from "react";
 import { createPortal } from "react-dom";
 import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
+import { ThemeSwitch } from "@/components/theme-switch";
 import { portfolioHead, markButtonClick, playClickSoundOnPointerDown } from "@/components/portfolio";
 
 export const Route = createFileRoute("/")({
@@ -47,13 +48,14 @@ function Index() {
       <nav className="main-menu" aria-label="Portfolio">
         <Button variant="game" size="game" className={pressed === "/about" ? "is-pressed" : undefined} asChild><Link to="/about" onPointerDown={playClickSoundOnPointerDown} onClick={(event) => enter(event, "/about")}><span>About me</span></Link></Button>
         <Button variant="game" size="game" className={pressed === "/works" ? "is-pressed" : undefined} asChild><Link to="/works" onPointerDown={playClickSoundOnPointerDown} onClick={(event) => enter(event, "/works")}><span>My works</span></Link></Button>
-        <Button variant="game" size="game" className={pressed === "/social" ? "is-pressed" : undefined} asChild><Link to="/social" onPointerDown={playClickSoundOnPointerDown} onClick={(event) => enter(event, "/social")}><span>Social</span></Link></Button>
+        <Button variant="game" size="game" className={pressed === "/social" ? "is-pressed" : undefined} asChild><Link to="/social" onPointerDown={playClickSoundOnPointerDown} onClick={(event) => enter(event, "/social")}><span>Socials</span></Link></Button>
       </nav>
       <nav className="secondary-menu" aria-label="More">
         <Button variant="game" size="game" type="button" onPointerDown={playClickSoundOnPointerDown}><span>Resume</span></Button>
         <Button variant="game" size="game" type="button" onPointerDown={playClickSoundOnPointerDown} onClick={() => setMessageOpen(true)}><span>Message me</span></Button>
       </nav>
       </div>
+      <ThemeSwitch />
       {messageOpen &&
         createPortal(
           <div className="modal-overlay" role="dialog" aria-modal="true" aria-label="Message me" onClick={() => setMessageOpen(false)}>
