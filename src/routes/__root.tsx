@@ -91,7 +91,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         rel: "stylesheet",
         href: appCss,
       },
-      { rel: "icon", href: "/favicon.png", type: "image/png" },
+      { rel: "icon", href: "/favicon.png?v=20261012", type: "image/png" },
       { rel: "preload", href: "/media/Minecraftia-Regular.ttf", as: "font", type: "font/ttf", crossOrigin: "anonymous" },
     ],
   }),
