@@ -199,7 +199,7 @@ button, input, textarea, select { font-family: inherit; }
 .home-menu .game-button-size { height: 45.9px; }
 .home-menu .btn-174 span { font-size: 15.3px; padding: 10.2px 17px; }
 .modal-overlay { position: fixed; inset: 0; z-index: 90; display: grid; place-items: center; padding: 24px; background: oklch(0 0 0 / 35%); }
-.home-page { transition: filter 0.2s ease; }
+.home-page { transition: none; }
 body:has(.modal-overlay) .home-page { filter: blur(8px); }
 .modal-card { width: min(420px, 100%); padding: 28px 24px 24px; border-radius: 10px; background-color: var(--button-face); box-shadow: 0 -1px var(--button-highlight), 0 1px 1px var(--button-highlight), var(--button-shadow); color: var(--button-ink); text-align: center; }
 .modal-card h2 { margin: 0 0 10px; font-size: 22px; text-transform: uppercase; }
@@ -316,7 +316,7 @@ body:has(.modal-overlay) .home-page { filter: blur(8px); }
 .image-preview .image-zoom-content { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; }
 .image-zoom-content img { display: block; max-width: 100%; max-height: 100%; object-fit: contain; user-select: none; }
 .theme-switch {
-  --toggle-size: 22px;
+  --toggle-size: 16.5px;
   --container-width: 5.625em;
   --container-height: 2.5em;
   --container-radius: 6.25em;
@@ -355,7 +355,7 @@ body:has(.modal-overlay) .home-page { filter: blur(8px); }
   .about-intro p { font-size: 12px; }
   .about-paragraphs p { font-size: 13px; }
   .image-preview { inset: 12px; }
-  .theme-switch { --toggle-size: 20px; }
+  .theme-switch { --toggle-size: 15px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .theme-switch * { transition: none; }
