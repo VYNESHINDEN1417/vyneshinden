@@ -4,6 +4,7 @@ import { createPortal } from "react-dom";
 import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { ThemeSwitch } from "@/components/theme-switch";
+import { ViewModeSwitch } from "@/components/view-mode-switch";
 import { portfolioHead, markButtonClick, playClickSoundOnPointerDown } from "@/components/portfolio";
 
 export const Route = createFileRoute("/")({
@@ -51,7 +52,7 @@ function Index() {
         <Button variant="game" size="game" className={pressed === "/social" ? "is-pressed" : undefined} asChild><Link to="/social" onPointerDown={playClickSoundOnPointerDown} onClick={(event) => enter(event, "/social")}><span>Socials</span></Link></Button>
       </nav>
       <nav className="secondary-menu" aria-label="More">
-        <Button variant="game" size="game" type="button" onPointerDown={playClickSoundOnPointerDown}><span>Resume</span></Button>
+        <ViewModeSwitch />
         <Button variant="game" size="game" type="button" onPointerDown={playClickSoundOnPointerDown} onClick={() => setMessageOpen(true)}><span>Message me</span></Button>
       </nav>
       </div>

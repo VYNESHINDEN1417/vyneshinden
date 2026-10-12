@@ -15,6 +15,7 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { LoadingScreen } from "@/components/portfolio";
 import { BackgroundMusic } from "@/components/background-music";
+import { VIEW_MODE_BOOT_SCRIPT } from "@/lib/view-mode";
 
 function NotFoundComponent() {
   return (
@@ -103,8 +104,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function RootShell({ children }: { children: ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
+        <script dangerouslySetInnerHTML={{ __html: VIEW_MODE_BOOT_SCRIPT }} />
         <HeadContent />
       </head>
       <body>
