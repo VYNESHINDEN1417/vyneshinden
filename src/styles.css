@@ -257,21 +257,19 @@ body:has(.modal-overlay) .home-page { filter: blur(8px); }
 .placeholder-copy h2 { font-size: 24px; margin: 10px 0 12px; }
 .placeholder-copy p { color: var(--muted-foreground); line-height: 1.7; font-size: 15px; }
 .social-menu { display: grid; gap: 27px; max-width: 600px; }
-@media (max-width: 600px) {
-  .hero-scene { height: 49svh; min-height: 300px; }
-  .hero-title { top: 16%; width: 94%; }
-  .home-menu { width: calc((100% - 36px) * .85); margin-top: calc(max(-204px, calc(170px - max(300px, 49svh))) + 96px); }
-  .main-menu { gap: 21.25px; }
-  .secondary-menu { gap: 11.9px; }
-  .home-menu .game-button-size { height: 44.2px; }
-  .game-button-size { height: 52px; }
-  .detail-header { padding: 16px 12px; }
-  .detail-logo { width: 135px; }
-  .header-spacer { width: 55px; }
-  .detail-content { padding: 35px 20px 48px; }
-  .detail-content h1 { font-size: 32px; }
-  .detail-page { background-size: 170px 170px; }
-}
+html[data-view="mobile"] .hero-scene { height: 49svh; min-height: 300px; }
+html[data-view="mobile"] .hero-title { top: 16%; width: 94%; }
+html[data-view="mobile"] .home-menu { width: calc((100% - 36px) * .85); margin-top: calc(max(-204px, calc(170px - max(300px, 49svh))) + 96px); }
+html[data-view="mobile"] .main-menu { gap: 21.25px; }
+html[data-view="mobile"] .secondary-menu { gap: 11.9px; }
+html[data-view="mobile"] .home-menu .game-button-size { height: 44.2px; }
+html[data-view="mobile"] .game-button-size { height: 52px; }
+html[data-view="mobile"] .detail-header { padding: 16px 12px; }
+html[data-view="mobile"] .detail-logo { width: 135px; }
+html[data-view="mobile"] .header-spacer { width: 55px; }
+html[data-view="mobile"] .detail-content { padding: 35px 20px 48px; }
+html[data-view="mobile"] .detail-content h1 { font-size: 32px; }
+html[data-view="mobile"] .detail-page { background-size: 170px 170px; }
 @media (prefers-reduced-motion: reduce) {
   .btn-174, .btn-174 span { transition: none; }
   .music-button, .music-button::before, .music-button::after { transition: none; }
@@ -348,15 +346,22 @@ body:has(.modal-overlay) .home-page { filter: blur(8px); }
 .theme-switch[aria-checked="true"] .theme-switch__moon { transform: translateX(0); }
 .theme-switch[aria-checked="true"] .theme-switch__clouds { bottom: -4.062em; }
 .theme-switch[aria-checked="true"] .theme-switch__stars-container { top: 50%; transform: translateY(-50%); }
-@media (max-width: 600px) {
-  .about-intro { grid-template-columns: minmax(0, 1fr) 120px; gap: 20px; align-items: start; }
-  .about-portrait { width: 120px; }
-  .about-intro h2 { font-size: 18px; overflow-wrap: anywhere; }
-  .about-intro p { font-size: 12px; }
-  .about-paragraphs p { font-size: 13px; }
-  .image-preview { inset: 12px; }
-  .theme-switch { --toggle-size: 15px; }
-}
+html[data-view="mobile"] .about-intro { grid-template-columns: minmax(0, 1fr) 120px; gap: 20px; align-items: start; }
+html[data-view="mobile"] .about-portrait { width: 120px; }
+html[data-view="mobile"] .about-intro h2 { font-size: 18px; overflow-wrap: anywhere; }
+html[data-view="mobile"] .about-intro p { font-size: 12px; }
+html[data-view="mobile"] .about-paragraphs p { font-size: 13px; }
+html[data-view="mobile"] .image-preview { inset: 12px; }
+html[data-view="mobile"] .theme-switch { --toggle-size: 15px; }
 @media (prefers-reduced-motion: reduce) {
   .theme-switch * { transition: none; }
 }
+
+/* View mode: forced/automatic layouts set html[data-view] (see lib/view-mode). */
+html[data-view="mobile"][data-view-mode="mobile"] .home-page, html[data-view="mobile"][data-view-mode="mobile"] .detail-page { max-width: 480px; margin-inline: auto; box-shadow: 0 0 0 100vmax var(--loading-cover); clip-path: inset(0 -100vmax); }
+html[data-view="desktop"][data-view-mode="desktop"] body { min-width: 900px; }
+.view-mode-label { gap: 8px; }
+.view-mode-label svg { width: 18px; height: 18px; flex-shrink: 0; }
+.view-mode-options { display: grid; gap: 18px; margin: 18px 0 16px; }
+.view-mode-option.is-active span { color: var(--loading-green); text-shadow: 0 1px var(--button-ink); }
+.modal-card .view-mode-hint { margin: 0; font-size: 12px; }
