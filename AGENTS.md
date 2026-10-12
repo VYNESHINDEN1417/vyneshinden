@@ -16,3 +16,5 @@
 - Mount background audio once in the persistent root and retry browser-blocked playback on interaction so internal navigation never resets music.
 - Keep site media as original files in public/media and reference same-origin URLs so exported repositories work without Lovable's asset proxy on external hosting.
 - Show the music reopen control only on the home route without unmounting the persistent audio player so detail navigation preserves playback.
+- Use react-zoom-pan-pinch inside an accessible image dialog for artwork previews so touch pinch, wheel zoom, and dragging share maintained interaction logic.
+- Mount the visual theme switch in the home route only and keep its state local so it cannot alter the site theme or appear on detail pages.

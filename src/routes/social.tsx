@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { playClickSoundOnPointerDown, portfolioHead } from "@/components/portfolio";
 
 export const Route = createFileRoute("/social")({
-  head: () => portfolioHead("Social — VYNESHINDEN", "Find VYNESHINDEN's social spaces and stay connected."),
+  head: () => portfolioHead("Socials — VYNESHINDEN", "Find VYNESHINDEN's social spaces and stay connected."),
   component: SocialPage,
 });
 
@@ -25,7 +25,7 @@ function SocialPage() {
       </header>
       <div className="detail-content">
         <p className="section-label">VYNESHINDEN / PORTFOLIO</p>
-        <h1>Social</h1>
+        <h1>Socials</h1>
         <nav className="social-menu" aria-label="Social links">
           {SOCIAL_LINKS.map((link) => (
             <Button key={link.href} variant="game" size="game" asChild>

@@ -1,4 +1,8 @@
 # Portfolio roadmap
+- [x] Update About me with original portrait, side-by-side copy, divider, and two 60-word paragraphs.
+- [x] Update My works with original Ship1 image, zoom-and-drag preview, and green download link.
+- [x] Rename Social to Socials and add a home-only animated, sound-enabled visual theme switch.
+- [x] Verify new images, interactions, and page layouts.
 - [x] Replace the font and remove the old project font.
 - [x] Show the Music button only on the home page while keeping playback continuous.
 - [x] Include original media in the repository for portable hosting and verify media and navigation.
