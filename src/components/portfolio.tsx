@@ -137,8 +137,9 @@ export function PortfolioPage({ section }: { section: "About me" | "My works" | 
           </div>
         </> : <>
           <ShipImage />
-          <div className="placeholder-copy"><span className="section-label">COMING SOON</span><h2>Placeholder title</h2><p>Placeholder description. A space for my projects, creations, and favorite builds.</p></div>
+          <p className="work-description">USS Wisconsin (BB-64) is an Iowa-class battleship built for the United States Navy (USN) in the 1940s, i built this ship on January 2022. A Big Minecraft military channel on YouTube made a tutorial for this built, he's name is <span className="work-creator">CraftyFoxe/MC Military Force</span>, here is the <a className="work-video-link" href="https://youtu.be/jkjA2PICDks" target="_blank" rel="noopener noreferrer" onPointerDown={playClickSoundOnPointerDown}>VIDEO LINK</a></p>
         </>}
+
       </div>
     </main>
   );
