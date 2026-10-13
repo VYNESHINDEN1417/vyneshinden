@@ -382,3 +382,72 @@ html[data-view="desktop"][data-view-mode="desktop"] body { min-width: 900px; }
 .view-mode-options { display: grid; gap: 18px; margin: 18px 0 16px; }
 .view-mode-option.is-active span { color: var(--loading-green); text-shadow: 0 1px var(--button-ink); }
 .modal-card .view-mode-hint { margin: 0; font-size: 12px; }
+
+/* Shared textured button and home theme roles. */
+:root {
+  --home-surface: oklch(0 0 0);
+  --home-ink: oklch(1 0 0);
+  --button-outline: oklch(0 0 0);
+  --button-inner-light: oklch(0.78 0 0);
+  --button-inner-dark: oklch(0.24 0 0);
+  --button-texture-overlay: oklch(0 0 0 / 45%);
+  --button-texture: linear-gradient(var(--button-texture-overlay), var(--button-texture-overlay)), url("/media/button-texture.png");
+  --button-ink: oklch(1 0 0);
+  --button-hover-ink: var(--button-ink);
+  --button-text-shadow: oklch(0 0 0 / 65%);
+  --button-face: oklch(0.28 0 0);
+  --splash-ink: oklch(0.93 0.2 105);
+  --splash-shadow: oklch(0 0 0);
+  --button-inset: inset 2px 2px var(--button-inner-light), inset 0 -4px var(--button-inner-dark);
+}
+html[data-theme="light"] {
+  --background: oklch(0.97 0 0);
+  --home-surface: oklch(0.97 0 0);
+  --home-ink: oklch(0 0 0);
+  --button-texture-overlay: oklch(0 0 0 / 0%);
+  --button-ink: oklch(0 0 0);
+  --button-face: oklch(0.88 0 0);
+  --button-text-shadow: oklch(1 0 0 / 35%);
+}
+body { touch-action: pan-x pan-y; }
+.home-page { background-color: var(--home-surface); color: var(--home-ink); }
+.portfolio-footer { color: var(--home-ink); }
+.detail-page { color: var(--foreground); }
+.detail-header .portfolio-button, .image-preview-toolbar .portfolio-button { color: var(--button-ink); }
+.portfolio-button:not(.theme-switch):not(.work-image-button):not(.image-download):not(.btn-174),
+.btn-174 > span {
+  border: 1px solid var(--button-outline);
+  border-radius: 0;
+  background-color: var(--button-face);
+  background-image: var(--button-texture);
+  background-repeat: repeat;
+  background-size: auto, 160px 160px;
+  box-shadow: var(--button-inset);
+  color: var(--button-ink);
+  text-shadow: 0 1px var(--button-text-shadow);
+}
+.btn-174 { border-radius: 0; }
+.btn-174 > span > span { background: none; border: 0; box-shadow: none; padding: 0; }
+.btn-174:hover > span { color: var(--button-ink); text-shadow: 0 1px var(--button-text-shadow); }
+.music-button::before, .music-button::after { display: none; }
+.work-image-button { border: 1px solid var(--button-outline); border-radius: 0; }
+.image-download { border-radius: 0; }
+.theme-switch { border-radius: 0; }
+.theme-switch__container { border-radius: 0; border: 1px solid var(--button-outline); }
+.image-preview-toolbar { color: var(--home-ink); }
+.title-splash {
+  position: absolute;
+  right: 4%;
+  bottom: 22%;
+  width: 34%;
+  text-align: center;
+  color: var(--splash-ink);
+  text-shadow: 1px 1px var(--splash-shadow);
+  transform: rotate(210deg);
+  pointer-events: none;
+  font-weight: 400;
+  line-height: 1;
+}
+.title-splash > span { display: inline-block; white-space: nowrap; animation: title-splash-pulse 1s ease-in-out infinite; }
+@keyframes title-splash-pulse { 0%, 100% { transform: scale(.92); } 50% { transform: scale(1.08); } }
+@media (prefers-reduced-motion: reduce) { .title-splash > span { animation: none; } }
