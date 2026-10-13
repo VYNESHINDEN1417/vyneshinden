@@ -9,11 +9,15 @@ export function ShipImage() {
   const [open, setOpen] = useState(false);
   return (
     <figure className="work-figure">
+      <h2 className="work-title">1. USS WISCONSIN 1.5:1</h2>
       <Button variant="ghost" className="work-image-button" aria-label="Preview USS Wisconsin image" onPointerDown={playClickSoundOnPointerDown} onClick={() => setOpen(true)}>
         <img src="/media/Ship1.jpg" alt="USS Wisconsin block-built battleship, with overhead, side, bow, and stern views" />
       </Button>
-      <figcaption>Click the image to pinch zoom</figcaption>
-      <Button variant="link" className="image-download" asChild><a href="/media/Ship1.jpg" download="Ship1.jpg" onPointerDown={playClickSoundOnPointerDown}>Download image</a></Button>
+      <div className="work-caption-row">
+        <figcaption>Click the image to pinch zoom</figcaption>
+        <Button variant="link" className="image-download" asChild><a href="/media/Ship1.jpg" download="Ship1.jpg" onPointerDown={playClickSoundOnPointerDown}>Download image</a></Button>
+      </div>
+
       <Dialog.Root open={open} onOpenChange={setOpen}>
         <Dialog.Portal>
           <Dialog.Overlay className="image-preview-overlay" />
