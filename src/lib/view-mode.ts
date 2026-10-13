@@ -17,8 +17,9 @@ export function readViewMode(): ViewMode {
 
 export function applyViewMode(mode: ViewMode) {
   const root = document.documentElement;
-  root.dataset.viewMode = mode;
-  root.dataset.view = mode === "auto" ? (window.innerWidth < VIEW_BREAKPOINT ? "mobile" : "desktop") : mode;
+  root.dataset["viewMode"] = mode;
+  root.dataset["view"] = mode === "auto" ? (window.innerWidth < VIEW_BREAKPOINT ? "mobile" : "desktop") : mode;
+
   try {
     localStorage.setItem(VIEW_MODE_KEY, mode);
   } catch {
