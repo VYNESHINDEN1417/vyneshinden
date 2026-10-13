@@ -17,6 +17,4 @@
 - Keep site media as original files in public/media and reference same-origin URLs so exported repositories work without Lovable's asset proxy on external hosting.
 - Show the music reopen control only on the home route without unmounting the persistent audio player so detail navigation preserves playback.
 - Use react-zoom-pan-pinch inside an accessible image dialog for artwork previews so touch pinch, wheel zoom, and dragging share maintained interaction logic.
-- Mount the theme switch only on home and apply the saved theme through root-level tokens so navigation preserves colors without adding controls to detail pages.
-- Keep page gesture restrictions in a persistent root controller and exempt the artwork zoom surface so image manipulation remains independent of page zoom.
-- Select title splashes after hydration from bundled JSON and size them to the title bounds so SSR and long phrases remain safe.
+- Mount the visual theme switch in the home route only and keep its state local so it cannot alter the site theme or appear on detail pages.

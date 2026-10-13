@@ -16,8 +16,6 @@ import { reportLovableError } from "../lib/lovable-error-reporting";
 import { LoadingScreen } from "@/components/portfolio";
 import { BackgroundMusic } from "@/components/background-music";
 import { VIEW_MODE_BOOT_SCRIPT } from "@/lib/view-mode";
-import { THEME_BOOT_SCRIPT } from "@/lib/theme";
-import { PageZoomGuard } from "@/components/page-zoom-guard";
 
 function NotFoundComponent() {
   return (
@@ -83,7 +81,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   head: () => ({
     meta: [
       { charSet: "utf-8" },
-      { name: "viewport", content: "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" },
+      { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: "VYNESHINDEN — Portfolio" },
       { name: "description", content: "The world of VYNESHINDEN." },
       { property: "og:type", content: "website" },
@@ -109,7 +107,6 @@ function RootShell({ children }: { children: ReactNode }) {
     <html lang="en" suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: VIEW_MODE_BOOT_SCRIPT }} />
-        <script dangerouslySetInnerHTML={{ __html: THEME_BOOT_SCRIPT }} />
         <HeadContent />
       </head>
       <body>
@@ -127,7 +124,6 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <BackgroundMusic />
-      <PageZoomGuard />
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       <Outlet />
       <LoadingScreen pathname={pathname} />
