@@ -363,6 +363,11 @@ html[data-view="mobile"] .about-portrait { width: 120px; }
 html[data-view="mobile"] .about-intro h2 { font-size: 18px; overflow-wrap: anywhere; }
 html[data-view="mobile"] .about-intro p { font-size: 12px; }
 html[data-view="mobile"] .about-paragraphs p { font-size: 13px; }
+html[data-view="mobile"] .work-title { font-size: 18px; }
+html[data-view="mobile"] .work-caption-row { flex-wrap: nowrap; gap: 10px; }
+html[data-view="mobile"] .image-download { font-size: 12px; }
+html[data-view="mobile"] .work-description { font-size: 13px; }
+
 html[data-view="mobile"] .image-preview { inset: 12px; }
 html[data-view="mobile"] .theme-switch { --toggle-size: 15px; }
 @media (prefers-reduced-motion: reduce) {
