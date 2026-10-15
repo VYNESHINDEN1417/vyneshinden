@@ -382,3 +382,17 @@ html[data-view="desktop"][data-view-mode="desktop"] body { min-width: 900px; }
 .view-mode-options { display: grid; gap: 18px; margin: 18px 0 16px; }
 .view-mode-option.is-active span { color: var(--loading-green); text-shadow: 0 1px var(--button-ink); }
 .modal-card .view-mode-hint { margin: 0; font-size: 12px; }
+
+.projects-menu { display: grid; gap: 24px; max-width: 600px; max-height: min(390px, 52svh); overflow-y: auto; overscroll-behavior-y: contain; padding: 4px 16px 20px 4px; scrollbar-color: var(--loading-border) var(--loading-track); }
+.projects-menu .game-button-size { flex-shrink: 0; }
+.gallery-main-image { aspect-ratio: 1403 / 720; background: var(--loading-cover); }
+.gallery-main-image img { width: 100%; height: 100%; object-fit: contain; }
+.gallery-selection { display: flex; align-items: center; gap: 12px; margin-top: 16px; max-width: 600px; }
+.gallery-thumbnails { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; flex: 1; min-width: 0; }
+.gallery-thumbnail { padding: 0; width: 100%; height: auto; aspect-ratio: 1; border: 2px solid var(--loading-border); border-radius: 0; overflow: hidden; }
+.gallery-thumbnail img { width: 100%; height: 100%; object-fit: cover; }
+.gallery-thumbnail[aria-pressed="true"] { border-color: var(--download-ink); outline: 2px solid var(--download-ink); outline-offset: 2px; }
+.gallery-arrow { flex-shrink: 0; width: 40px; height: 44px; }
+.gallery-arrow span { padding: 0; }
+html[data-view="mobile"] .gallery-selection, html[data-view="mobile"] .gallery-thumbnails { gap: 8px; }
+html[data-view="mobile"] .gallery-arrow { width: 32px; }

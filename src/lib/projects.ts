@@ -8,7 +8,7 @@ export const PROJECTS: PortfolioProject[] = Array.from({ length: 10 }, (_, index
     images: [{ src: "/media/Ship1.jpg", alt: "USS Wisconsin block-built battleship, with overhead, side, bow, and stern views" }],
   };
   if (number === 2) return {
-    id: "2", title: "2. ATAGO",
+    id: "2", title: "2. IJN ATAGO",
     images: Array.from({ length: 7 }, (_, image) => ({
       src: `/media/ATAGO${image + 1}.jpg`, alt: `ATAGO Minecraft ship — view ${image + 1}`,
     })),
