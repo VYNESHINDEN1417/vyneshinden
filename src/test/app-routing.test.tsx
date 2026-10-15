@@ -14,4 +14,11 @@ describe("App routing", () => {
 
     expect(matches.at(-1)?.routeId).not.toBe(rootRouteId);
   });
+  it("matches the works menu and project detail pages separately", () => {
+    const router = createRouter({ routeTree, context: { queryClient: new QueryClient() } });
+    expect(router.matchRoutes("/works").at(-1)?.routeId).toBe("/works/");
+    for (let project = 1; project <= 10; project++) {
+      expect(router.matchRoutes(`/works/${project}`).at(-1)?.routeId).toBe("/works/$projectId");
+    }
+  });
 });

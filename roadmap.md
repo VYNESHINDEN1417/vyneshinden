@@ -1,4 +1,7 @@
 # Portfolio roadmap
+- [x] Add a compact, vertically scrollable ten-project menu in My works.
+- [x] Move Wisconsin to Project 1 and add the seven-image ATAGO gallery in Project 2.
+- [x] Verify thumbnail selection, pagination, preview, downloads, and mobile navigation.
 - [x] Verify home footer description and the new My works project layout.
 - [x] Replace the home footer wordmark with the portfolio description sentence.
 - [x] Add the USS WISCONSIN 1.5:1 project title, move Download image below the image on the right, and replace the placeholder copy with the project write-up plus creator and video links.

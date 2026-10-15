@@ -2,7 +2,8 @@ import { useCallback, useEffect, useRef, useState, type MouseEvent, type Pointer
 import { Link } from "@tanstack/react-router";
 import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { ShipImage } from "@/components/image-preview";
+import { ProjectGallery } from "@/components/image-preview";
+import { PROJECTS, type PortfolioProject } from "@/lib/projects";
 import clickSound from "@/assets/button-trim.wav";
 
 // Run the sequence in the persistent root, independently of route mounting.
@@ -114,11 +115,11 @@ export function LoadingScreen({ pathname }: { pathname: string }) {
   );
 }
 
-export function PortfolioPage({ section }: { section: "About me" | "My works" | "Social" }) {
+export function PortfolioPage({ section, project }: { section: "About me" | "My works" | "Social"; project?: PortfolioProject }) {
   return (
     <main className="detail-page">
       <header className="detail-header">
-        <Button variant="ghost" asChild><Link to="/" onPointerDown={playClickSoundOnPointerDown}><ArrowLeft /> Back</Link></Button>
+        <Button variant="ghost" asChild><Link to={project ? "/works" : "/"} onPointerDown={playClickSoundOnPointerDown}><ArrowLeft /> Back</Link></Button>
         <Link to="/" onPointerDown={playClickSoundOnPointerDown} aria-label="VYNESHINDEN home"><img className="detail-logo" src="/media/title.png" alt="VYNESHINDEN" /></Link>
         <span className="header-spacer" aria-hidden="true" />
       </header>
@@ -135,9 +136,14 @@ export function PortfolioPage({ section }: { section: "About me" | "My works" | 
             <p>This is placeholder text for a future introduction about my creative journey. Here, I will share the experiences, interests, and inspirations that shape the things I make. From early ideas to finished projects, this space will offer a closer look at my perspective, the lessons I am learning, and the possibilities I hope to explore through my work over time.</p>
             <p>This is placeholder text for more details about my interests and future goals. Here, I will describe the projects I enjoy, the skills I want to develop, and the people who inspire me. This section will grow alongside my portfolio, bringing together personal reflections, creative experiments, and meaningful milestones that help tell the story behind each new thing I create.</p>
           </div>
+        </> : project ? <>
+          {project.images.length > 0 ? <ProjectGallery key={project.id} project={project} /> : <><h2 className="work-title">{project.title}</h2><p className="work-description">No project added yet.</p></>}
+          {project.id === "1" && <p className="work-description">USS Wisconsin (BB-64) is an Iowa-class battleship built for the United States Navy (USN) in the 1940s, i built this ship on January 2022. A Big Minecraft military channel on YouTube made a tutorial for this built, he's name is <span className="work-creator">CraftyFoxe/MC Military Force</span>, here is the <a className="work-video-link" href="https://youtu.be/jkjA2PICDks" target="_blank" rel="noopener noreferrer" onPointerDown={playClickSoundOnPointerDown}>VIDEO LINK</a></p>}
+          {project.id === "2" && <p className="work-description">IJN ATAGO — Minecraft ship gallery.</p>}
         </> : <>
-          <ShipImage />
-          <p className="work-description">USS Wisconsin (BB-64) is an Iowa-class battleship built for the United States Navy (USN) in the 1940s, i built this ship on January 2022. A Big Minecraft military channel on YouTube made a tutorial for this built, he's name is <span className="work-creator">CraftyFoxe/MC Military Force</span>, here is the <a className="work-video-link" href="https://youtu.be/jkjA2PICDks" target="_blank" rel="noopener noreferrer" onPointerDown={playClickSoundOnPointerDown}>VIDEO LINK</a></p>
+          <nav className="projects-menu" aria-label="Projects" tabIndex={0}>
+            {PROJECTS.map((item) => <Button key={item.id} variant="game" size="game" asChild><Link to="/works/$projectId" params={{ projectId: item.id }} onPointerDown={playClickSoundOnPointerDown}><span>Project {item.id}</span></Link></Button>)}
+          </nav>
         </>}
 
       </div>

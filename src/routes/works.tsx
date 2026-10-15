@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { PortfolioPage, portfolioHead } from "@/components/portfolio";
+import { createFileRoute, Outlet } from "@tanstack/react-router";
+import { portfolioHead } from "@/components/portfolio";
 export const Route = createFileRoute("/works")({ head: () => portfolioHead("My works — VYNESHINDEN", "USS Wisconsin 1.5:1 and other Minecraft builds by VYNESHINDEN."), component: WorksPage });
-function WorksPage() { return <PortfolioPage section="My works" />; }
+function WorksPage() { return <Outlet />; }
