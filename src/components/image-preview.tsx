@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import * as Dialog from "@radix-ui/react-dialog";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
-import { ArrowLeft, ArrowRight, Minus, Plus, RotateCcw, X } from "lucide-react";
+import { Minus, Plus, RotateCcw, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { playClickSoundOnPointerDown } from "@/components/portfolio";
 import { PROJECTS, type PortfolioProject } from "@/lib/projects";
@@ -14,26 +14,50 @@ export function ShipImage() {
 export function ProjectGallery({ project }: { project: PortfolioProject }) {
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState(0);
-  const [start, setStart] = useState(0);
+  const stripRef = useRef<HTMLDivElement>(null);
+  const [fadeStart, setFadeStart] = useState(false);
+  const [fadeEnd, setFadeEnd] = useState(false);
   const image = project.images[selected];
+
+  useEffect(() => {
+    const strip = stripRef.current;
+    if (!strip) return;
+    const updateFades = () => {
+      const maxScroll = strip.scrollWidth - strip.clientWidth;
+      setFadeStart(strip.scrollLeft > 1);
+      setFadeEnd(strip.scrollLeft < maxScroll - 1);
+    };
+    updateFades();
+    strip.addEventListener("scroll", updateFades, { passive: true });
+    const observer = new ResizeObserver(updateFades);
+    observer.observe(strip);
+    return () => {
+      strip.removeEventListener("scroll", updateFades);
+      observer.disconnect();
+    };
+  }, [project.images.length]);
+
   if (!image) return null;
-  const maxStart = Math.max(0, project.images.length - 4);
   const filename = image.src.split("/").at(-1);
   return (
     <figure className="work-figure">
-      <h2 className="work-title">{project.title}</h2>
       <Button variant="ghost" className={`work-image-button${project.images.length > 1 ? " gallery-main-image" : ""}`} aria-label={`Preview ${image.alt}`} onPointerDown={playClickSoundOnPointerDown} onClick={() => setOpen(true)}>
         <img src={image.src} alt={image.alt} />
       </Button>
-      {project.images.length > 1 && <div className="gallery-selection" role="group" aria-label="Gallery images">
-        {start > 0 && <Button variant="game" size="icon" className="gallery-arrow" aria-label="Previous thumbnails" title="Previous thumbnails" onPointerDown={playClickSoundOnPointerDown} onClick={() => setStart(Math.max(0, start - 4))}><span><ArrowLeft /></span></Button>}
-        <div className="gallery-thumbnails">
-          {project.images.slice(start, start + 4).map((thumbnail, offset) => <Button key={thumbnail.src} variant="ghost" className="gallery-thumbnail" aria-label={`Select image ${start + offset + 1}`} aria-pressed={selected === start + offset} onPointerDown={playClickSoundOnPointerDown} onClick={() => setSelected(start + offset)}>
-            <img src={thumbnail.src} alt={thumbnail.alt} loading="lazy" />
-          </Button>)}
+      {project.images.length > 1 && (
+        <div className="gallery-strip-wrap">
+          <div className={`gallery-fade gallery-fade-start${fadeStart ? " is-visible" : ""}`} aria-hidden="true" />
+          <div className="gallery-strip" role="group" aria-label="Gallery images" ref={stripRef}>
+            {project.images.map((thumbnail, index) => (
+              <Button key={thumbnail.src} variant="ghost" className="gallery-thumbnail" aria-label={`Select image ${index + 1}`} aria-pressed={selected === index} onPointerDown={playClickSoundOnPointerDown} onClick={() => setSelected(index)}>
+                <img src={thumbnail.src} alt={thumbnail.alt} loading="lazy" />
+              </Button>
+            ))}
+          </div>
+          <div className={`gallery-fade gallery-fade-end${fadeEnd ? " is-visible" : ""}`} aria-hidden="true" />
         </div>
-        <Button variant="game" size="icon" className="gallery-arrow" aria-label="Next thumbnails" title="Next thumbnails" disabled={start >= maxStart} onPointerDown={playClickSoundOnPointerDown} onClick={() => setStart(Math.min(maxStart, start + 4))}><span><ArrowRight /></span></Button>
-      </div>}
+      )}
+      <h2 className="work-title">{project.title}</h2>
       <div className="work-caption-row">
         <figcaption>Click the image to pinch zoom</figcaption>
         <Button variant="link" className="image-download" asChild><a href={image.src} download={filename} onPointerDown={playClickSoundOnPointerDown}>Download image</a></Button>
