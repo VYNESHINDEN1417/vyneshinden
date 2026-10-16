@@ -396,3 +396,14 @@ html[data-view="desktop"][data-view-mode="desktop"] body { min-width: 900px; }
 .gallery-arrow span { padding: 0; }
 html[data-view="mobile"] .gallery-selection, html[data-view="mobile"] .gallery-thumbnails { gap: 8px; }
 html[data-view="mobile"] .gallery-arrow { width: 32px; }
+
+.projects-menu .project-button { height: 76px; }
+.project-button > span { justify-content: flex-start; gap: 14px; padding: 8px 16px 8px 8px; text-align: left; }
+.project-button .project-thumb { width: 64px; height: 44px; object-fit: cover; flex-shrink: 0; padding: 0; border: 1px solid var(--button-ink); background: var(--loading-cover); border-radius: 0; box-shadow: none; }
+.project-button .project-name { flex: 1; min-width: 0; padding: 0; font-size: 12px; white-space: normal; overflow-wrap: anywhere; display: block; width: auto; height: auto; background: none; box-shadow: none; }
+.project-button .project-date { flex-shrink: 0; padding: 0; width: auto; height: auto; font-size: 10px; background: none; box-shadow: none; }
+.project-button:active .project-name, .project-button:active .project-date, .project-button:active .project-thumb { transform: none; }
+html[data-view="mobile"] .project-button > span { gap: 8px; }
+html[data-view="mobile"] .project-button .project-thumb { width: 44px; height: 36px; }
+html[data-view="mobile"] .project-button .project-name { font-size: 10px; }
+html[data-view="mobile"] .project-button .project-date { font-size: 8px; }
