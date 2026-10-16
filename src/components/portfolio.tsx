@@ -128,7 +128,7 @@ export function PortfolioPage({ section, project }: { section: "About me" | "My 
         <h1>{section}</h1>
         {section === "About me" ? <>
           <section className="about-intro">
-            <div className="placeholder-copy"><span className="section-label">COMING SOON</span><h2>Placeholder title</h2><p>Placeholder description. A little about me, my story, and what I love creating.</p></div>
+            <div className="placeholder-copy"><span className="section-label">COMING SOON</span><h2>Hi, Im Timothy Lomibao</h2><p>Placeholder description. A little about me, my story, and what I love creating.</p></div>
             <img className="about-portrait" src="/media/portrait.jpg" alt="Timothy Joseph Lomibao" width={768} height={768} />
           </section>
           <hr className="about-divider" />
@@ -138,11 +138,15 @@ export function PortfolioPage({ section, project }: { section: "About me" | "My 
           </div>
         </> : project ? <>
           {project.images.length > 0 ? <ProjectGallery key={project.id} project={project} /> : <><h2 className="work-title">{project.title}</h2><p className="work-description">No project added yet.</p></>}
-          {project.id === "1" && <p className="work-description">USS Wisconsin (BB-64) is an Iowa-class battleship built for the United States Navy (USN) in the 1940s, i built this ship on January 2022. A Big Minecraft military channel on YouTube made a tutorial for this built, he's name is <span className="work-creator">CraftyFoxe/MC Military Force</span>, here is the <a className="work-video-link" href="https://youtu.be/jkjA2PICDks" target="_blank" rel="noopener noreferrer" onPointerDown={playClickSoundOnPointerDown}>VIDEO LINK</a></p>}
+          {project.id === "8" && <p className="work-description">USS Wisconsin (BB-64) is an Iowa-class battleship built for the United States Navy (USN) in the 1940s, i built this ship on January 2022. A Big Minecraft military channel on YouTube made a tutorial for this built, he's name is <span className="work-creator">CraftyFoxe/MC Military Force</span>, here is the <a className="work-video-link" href="https://youtu.be/jkjA2PICDks" target="_blank" rel="noopener noreferrer" onPointerDown={playClickSoundOnPointerDown}>VIDEO LINK</a></p>}
           {project.id === "2" && <p className="work-description">IJN ATAGO — Minecraft ship gallery.</p>}
         </> : <>
           <nav className="projects-menu" aria-label="Projects" tabIndex={0}>
-            {PROJECTS.map((item) => <Button key={item.id} variant="game" size="game" asChild><Link to="/works/$projectId" params={{ projectId: item.id }} onPointerDown={playClickSoundOnPointerDown}><span>Project {item.id}</span></Link></Button>)}
+            {PROJECTS.map((item) => <Button key={item.id} variant="game" size="game" className="project-button" asChild><Link to="/works/$projectId" params={{ projectId: item.id }} onPointerDown={playClickSoundOnPointerDown}><span>
+              {item.images[0] ? <img className="project-thumb" src={item.images[0].src} alt="" loading="lazy" /> : <span className="project-thumb" aria-hidden="true" />}
+              <span className="project-name">{item.images.length ? item.title : `Project ${item.id}`}</span>
+              <span className="project-date">MM/DD/YYYY</span>
+            </span></Link></Button>)}
           </nav>
         </>}
 

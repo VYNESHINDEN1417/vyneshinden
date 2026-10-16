@@ -17,3 +17,4 @@
 - [x] Verify navigation, timing, and screen layout.
 - [x] Shrink the full home menu 15% and move it closer to the title.
 - [x] Add continuous looping uploaded music and verify navigation preserves playback.
+- [x] Update About greeting and footer flag; reorder eight populated projects and import all new artwork; add thumbnail/name/date project buttons and verify.

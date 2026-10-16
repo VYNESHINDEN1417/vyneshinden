@@ -68,7 +68,7 @@ function Index() {
           </div>,
           document.body,
         )}
-      <footer className="portfolio-footer"><p>VYNESHINDEN portfolio is a personal Minecraft building portfolio created to preserve my creations and document my presence in the Minecraft building community.</p></footer>
+      <footer className="portfolio-footer"><p>VYNESHINDEN portfolio is a personal Minecraft building portfolio created to preserve my creations and document my presence in the Minecraft building community. 🇵🇭</p></footer>
     </main>
   );
 }
