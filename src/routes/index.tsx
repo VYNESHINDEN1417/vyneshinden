@@ -8,7 +8,18 @@ import { ViewModeSwitch } from "@/components/view-mode-switch";
 import { portfolioHead, markButtonClick, playClickSoundOnPointerDown } from "@/components/portfolio";
 
 export const Route = createFileRoute("/")({
-  head: () => portfolioHead("VYNESHINDEN — Portfolio", "Enter VYNESHINDEN's world. Discover the creator, explore their works, and find their social spaces."),
+  head: () => ({
+    ...portfolioHead("VYNESHINDEN — Portfolio", "Enter VYNESHINDEN's world. Discover the creator, explore their works, and find their social spaces."),
+    scripts: [{
+      type: "application/ld+json",
+      children: JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        name: "VYNESHINDEN",
+        url: "https://vyneshinden.vercel.app/",
+      }),
+    }],
+  }),
   component: Index,
 });
 
