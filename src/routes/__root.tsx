@@ -85,6 +85,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { title: "VYNESHINDEN — Portfolio" },
       { name: "description", content: "The world of VYNESHINDEN." },
       { property: "og:type", content: "website" },
+      { property: "og:site_name", content: "VYNESHINDEN" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
     links: [
@@ -92,7 +93,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         rel: "stylesheet",
         href: appCss,
       },
-      { rel: "icon", href: "/favicon.png?v=20261012", type: "image/png" },
+      { rel: "icon", href: "/favicon.png?v=20261012", type: "image/png", sizes: "64x64" },
       { rel: "preload", href: "/media/Minecraftia-Regular.ttf", as: "font", type: "font/ttf", crossOrigin: "anonymous" },
     ],
   }),
