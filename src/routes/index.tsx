@@ -5,6 +5,7 @@ import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { ThemeSwitch } from "@/components/theme-switch";
 import { ViewModeSwitch } from "@/components/view-mode-switch";
+import { Panorama } from "@/components/panorama";
 import { portfolioHead, markButtonClick, playClickSoundOnPointerDown } from "@/components/portfolio";
 
 export const Route = createFileRoute("/")({
@@ -52,7 +53,7 @@ function Index() {
   return (
     <main className="home-page">
       <div className="hero-scene">
-        <img className="hero-image" src="/media/hero.gif" alt="An animated block-built forest lit by lanterns and fireflies" width={540} height={304} />
+        <Panorama variant="morning" />
         <div className="hero-fade" />
         <h1 className="hero-title"><img src="/media/title.png" alt="VYNESHINDEN" width={1920} height={480} /></h1>
       </div>
