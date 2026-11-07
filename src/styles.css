@@ -480,3 +480,18 @@ html[data-view="mobile"] .project-button .project-date { font-size: 8px; }
     height: 64px;
   }
 }
+
+/* Sharp boxy corners for all game buttons (theme switch and Back excluded). */
+.btn-174, .btn-174 span { border-radius: 0; }
+.work-image-button { border-radius: 0; }
+
+/* Desktop sizing: larger project list, gallery, and scaling header logo. */
+html[data-view="desktop"] .detail-content { max-width: 1200px; }
+html[data-view="desktop"] .detail-logo { width: clamp(180px, 18vw, 300px); }
+html[data-view="desktop"] .projects-menu { max-width: 900px; margin-inline: auto; max-height: min(620px, 65svh); }
+html[data-view="desktop"] .projects-menu .project-button { height: 104px; }
+html[data-view="desktop"] .project-button .project-thumb { width: 112px; height: 72px; }
+html[data-view="desktop"] .project-button .project-name { font-size: 16px; }
+html[data-view="desktop"] .project-button .project-date { font-size: 13px; }
+html[data-view="desktop"] .gallery-strip-wrap { max-width: none; }
+html[data-view="desktop"] .gallery-strip .gallery-thumbnail { flex-basis: 130px; width: 130px; min-width: 130px; height: 100px; }
