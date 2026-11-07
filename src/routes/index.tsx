@@ -29,6 +29,7 @@ function Index() {
   const timer = useRef<number | null>(null);
   const [pressed, setPressed] = useState<string | null>(null);
   const [messageOpen, setMessageOpen] = useState(false);
+  const [night, setNight] = useState(false);
   useEffect(() => {
     if (!messageOpen) return;
     const onKey = (event: KeyboardEvent) => {
@@ -53,7 +54,7 @@ function Index() {
   return (
     <main className="home-page">
       <div className="hero-scene">
-        <Panorama variant="morning" />
+        <Panorama night={night} />
         <div className="hero-fade" />
         <h1 className="hero-title"><img src="/media/title.png" alt="VYNESHINDEN" width={1920} height={480} /></h1>
       </div>
@@ -68,7 +69,7 @@ function Index() {
         <Button variant="game" size="game" type="button" onPointerDown={playClickSoundOnPointerDown} onClick={() => setMessageOpen(true)}><span>Message me</span></Button>
       </nav>
       </div>
-      <ThemeSwitch />
+      <ThemeSwitch night={night} onToggle={() => setNight((value) => !value)} />
       {messageOpen &&
         createPortal(
           <div className="modal-overlay" role="dialog" aria-modal="true" aria-label="Message me" onClick={() => setMessageOpen(false)}>

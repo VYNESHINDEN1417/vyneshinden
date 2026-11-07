@@ -1,11 +1,9 @@
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { playClickSound, playClickSoundOnPointerDown } from "@/components/portfolio";
 
-export function ThemeSwitch() {
-  const [night, setNight] = useState(true);
+export function ThemeSwitch({ night, onToggle }: { night: boolean; onToggle: () => void }) {
   return (
-    <Button variant="ghost" role="switch" aria-checked={night} aria-label="Dark mode" title="Dark mode" className="theme-switch" onPointerDown={playClickSoundOnPointerDown} onClick={(event) => { if (event.detail === 0) playClickSound(); setNight((value) => !value); }}>
+    <Button variant="ghost" role="switch" aria-checked={night} aria-label="Dark mode" title="Dark mode" className="theme-switch" onPointerDown={playClickSoundOnPointerDown} onClick={(event) => { if (event.detail === 0) playClickSound(); onToggle(); }}>
       <span className="theme-switch__container" aria-hidden="true">
         <span className="theme-switch__clouds" />
         <span className="theme-switch__stars-container">

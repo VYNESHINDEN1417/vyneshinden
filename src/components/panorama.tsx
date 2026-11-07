@@ -12,9 +12,9 @@ const FACES = [
 /** Vanilla values: 85° field of view, fixed 10° downward look, level horizontal spin only. */
 const FOV_DEG = 85;
 const PITCH_DEG = 10;
-const SECONDS_PER_TURN = 90;
+const SECONDS_PER_TURN = 360;
 
-export function Panorama({ variant = "morning" }: { variant?: "morning" | "night" }) {
+export function Panorama({ night = false }: { night?: boolean }) {
   const sceneRef = useRef<HTMLDivElement>(null);
   const cubeRef = useRef<HTMLDivElement>(null);
 
@@ -35,7 +35,7 @@ export function Panorama({ variant = "morning" }: { variant?: "morning" | "night
     const start = performance.now();
     const tick = (now: number) => {
       const yaw = (((now - start) / 1000) * 360) / SECONDS_PER_TURN;
-      cube.style.transform = `translateZ(${depth}px) rotateX(${PITCH_DEG}deg) rotateY(${-yaw}deg)`;
+      cube.style.transform = `translateZ(${depth}px) rotateX(${PITCH_DEG}deg) rotateY(${yaw}deg)`;
       frame = requestAnimationFrame(tick);
     };
     frame = requestAnimationFrame(tick);
@@ -48,16 +48,17 @@ export function Panorama({ variant = "morning" }: { variant?: "morning" | "night
   return (
     <div ref={sceneRef} className="panorama" aria-hidden="true">
       <div ref={cubeRef} className="panorama-cube">
-        {FACES.map((rotation, index) => (
+        {(["morning", "night"] as const).flatMap((set) =>
+          FACES.map((rotation, index) => (
           <img
-            key={index}
-            className="panorama-face"
-            src={`/media/panorama/${variant}/panorama_${index}.png`}
+            key={`${set}-${index}`}
+            className={`panorama-face panorama-face--${set}`}
+            src={`/media/panorama/${set}/panorama_${index}.png`}
             alt=""
             draggable={false}
-            style={{ transform: `${rotation} translateZ(calc(var(--pano-size) / -2)) scale(1.003)` }}
+            style={{ opacity: set === "night" && !night ? 0 : 1, transform: `${rotation} translateZ(calc(var(--pano-size) / -2 + ${set === "night" ? 1 : 0}px)) scale(1.003)` }}
           />
-        ))}
+        )))}
       </div>
       <div className="panorama-top-blur" />
     </div>

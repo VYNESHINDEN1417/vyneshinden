@@ -499,3 +499,4 @@ html[data-view="desktop"] .project-button .project-name { font-size: 16px; }
 html[data-view="desktop"] .project-button .project-date { font-size: 13px; }
 html[data-view="desktop"] .gallery-strip-wrap { max-width: none; }
 html[data-view="desktop"] .gallery-strip .gallery-thumbnail { flex-basis: 130px; width: 130px; min-width: 130px; height: 100px; }
+.panorama-face--night { transition: opacity 1s ease-in-out; }
