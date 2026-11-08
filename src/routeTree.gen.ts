@@ -58,8 +58,6 @@ export interface FileRoutesByFullPath {
   '/about': typeof AboutRoute
   '/social': typeof SocialRoute
   '/analytics': typeof AnalyticsRoute
-  '/analytics': typeof AnalyticsRoute
-  '/analytics': typeof AnalyticsRoute
   '/works': typeof WorksRouteWithChildren
   '/works/$projectId': typeof WorksProjectIdRoute
   '/works/': typeof WorksIndexRoute
@@ -68,6 +66,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/social': typeof SocialRoute
+  '/analytics': typeof AnalyticsRoute
   '/works/$projectId': typeof WorksProjectIdRoute
   '/works': typeof WorksIndexRoute
 }
@@ -76,6 +75,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/social': typeof SocialRoute
+  '/analytics': typeof AnalyticsRoute
   '/works': typeof WorksRouteWithChildren
   '/works/$projectId': typeof WorksProjectIdRoute
   '/works/': typeof WorksIndexRoute
@@ -83,9 +83,15 @@ export interface FileRoutesById {
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    '/' | '/about' | '/social' | '/works' | '/works/$projectId' | '/works/'
+    | '/'
+    | '/about'
+    | '/social'
+    | '/analytics'
+    | '/works'
+    | '/works/$projectId'
+    | '/works/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about' | '/social' | '/works/$projectId' | '/works'
+  to: '/' | '/about' | '/social' | '/analytics' | '/works/$projectId' | '/works'
   id:
     | '__root__'
     | '/'
