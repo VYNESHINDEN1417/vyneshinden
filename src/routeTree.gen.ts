@@ -15,6 +15,7 @@ import { Route as SocialRouteImport } from './routes/social'
 import { Route as WorksRouteImport } from './routes/works'
 import { Route as WorksIndexRouteImport } from './routes/works.index'
 import { Route as WorksProjectIdRouteImport } from './routes/works.$projectId'
+import { Route as AnalyticsRouteImport } from './routes/analytics'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -46,11 +47,19 @@ const WorksProjectIdRoute = WorksProjectIdRouteImport.update({
   path: '/$projectId',
   getParentRoute: () => WorksRoute,
 } as any)
+const AnalyticsRoute = AnalyticsRouteImport.update({
+  id: '/analytics',
+  path: '/analytics',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/social': typeof SocialRoute
+  '/analytics': typeof AnalyticsRoute
+  '/analytics': typeof AnalyticsRoute
+  '/analytics': typeof AnalyticsRoute
   '/works': typeof WorksRouteWithChildren
   '/works/$projectId': typeof WorksProjectIdRoute
   '/works/': typeof WorksIndexRoute
@@ -82,6 +91,7 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/social'
+    | '/analytics'
     | '/works'
     | '/works/$projectId'
     | '/works/'
@@ -91,6 +101,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
   SocialRoute: typeof SocialRoute
+  AnalyticsRoute: typeof AnalyticsRoute
   WorksRoute: typeof WorksRouteWithChildren
 }
 
@@ -115,6 +126,13 @@ declare module '@tanstack/react-router' {
       path: '/social'
       fullPath: '/social'
       preLoaderRoute: typeof SocialRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/analytics': {
+      id: '/analytics'
+      path: '/analytics'
+      fullPath: '/analytics'
+      preLoaderRoute: typeof AnalyticsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/works': {
@@ -157,6 +175,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   SocialRoute: SocialRoute,
+  AnalyticsRoute: AnalyticsRoute,
   WorksRoute: WorksRouteWithChildren,
 }
 export const routeTree = rootRouteImport
