@@ -180,19 +180,19 @@ function AnalyticsPage() {
       <main className="flex min-h-screen items-center justify-center bg-[#080a0f] px-5 text-white">
         <div className="w-full max-w-md rounded-2xl border border-white/10 bg-[#11151d] p-7 shadow-2xl sm:p-9">
           <div className="mb-8">
-            <p className="text-xs font-bold tracking-[0.35em] text-cyan-400">VYNESHINDEN / PRIVATE</p>
+            <p className="text-xs font-bold tracking-[0.35em] text-[#FF7300]">VYNESHINDEN / PRIVATE</p>
             <h1 className="mt-4 text-3xl font-semibold tracking-tight">Analytics access</h1>
             <p className="mt-2 text-sm text-slate-400">Sign in with your authorized dashboard account.</p>
           </div>
           <form onSubmit={signIn} className="space-y-4">
             <label className="block text-sm text-slate-300">Email
-              <input type="email" autoComplete="username" required value={email} onChange={(e) => setEmail(e.target.value)} className="mt-2 w-full rounded-lg border border-white/10 bg-[#090c12] px-4 py-3 text-white outline-none transition focus:border-cyan-400" />
+              <input type="email" autoComplete="username" required value={email} onChange={(e) => setEmail(e.target.value)} className="mt-2 w-full rounded-lg border border-white/10 bg-[#090c12] px-4 py-3 text-white outline-none transition focus:border-[#FF7300]" />
             </label>
             <label className="block text-sm text-slate-300">Password
-              <input type="password" autoComplete="current-password" required value={password} onChange={(e) => setPassword(e.target.value)} className="mt-2 w-full rounded-lg border border-white/10 bg-[#090c12] px-4 py-3 text-white outline-none transition focus:border-cyan-400" />
+              <input type="password" autoComplete="current-password" required value={password} onChange={(e) => setPassword(e.target.value)} className="mt-2 w-full rounded-lg border border-white/10 bg-[#090c12] px-4 py-3 text-white outline-none transition focus:border-[#FF7300]" />
             </label>
             {error && <p role="alert" className="rounded-lg border border-red-400/20 bg-red-400/10 px-3 py-2 text-sm text-red-300">{error}</p>}
-            <button disabled={busy} className="w-full rounded-lg bg-cyan-400 px-4 py-3 font-semibold text-slate-950 transition hover:bg-cyan-300 disabled:opacity-60">{busy ? "Signing in…" : "Sign in"}</button>
+            <button disabled={busy} className="w-full rounded-lg bg-[#FF7300] px-4 py-3 font-semibold text-slate-950 transition hover:bg-[#FF7300] disabled:opacity-60">{busy ? "Signing in…" : "Sign in"}</button>
           </form>
           <p className="mt-6 text-center text-xs text-slate-500">Private dashboard · Authorized account only</p>
         </div>
@@ -205,7 +205,7 @@ function AnalyticsPage() {
       <div className="mx-auto max-w-7xl">
         <header className="flex flex-wrap items-center justify-between gap-4 border-b border-white/10 pb-6">
           <div>
-            <p className="text-xs font-bold tracking-[0.32em] text-cyan-400">VYNESHINDEN / CONTROL ROOM</p>
+            <p className="text-xs font-bold tracking-[0.32em] text-[#FF7300]">VYNESHINDEN / CONTROL ROOM</p>
             <h1 className="mt-2 text-2xl font-semibold tracking-tight sm:text-3xl">Site analytics</h1>
             <p className="mt-1 text-sm text-slate-400">A live look at the people visiting your world.</p>
           </div>
@@ -219,7 +219,7 @@ function AnalyticsPage() {
           <p className="text-sm text-slate-400">{busy ? "Refreshing data…" : "Analytics overview"}</p>
           <div className="flex rounded-lg border border-white/10 bg-[#11151d] p-1">
             {([7, 30, 0] as const).map((value) => (
-              <button key={value} onClick={() => setRange(value)} className={`rounded-md px-3 py-1.5 text-xs font-medium transition ${range === value ? "bg-cyan-400 text-slate-950" : "text-slate-400 hover:text-white"}`}>{value === 0 ? "All" : `${value} days`}</button>
+              <button key={value} onClick={() => setRange(value)} className={`rounded-md px-3 py-1.5 text-xs font-medium transition ${range === value ? "bg-[#FF7300] text-slate-950" : "text-slate-400 hover:text-white"}`}>{value === 0 ? "All" : `${value} days`}</button>
             ))}
           </div>
         </div>
@@ -248,7 +248,7 @@ function AnalyticsPage() {
               {days.map((day) => (
                 <div key={day.key} className="flex h-full min-w-0 flex-1 flex-col items-center justify-end gap-2">
                   <span className="text-[10px] tabular-nums text-slate-400">{day.count || ""}</span>
-                  <div className="flex w-full flex-1 items-end"><div className="w-full rounded-t-sm bg-cyan-400/80" style={{ height: `${Math.max(day.count ? 5 : 1, (day.count / maxDay) * 100)}%` }} /></div>
+                  <div className="flex w-full flex-1 items-end"><div className="w-full rounded-t-sm bg-[#FF7300]/80" style={{ height: `${Math.max(day.count ? 5 : 1, (day.count / maxDay) * 100)}%` }} /></div>
                   <span className="text-[10px] text-slate-500">{day.label}</span>
                 </div>
               ))}
@@ -260,7 +260,7 @@ function AnalyticsPage() {
               {sources.length ? sources.map(([name, count]) => (
                 <div key={name}>
                   <div className="mb-1.5 flex justify-between text-xs"><span className="capitalize text-slate-300">{name}</span><span className="tabular-nums text-slate-400">{count}</span></div>
-                  <div className="h-1.5 overflow-hidden rounded-full bg-white/10"><div className="h-full rounded-full bg-cyan-400" style={{ width: `${(count / Math.max(1, filtered.length)) * 100}%` }} /></div>
+                  <div className="h-1.5 overflow-hidden rounded-full bg-white/10"><div className="h-full rounded-full bg-[#FF7300]" style={{ width: `${(count / Math.max(1, filtered.length)) * 100}%` }} /></div>
                 </div>
               )) : <p className="text-sm text-slate-500">No traffic data for this period yet.</p>}
             </div>
