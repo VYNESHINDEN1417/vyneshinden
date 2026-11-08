@@ -10,7 +10,7 @@ import { portfolioHead, markButtonClick, playClickSoundOnPointerDown } from "@/c
 
 export const Route = createFileRoute("/")({
   head: () => ({
-    ...portfolioHead("VYNESHINDEN — Portfolio", "Enter VYNESHINDEN's world. Discover the creator, explore their works, and find their social spaces."),
+    ...portfolioHead("VYNESHINDEN'S PORTFOLIO", "Enter VYNESHINDEN's world. Discover the creator, explore their works, and find their social spaces."),
     scripts: [{
       type: "application/ld+json",
       children: JSON.stringify({
