@@ -1,4 +1,6 @@
 # Portfolio roadmap
+- [x] Replace CSS panorama faces with seamless WebGL blending; preserve six-minute reverse rotation and theme orientation.
+- [x] Remove the bottom fade seam and verify day/night transitions on desktop and mobile.
 - [x] Add a compact, vertically scrollable ten-project menu in My works.
 - [x] Move Wisconsin to Project 1 and add the seven-image ATAGO gallery in Project 2.
 - [x] Verify thumbnail selection, pagination, preview, downloads, and mobile navigation.

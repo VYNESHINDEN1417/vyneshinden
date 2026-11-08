@@ -19,4 +19,5 @@
 - Keep site media as original files in public/media and reference same-origin URLs so exported repositories work without Lovable's asset proxy on external hosting.
 - Show the music reopen control only on the home route without unmounting the persistent audio player so detail navigation preserves playback.
 - Use react-zoom-pan-pinch inside an accessible image dialog for artwork previews so touch pinch, wheel zoom, and dragging share maintained interaction logic.
-- Mount the visual theme switch in the home route only and keep its state local so it cannot alter the site theme or appear on detail pages.
+- Keep the theme switch and panorama lighting state in the home route only so detail pages remain unchanged.
+- Render the home panorama in one client-mounted Three.js canvas with shader-blended cubemaps and a shared rotation clock so day/night fades cannot expose CSS cube edges or reset orientation.

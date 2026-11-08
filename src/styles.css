@@ -182,7 +182,7 @@
   --music-button-shadow: rgb(0 0 0 / 15%);
   --music-button-hover-lowlight: rgb(0 0 0 / 50%);
   --music-button-hover-highlight: rgb(255 255 255 / 20%);
-  --hero-transition: linear-gradient(to bottom, oklch(0 0 0 / 0%) 40%, var(--background) 100%);
+  --hero-transition: linear-gradient(to bottom, oklch(0 0 0 / 0%) 40%, var(--background) 85%, var(--background) 100%);
   --button-shadow: 0 3px var(--button-step-1), 0 4px var(--button-step-2), 0 5px var(--button-step-3), 0 6px var(--button-step-4), 0 7px var(--button-step-5), 0 8px var(--button-step-6), 0 14px 6px -1px var(--background);
 }
 body { font-family: var(--font-portfolio); margin: 0; letter-spacing: 0; }
@@ -190,11 +190,10 @@ button, input, textarea, select { font-family: inherit; }
 .home-page { min-height: 100svh; overflow: hidden; }
 .hero-scene { position: relative; height: 58svh; min-height: 320px; max-height: 650px; }
 .hero-image { width: 100%; height: 100%; object-fit: cover; object-position: center 55%; }
-.panorama { position: absolute; inset: 0; overflow: hidden; background: #000; }
-.panorama-cube { position: absolute; left: 50%; top: 50%; width: 0; height: 0; transform-style: preserve-3d; }
-.panorama-face { position: absolute; width: var(--pano-size); height: var(--pano-size); max-width: none; left: calc(var(--pano-size) / -2); top: calc(var(--pano-size) / -2); backface-visibility: hidden; user-select: none; pointer-events: none; }
+.panorama { position: absolute; inset: 0; overflow: hidden; background: var(--loading-cover) url('/media/hero.gif') center / cover; }
+.panorama canvas { display: block; width: 100%; height: 100%; }
 .panorama-top-blur { position: absolute; inset: 0 0 auto; height: 9%; backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px); mask-image: linear-gradient(to bottom, #000, transparent); -webkit-mask-image: linear-gradient(to bottom, #000, transparent); }
-.hero-fade { position: absolute; inset: 0; background: var(--hero-transition); }
+.hero-fade { position: absolute; inset: 0 0 -2px; background: var(--hero-transition); pointer-events: none; }
 .hero-title { position: absolute; top: 13%; left: 50%; transform: translateX(-50%); width: min(84%, 1000px); margin: 0; }
 .hero-title img { width: 100%; height: auto; }
 .home-menu { position: relative; width: calc((100% - 48px) * .85); max-width: 460px; margin: calc(max(-208px, calc(210px - clamp(320px, 58svh, 650px))) + 96px) auto 0; }
