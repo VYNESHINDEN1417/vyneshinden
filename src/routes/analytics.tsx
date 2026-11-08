@@ -163,10 +163,11 @@ function AnalyticsPage() {
     acc[key] = (acc[key] ?? 0) + 1;
     return acc;
   }, {})).sort((a, b) => b[1] - a[1]);
-  const days = Array.from({ length: range === 7 ? 7 : 14 }, (_, index, arr) => {
+  const dayCount = range === 7 ? 7 : 14;
+  const days = Array.from({ length: dayCount }, (_, index) => {
     const date = new Date();
     date.setHours(0, 0, 0, 0);
-    date.setDate(date.getDate() - (arr.length - 1 - index));
+    date.setDate(date.getDate() - (dayCount - 1 - index));
     const key = date.toLocaleDateString("en-CA");
     return { key, label: date.toLocaleDateString("en", { weekday: "short" }), count: filtered.filter((row) => { const visitDate = new Date(row.visited_at); const visitKey = `${visitDate.getFullYear()}-${String(visitDate.getMonth() + 1).padStart(2, "0")}-${String(visitDate.getDate()).padStart(2, "0")}`; return visitKey === key; }).length };
   });
