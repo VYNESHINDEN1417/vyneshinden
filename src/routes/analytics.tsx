@@ -66,7 +66,7 @@ async function loadAnalytics(session: AuthSession): Promise<{ data: AnalyticsPay
 }
 
 function AnalyticsPage() {
-  const [email, setEmail] = useState("Timothylomibao6@gmail.com");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [session, setSession] = useState<AuthSession | null>(null);
   const [payload, setPayload] = useState<AnalyticsPayload | null>(null);
