@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, type FormEvent } from "react";
 
 const SUPABASE_URL = "https://bmeddjzihcvraqmhkxen.supabase.co";
 const SUPABASE_KEY = "sb_publishable_Y5Vkz3pQPuihk6qXt2w2bA_BOPEJJpm";
@@ -75,7 +75,7 @@ function AnalyticsPage() {
   const [error, setError] = useState("");
   const [loaded, setLoaded] = useState(false);
 
-  async function signIn(event: React.FormEvent<HTMLFormElement>) {
+  async function signIn(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setBusy(true);
     setError("");
@@ -168,7 +168,7 @@ function AnalyticsPage() {
     date.setHours(0, 0, 0, 0);
     date.setDate(date.getDate() - (arr.length - 1 - index));
     const key = date.toLocaleDateString("en-CA");
-    return { key, label: date.toLocaleDateString("en", { weekday: "short" }), count: filtered.filter((row) => row.visited_at.slice(0, 10) === key).length };
+    return { key, label: date.toLocaleDateString("en", { weekday: "short" }), count: filtered.filter((row) => { const visitDate = new Date(row.visited_at); const visitKey = `${visitDate.getFullYear()}-${String(visitDate.getMonth() + 1).padStart(2, "0")}-${String(visitDate.getDate()).padStart(2, "0")}`; return visitKey === key; }).length };
   });
   const maxDay = Math.max(1, ...days.map((day) => day.count));
 
