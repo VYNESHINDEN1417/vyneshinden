@@ -9,13 +9,14 @@ import {
   useRouterState,
   type ErrorComponentProps,
 } from "@tanstack/react-router";
-import { useEffect, type ReactNode } from "react";
+import { useEffect, useRef, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { LoadingScreen } from "@/components/portfolio";
 import { BackgroundMusic } from "@/components/background-music";
 import { VIEW_MODE_BOOT_SCRIPT } from "@/lib/view-mode";
+import { trackPageView } from "@/lib/site-analytics";
 
 function NotFoundComponent() {
   return (
@@ -121,6 +122,13 @@ function RootShell({ children }: { children: ReactNode }) {
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   const pathname = useRouterState({ select: (state) => state.location.pathname });
+  const lastTrackedPath = useRef<string | null>(null);
+
+  useEffect(() => {
+    if (lastTrackedPath.current === pathname) return;
+    lastTrackedPath.current = pathname;
+    trackPageView(pathname);
+  }, [pathname]);
 
   return (
     <QueryClientProvider client={queryClient}>
