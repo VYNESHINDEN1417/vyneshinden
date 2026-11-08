@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { advancePanoramaBlend, panoramaYaw } from "@/lib/panorama-motion";
+import { advancePanoramaBlend, panoramaYaw, PANORAMA_PITCH_DEGREES } from "@/lib/panorama-motion";
 
 export function Panorama({ night = false }: { night?: boolean }) {
   const sceneRef = useRef<HTMLDivElement>(null);
@@ -53,12 +53,13 @@ export function Panorama({ night = false }: { night?: boolean }) {
           void main() {
             vec2 xy = (screenUV * 2.0 - 1.0) * tan(radians(85.0) / 2.0);
             vec3 ray = normalize(vec3(xy.x * aspect, xy.y, -1.0));
-            float pitch = radians(10.0);
+            float pitch = radians(${PANORAMA_PITCH_DEGREES.toFixed(1)});
             ray.yz = mat2(cos(pitch), -sin(pitch), sin(pitch), cos(pitch)) * ray.yz;
             ray.xz = mat2(cos(yaw), sin(yaw), -sin(yaw), cos(yaw)) * ray.xz;
             // Minecraft faces are viewed from inside; cube sampling needs X mirrored.
             ray.x = -ray.x;
             gl_FragColor = mix(textureCube(morning, ray), textureCube(evening, ray), blend);
+            #include <colorspace_fragment>
           }`,
       });
       const geometry = new THREE.PlaneGeometry(2, 2);

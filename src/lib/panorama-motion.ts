@@ -1,5 +1,6 @@
 export const PANORAMA_SECONDS_PER_TURN = 360;
 export const PANORAMA_FADE_SECONDS = 1;
+export const PANORAMA_PITCH_DEGREES = 0;
 
 export function panoramaYaw(elapsedSeconds: number) {
   return (elapsedSeconds / PANORAMA_SECONDS_PER_TURN) * Math.PI * 2;

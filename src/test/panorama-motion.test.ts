@@ -1,7 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { advancePanoramaBlend, panoramaYaw } from "../lib/panorama-motion";
+import { advancePanoramaBlend, panoramaYaw, PANORAMA_PITCH_DEGREES } from "../lib/panorama-motion";
 
 describe("panorama motion", () => {
+  it("keeps the panorama level with zero vertical tilt", () => {
+    expect(PANORAMA_PITCH_DEGREES).toBe(0);
+  });
   it("rotates positively one full turn in six minutes", () => {
     expect(panoramaYaw(360)).toBeCloseTo(Math.PI * 2);
     expect(panoramaYaw(1)).toBeCloseTo(Math.PI / 180);
