@@ -137,24 +137,17 @@ export function Panorama({ night = false }: { night?: boolean }) {
             ray.yz = mat2(cos(pitch), -sin(pitch), sin(pitch), cos(pitch)) * ray.yz;
             ray.xz = mat2(cos(yaw), sin(yaw), -sin(yaw), cos(yaw)) * ray.xz;
             ray.x = -ray.x;
-            // Preserve panorama_4's 180-degree rotation. In a narrow band
-            // around its four edges, extend the top face's own edge color
-            // across the seam instead of blending it with the side faces.
-            vec4 morningSide = textureCube(morning, ray);
-            vec4 eveningSide = textureCube(evening, ray);
+            // Expand panorama_4 slightly past its original cubemap boundary
+            // to overlap the side faces and close the visible gap. Keep its
+            // established 180-degree rotation; do not blend or add filler.
             vec3 topRay = ray;
-            float topEdgeDistance = ray.y - max(abs(ray.x), abs(ray.z));
-            float topEdgeBand = ray.y > 0.0 && topEdgeDistance <= 0.035 ? 1.0 : 0.0;
-            float topLimit = max(ray.y, 0.0) * 0.995;
-            float topExtent = max(abs(topRay.x), abs(topRay.z));
-            if (topExtent > topLimit && topExtent > 0.0) {
-              topRay.xz *= topLimit / topExtent;
+            float topEdgeRatio = ray.y / max(max(abs(ray.x), abs(ray.z)), 0.0001);
+            if (ray.y > 0.0 && topEdgeRatio > 0.94) {
+              topRay.y *= 1.06;
+              topRay.xz = -topRay.xz;
             }
-            topRay.xz = -topRay.xz;
-            vec4 morningTop = textureCube(morning, topRay);
-            vec4 eveningTop = textureCube(evening, topRay);
-            vec4 morningColor = topEdgeBand > 0.5 ? morningTop : morningSide;
-            vec4 eveningColor = topEdgeBand > 0.5 ? eveningTop : eveningSide;
+            vec4 morningColor = textureCube(morning, topRay);
+            vec4 eveningColor = textureCube(evening, topRay);
             gl_FragColor = mix(morningColor, eveningColor, blend);
             #include <colorspace_fragment>
           }`,
