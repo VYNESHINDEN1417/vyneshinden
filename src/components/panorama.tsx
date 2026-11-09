@@ -1,5 +1,10 @@
 import { useEffect, useRef } from "react";
+import type { CubeTexture } from "three";
 import { advancePanoramaBlend, panoramaYaw, PANORAMA_PITCH_DEGREES } from "@/lib/panorama-motion";
+
+// Keep the decoded morning cubemap alive between route changes. The Home route
+// unmounts on navigation, but returning should not wait for six images to reload.
+let cachedMorningTexture: CubeTexture | null = null;
 
 export function Panorama({ night = false }: { night?: boolean }) {
   const sceneRef = useRef<HTMLDivElement>(null);
@@ -49,7 +54,7 @@ export function Panorama({ night = false }: { night?: boolean }) {
         );
       };
 
-      let morningLoaded = false;
+      let morningLoaded = cachedMorningTexture !== null;
       let evening: InstanceType<typeof THREE.CubeTexture> | null = null;
       let eveningLoaded = false;
       let eveningRequested = false;
@@ -58,8 +63,8 @@ export function Panorama({ night = false }: { night?: boolean }) {
       let previous = 0;
 
       const uniforms = {
-        morning: { value: null as InstanceType<typeof THREE.CubeTexture> | null },
-        evening: { value: null as InstanceType<typeof THREE.CubeTexture> | null },
+        morning: { value: cachedMorningTexture as InstanceType<typeof THREE.CubeTexture> | null },
+        evening: { value: cachedMorningTexture as InstanceType<typeof THREE.CubeTexture> | null },
         blend: { value: 0 },
         yaw: { value: 0 },
         aspect: { value: 1 },
@@ -177,27 +182,34 @@ export function Panorama({ night = false }: { night?: boolean }) {
         frame = requestAnimationFrame(tick);
       };
 
-      const morning = loader.load(
-        paths("morning"),
-        (texture) => {
-          if (disposed) {
-            texture.dispose();
-            return;
-          }
-          uniforms.morning.value = texture;
-          uniforms.evening.value = evening ?? texture;
-          morningLoaded = true;
-          start = performance.now();
-          previous = start;
-          frame = requestAnimationFrame(tick);
-        },
-        undefined,
-        () => {
-          scene.dataset["sceneReady"] = "error";
-        },
-      );
+      let morning: InstanceType<typeof THREE.CubeTexture>;
+      if (cachedMorningTexture) {
+        // Reuse the already-decoded cubemap and paint on the first animation frame.
+        morning = cachedMorningTexture;
+        start = performance.now();
+        previous = start;
+        frame = requestAnimationFrame(tick);
+      } else {
+        morning = loader.load(
+          paths("morning"),
+          (texture) => {
+            cachedMorningTexture = texture;
+            if (disposed) return;
+            uniforms.morning.value = texture;
+            uniforms.evening.value = evening ?? texture;
+            morningLoaded = true;
+            start = performance.now();
+            previous = start;
+            frame = requestAnimationFrame(tick);
+          },
+          undefined,
+          () => {
+            scene.dataset["sceneReady"] = "error";
+          },
+        );
+      }
       uniforms.morning.value = morning;
-      uniforms.evening.value = morning;
+      uniforms.evening.value = evening ?? morning;
 
       requestNightRef.current = requestEvening;
       if (nightRef.current) requestEvening();
@@ -208,7 +220,7 @@ export function Panorama({ night = false }: { night?: boolean }) {
         observer.disconnect();
         geometry.dispose();
         material.dispose();
-        morning.dispose();
+        // The morning texture is shared across route mounts; do not dispose it here.
         evening?.dispose();
         renderer.dispose();
         renderer.domElement.remove();
