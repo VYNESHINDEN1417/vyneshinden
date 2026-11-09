@@ -59,7 +59,7 @@ export function ProjectGallery({ project }: { project: PortfolioProject }) {
       )}
       <h2 className="work-title">{project.title}</h2>
       <div className="work-caption-row">
-        <figcaption>Click the image to pinch zoom</figcaption>
+        <figcaption style={{ color: "#FFD700" }}>Click the image to pinch zoom</figcaption>
         <Button variant="link" className="image-download" asChild><a href={image.src} download={filename} onPointerDown={playClickSoundOnPointerDown}>Download image</a></Button>
       </div>
 
