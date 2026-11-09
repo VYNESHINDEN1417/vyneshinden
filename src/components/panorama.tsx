@@ -5,6 +5,7 @@ import { advancePanoramaBlend, panoramaYaw, PANORAMA_PITCH_DEGREES } from "@/lib
 // Keep the decoded morning cubemap alive between route changes. The Home route
 // unmounts on navigation, but returning should not wait for six images to reload.
 let cachedMorningTexture: CubeTexture | null = null;
+let cachedPanoramaFrame: string | null = null;
 
 export function Panorama({ night = false }: { night?: boolean }) {
   const sceneRef = useRef<HTMLDivElement>(null);
@@ -33,6 +34,7 @@ export function Panorama({ night = false }: { night?: boolean }) {
         renderer = new THREE.WebGLRenderer({
           antialias: false,
           alpha: false,
+          preserveDrawingBuffer: true,
           powerPreference: "low-power",
         });
       } catch {
@@ -177,6 +179,7 @@ export function Panorama({ night = false }: { night?: boolean }) {
         if (!hasRenderedMorning) {
           hasRenderedMorning = true;
           scene.dataset["sceneReady"] = "true";
+          scene.querySelector<HTMLImageElement>(".panorama-fallback")?.remove();
           scheduleNightPreload();
         }
         frame = requestAnimationFrame(tick);
@@ -215,6 +218,14 @@ export function Panorama({ night = false }: { night?: boolean }) {
       if (nightRef.current) requestEvening();
 
       cleanup = () => {
+        // Preserve the last visible frame while the route-owned WebGL canvas is recreated.
+        try {
+          if (hasRenderedMorning && renderer.domElement.width > 0 && renderer.domElement.height > 0) {
+            cachedPanoramaFrame = renderer.domElement.toDataURL("image/webp", 0.82);
+          }
+        } catch {
+          // A CSS black cover remains available if the browser blocks canvas snapshots.
+        }
         requestNightRef.current = null;
         cancelScheduledNightPreload();
         observer.disconnect();
