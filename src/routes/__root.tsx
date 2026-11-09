@@ -82,7 +82,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   head: () => ({
     meta: [
       { charSet: "utf-8" },
-      { name: "viewport", content: "width=device-width, initial-scale=1" },
+      { name: "viewport", content: "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" },
       { title: "VYNESHINDEN'S PORTFOLIO" },
       { name: "description", content: "The world of VYNESHINDEN." },
       { property: "og:type", content: "website" },
@@ -132,11 +132,37 @@ function RootComponent() {
     const blockImageDrag = (event: Event) => {
       if (event.target instanceof HTMLImageElement) event.preventDefault();
     };
+    const blockZoomShortcut = (event: KeyboardEvent) => {
+      if (!(event.ctrlKey || event.metaKey) || event.altKey) return;
+      const key = event.key;
+      if (key === "+" || key === "=" || key === "-" || key === "_" || key === "0" ||
+          key === "Add" || key === "Subtract") {
+        event.preventDefault();
+      }
+    };
+    const blockPinchZoom = (event: WheelEvent) => {
+      if (event.ctrlKey || event.metaKey) event.preventDefault();
+    };
+    const blockGestureZoom = (event: Event) => {
+      event.preventDefault();
+    };
+
     document.addEventListener("contextmenu", blockImageContextMenu);
     document.addEventListener("dragstart", blockImageDrag);
+    window.addEventListener("keydown", blockZoomShortcut, { capture: true });
+    window.addEventListener("wheel", blockPinchZoom, { passive: false });
+    // Safari/iOS exposes trackpad and touch pinch gestures through these events.
+    document.addEventListener("gesturestart", blockGestureZoom, { passive: false });
+    document.addEventListener("gesturechange", blockGestureZoom, { passive: false });
+    document.addEventListener("gestureend", blockGestureZoom, { passive: false });
     return () => {
       document.removeEventListener("contextmenu", blockImageContextMenu);
       document.removeEventListener("dragstart", blockImageDrag);
+      window.removeEventListener("keydown", blockZoomShortcut, { capture: true });
+      window.removeEventListener("wheel", blockPinchZoom);
+      document.removeEventListener("gesturestart", blockGestureZoom);
+      document.removeEventListener("gesturechange", blockGestureZoom);
+      document.removeEventListener("gestureend", blockGestureZoom);
     };
   }, []);
 
