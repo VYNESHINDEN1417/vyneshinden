@@ -565,7 +565,7 @@ img {
   inset: 0;
   background: linear-gradient(180deg, rgba(0, 0, 0, .72), rgba(0, 0, 0, .58) 45%, rgba(0, 0, 0, .76));
 }
-.detail-page--panorama > :not(.project-list-panorama) {
+.detail-page--panorama > :not(.project-list-panorama):not(.theme-switch) {
   position: relative;
   z-index: 1;
 }
