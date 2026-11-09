@@ -3,6 +3,7 @@ import { Link } from "@tanstack/react-router";
 import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ProjectGallery } from "@/components/image-preview";
+import { ThemeSwitch } from "@/components/theme-switch";
 import { PROJECTS, type PortfolioProject } from "@/lib/projects";
 import clickSound from "@/assets/button-trim.wav";
 
@@ -117,6 +118,23 @@ export function LoadingScreen({ pathname }: { pathname: string }) {
 }
 
 export function PortfolioPage({ section, project }: { section: "About me" | "My works" | "Social"; project?: PortfolioProject }) {
+  const isProjectList = section === "My works" && !project;
+  const [night, setNight] = useState(false);
+
+  useEffect(() => {
+    if (!isProjectList) return;
+    const savedNight = window.localStorage.getItem("vyneshinden-button-theme") === "dark";
+    setNight(savedNight);
+    document.documentElement.dataset.buttonTheme = savedNight ? "dark" : "light";
+  }, [isProjectList]);
+
+  function toggleNight() {
+    const nextNight = !night;
+    setNight(nextNight);
+    document.documentElement.dataset.buttonTheme = nextNight ? "dark" : "light";
+    window.localStorage.setItem("vyneshinden-button-theme", nextNight ? "dark" : "light");
+  }
+
   return (
     <main className="detail-page">
       <header className="detail-header">
@@ -151,8 +169,8 @@ export function PortfolioPage({ section, project }: { section: "About me" | "My 
             </span></Link></Button>)}
           </nav>
         </>}
-
       </div>
+      {isProjectList && <ThemeSwitch night={night} onToggle={toggleNight} />}
     </main>
   );
 }
