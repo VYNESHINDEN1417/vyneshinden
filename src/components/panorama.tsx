@@ -137,20 +137,24 @@ export function Panorama({ night = false }: { night?: boolean }) {
             ray.yz = mat2(cos(pitch), -sin(pitch), sin(pitch), cos(pitch)) * ray.yz;
             ray.xz = mat2(cos(yaw), sin(yaw), -sin(yaw), cos(yaw)) * ray.xz;
             ray.x = -ray.x;
-            // Keep panorama_4 rotated 180 degrees, but feather its four boundaries
-            // into the neighboring side faces to prevent a hard cubemap seam.
+            // Preserve panorama_4's 180-degree rotation. In a narrow band
+            // around its four edges, extend the top face's own edge color
+            // across the seam instead of blending it with the side faces.
             vec4 morningSide = textureCube(morning, ray);
             vec4 eveningSide = textureCube(evening, ray);
             vec3 topRay = ray;
-            topRay.xz = -topRay.xz;
             float topEdgeDistance = ray.y - max(abs(ray.x), abs(ray.z));
-            float topFaceBlend = ray.y > 0.0
-              ? smoothstep(0.0, 0.035, topEdgeDistance)
-              : 0.0;
+            float topEdgeBand = ray.y > 0.0 && topEdgeDistance <= 0.035 ? 1.0 : 0.0;
+            float topLimit = max(ray.y, 0.0) * 0.995;
+            float topExtent = max(abs(topRay.x), abs(topRay.z));
+            if (topExtent > topLimit && topExtent > 0.0) {
+              topRay.xz *= topLimit / topExtent;
+            }
+            topRay.xz = -topRay.xz;
             vec4 morningTop = textureCube(morning, topRay);
             vec4 eveningTop = textureCube(evening, topRay);
-            vec4 morningColor = mix(morningSide, morningTop, topFaceBlend);
-            vec4 eveningColor = mix(eveningSide, eveningTop, topFaceBlend);
+            vec4 morningColor = topEdgeBand > 0.5 ? morningTop : morningSide;
+            vec4 eveningColor = topEdgeBand > 0.5 ? eveningTop : eveningSide;
             gl_FragColor = mix(morningColor, eveningColor, blend);
             #include <colorspace_fragment>
           }`,
