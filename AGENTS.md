@@ -22,3 +22,4 @@
 - Keep the theme switch and panorama lighting state in the home route only so detail pages remain unchanged.
 - Render the home panorama in one client-mounted Three.js canvas with shader-blended cubemaps and a shared rotation clock so day/night fades cannot expose CSS cube edges or reset orientation.
 - Keep cubemap sampling in linear space and apply Three.js output color conversion in the custom shader so original image brightness survives blending.
+- Load the compressed morning cubemap before rendering, then preload the compressed night cubemap during idle time so first paint stays fast and day/night blends remain equally timed.

@@ -1,5 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { advancePanoramaBlend, panoramaYaw, PANORAMA_PITCH_DEGREES } from "../lib/panorama-motion";
+import {
+  advancePanoramaBlend,
+  panoramaYaw,
+  PANORAMA_FADE_SECONDS,
+  PANORAMA_PITCH_DEGREES,
+} from "../lib/panorama-motion";
 
 describe("panorama motion", () => {
   it("keeps the panorama level with zero vertical tilt", () => {
@@ -17,5 +22,13 @@ describe("panorama motion", () => {
   it("reverses a partial fade without resetting and returns to morning", () => {
     expect(advancePanoramaBlend(0.6, false, 0.2)).toBeCloseTo(0.4);
     expect(advancePanoramaBlend(0.4, false, 1)).toBe(0);
+  });
+  it("uses the same one-second transition length in both directions", () => {
+    expect(PANORAMA_FADE_SECONDS).toBe(1);
+    expect(advancePanoramaBlend(0, true, PANORAMA_FADE_SECONDS)).toBe(1);
+    expect(advancePanoramaBlend(1, false, PANORAMA_FADE_SECONDS)).toBe(0);
+    expect(advancePanoramaBlend(0, true, 0.25)).toBeCloseTo(
+      1 - advancePanoramaBlend(1, false, 0.25),
+    );
   });
 });

@@ -1,4 +1,5 @@
 # Portfolio roadmap
+- [ ] Prioritize first morning panorama render, preload the compressed night set in idle time, and verify equal day/night transition lengths.
 - [x] Restore original panorama brightness and level horizon; restore the original fade placement with a seamless black join and verify desktop/mobile transitions.
 - [x] Replace CSS panorama faces with seamless WebGL blending; preserve six-minute reverse rotation and theme orientation.
 - [x] Remove the bottom fade seam and verify day/night transitions on desktop and mobile.

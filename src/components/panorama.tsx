@@ -6,7 +6,6 @@ export function Panorama({ night = false }: { night?: boolean }) {
   const nightRef = useRef(night);
   const requestNightRef = useRef<(() => void) | null>(null);
 
-  // Keep the latest prop available to the animation loop immediately.
   nightRef.current = night;
 
   useEffect(() => {
@@ -18,6 +17,8 @@ export function Panorama({ night = false }: { night?: boolean }) {
     if (!scene) return;
     let disposed = false;
     let frame = 0;
+    let idleHandle: number | null = null;
+    let fallbackHandle: number | null = null;
     let cleanup = () => {};
 
     void import("three").then((THREE) => {
@@ -41,46 +42,80 @@ export function Panorama({ night = false }: { night?: boolean }) {
       scene.prepend(renderer.domElement);
 
       const loader = new THREE.CubeTextureLoader();
-      const paths = (set: string) => [3, 1, 4, 5, 2, 0].map(
-        (index) => `/media/panorama/${set}/panorama_${index}.png`,
-      );
+      const paths = (set: "morning" | "night") => {
+        const extension = set === "morning" ? "webp" : "jpg";
+        return [3, 1, 4, 5, 2, 0].map(
+          (index) => `/media/panorama/${set}/panorama_${index}.${extension}`,
+        );
+      };
 
-      const morning = loader.load(paths("morning"));
+      let morningLoaded = false;
       let evening: InstanceType<typeof THREE.CubeTexture> | null = null;
       let eveningLoaded = false;
       let eveningRequested = false;
+      let hasRenderedMorning = false;
+      let start = 0;
+      let previous = 0;
 
       const uniforms = {
-        morning: { value: morning },
-        evening: { value: morning },
+        morning: { value: null as InstanceType<typeof THREE.CubeTexture> | null },
+        evening: { value: null as InstanceType<typeof THREE.CubeTexture> | null },
         blend: { value: 0 },
         yaw: { value: 0 },
         aspect: { value: 1 },
       };
 
-      // The night request is triggered directly by the night prop change,
-      // rather than relying on the render loop to notice the toggle.
+      const cancelScheduledNightPreload = () => {
+        const idleWindow = window as Window & {
+          cancelIdleCallback?: (handle: number) => void;
+        };
+        if (idleHandle !== null) idleWindow.cancelIdleCallback?.(idleHandle);
+        if (fallbackHandle !== null) window.clearTimeout(fallbackHandle);
+        idleHandle = null;
+        fallbackHandle = null;
+      };
+
       const requestEvening = () => {
+        cancelScheduledNightPreload();
         if (eveningRequested || eveningLoaded || disposed) return;
         eveningRequested = true;
-        evening = loader.load(
+        const nightTexture = loader.load(
           paths("night"),
           (texture) => {
             if (disposed) {
               texture.dispose();
               return;
             }
+            evening = texture;
             uniforms.evening.value = texture;
             eveningLoaded = true;
           },
           undefined,
           () => {
+            evening?.dispose();
+            evening = null;
             eveningRequested = false;
           },
         );
+        evening = nightTexture;
       };
-      requestNightRef.current = requestEvening;
-      if (nightRef.current) requestEvening();
+
+      const scheduleNightPreload = () => {
+        if (eveningRequested || eveningLoaded || disposed) return;
+        const idleWindow = window as Window & {
+          requestIdleCallback?: (callback: () => void, options?: { timeout: number }) => number;
+        };
+        const loadNightWhenIdle = () => {
+          idleHandle = null;
+          fallbackHandle = null;
+          requestEvening();
+        };
+        if (idleWindow.requestIdleCallback) {
+          idleHandle = idleWindow.requestIdleCallback(loadNightWhenIdle, { timeout: 1200 });
+        } else {
+          fallbackHandle = window.setTimeout(loadNightWhenIdle, 200);
+        }
+      };
 
       const material = new THREE.ShaderMaterial({
         uniforms,
@@ -120,9 +155,8 @@ export function Panorama({ night = false }: { night?: boolean }) {
       const observer = new ResizeObserver(measure);
       observer.observe(scene);
       const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
-      const start = performance.now();
-      let previous = start;
       const tick = (now: number) => {
+        if (disposed || !morningLoaded) return;
         uniforms.yaw.value = reducedMotion.matches ? 0 : panoramaYaw((now - start) / 1000);
         uniforms.blend.value = advancePanoramaBlend(
           uniforms.blend.value,
@@ -131,10 +165,42 @@ export function Panorama({ night = false }: { night?: boolean }) {
         );
         previous = now;
         renderer.render(world, camera);
+        if (!hasRenderedMorning) {
+          hasRenderedMorning = true;
+          scene.dataset.sceneReady = "true";
+          scheduleNightPreload();
+        }
         frame = requestAnimationFrame(tick);
       };
+
+      const morning = loader.load(
+        paths("morning"),
+        (texture) => {
+          if (disposed) {
+            texture.dispose();
+            return;
+          }
+          uniforms.morning.value = texture;
+          uniforms.evening.value = evening ?? texture;
+          morningLoaded = true;
+          start = performance.now();
+          previous = start;
+          frame = requestAnimationFrame(tick);
+        },
+        undefined,
+        () => {
+          scene.dataset.sceneReady = "error";
+        },
+      );
+      uniforms.morning.value = morning;
+      uniforms.evening.value = morning;
+
+      requestNightRef.current = requestEvening;
+      if (nightRef.current) requestEvening();
+
       cleanup = () => {
         requestNightRef.current = null;
+        cancelScheduledNightPreload();
         observer.disconnect();
         geometry.dispose();
         material.dispose();
@@ -142,12 +208,12 @@ export function Panorama({ night = false }: { night?: boolean }) {
         evening?.dispose();
         renderer.dispose();
         renderer.domElement.remove();
+        delete scene.dataset.sceneReady;
       };
       if (disposed) {
         cleanup();
         return;
       }
-      frame = requestAnimationFrame(tick);
     }).catch(() => {
       // Keep the static CSS cover visible if the Three.js chunk cannot be loaded.
     });
