@@ -4,6 +4,7 @@ import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ProjectGallery } from "@/components/image-preview";
 import { ThemeSwitch } from "@/components/theme-switch";
+import { Panorama } from "@/components/panorama";
 import { PROJECTS, type PortfolioProject } from "@/lib/projects";
 import clickSound from "@/assets/button-trim.wav";
 
@@ -136,7 +137,8 @@ export function PortfolioPage({ section, project }: { section: "About me" | "My 
   }
 
   return (
-    <main className="detail-page">
+    <main className={isProjectList ? "detail-page detail-page--panorama" : "detail-page"}>
+      {isProjectList && <div className="project-list-panorama" aria-hidden="true"><Panorama night={night} /><div className="project-list-panorama-overlay" /></div>}
       <header className="detail-header">
         <Button variant="ghost" asChild><Link to={project ? "/works" : "/"} onPointerDown={playClickSoundOnPointerDown}><ArrowLeft /> Back</Link></Button>
         <Link to="/" onPointerDown={playClickSoundOnPointerDown} aria-label="VYNESHINDEN home"><img className="detail-logo" src="/media/title.png" alt="VYNESHINDEN" /></Link>
