@@ -38,6 +38,7 @@ export function ProjectGallery({ project }: { project: PortfolioProject }) {
   }, [project.images.length]);
 
   if (!image) return null;
+  const filename = image.src.split("/").at(-1);
   return (
     <figure className="work-figure">
       <Button variant="ghost" className={`work-image-button${project.images.length > 1 ? " gallery-main-image" : ""}`} aria-label={`Preview ${image.alt}`} onPointerDown={playClickSoundOnPointerDown} onClick={() => setOpen(true)}>
@@ -59,6 +60,7 @@ export function ProjectGallery({ project }: { project: PortfolioProject }) {
       <h2 className="work-title">{project.title}</h2>
       <div className="work-caption-row">
         <figcaption style={{ color: "#FFD700" }}>Click the image to pinch zoom</figcaption>
+        <Button variant="link" className="image-download" asChild><a href={image.src} download={filename} onPointerDown={playClickSoundOnPointerDown}>Download image</a></Button>
       </div>
 
       <Dialog.Root open={open} onOpenChange={setOpen}>
