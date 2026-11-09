@@ -4,7 +4,7 @@ import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { playClickSoundOnPointerDown } from "@/components/portfolio";
 
-export function BackgroundMusic() {
+export function BackgroundMusic({ enabled = true }: { enabled?: boolean }) {
   const isHome = useRouterState({ select: (state) => state.location.pathname === "/" });
   const audioRef = useRef<HTMLAudioElement>(null);
   const dialogRef = useRef<HTMLDialogElement>(null);
@@ -20,11 +20,18 @@ export function BackgroundMusic() {
   }
 
   useEffect(() => {
-    if (welcomeOpen) dialogRef.current?.showModal();
-  }, [welcomeOpen]);
+    const dialog = dialogRef.current;
+    if (enabled && welcomeOpen) dialog?.showModal();
+    else if (dialog?.open) dialog.close();
+  }, [enabled, welcomeOpen]);
 
   useEffect(() => {
     const audio = audioRef.current;
+    if (!enabled) {
+      audio?.pause();
+      setWelcomeOpen(false);
+      return;
+    }
     if (!audio || welcomeOpen) return;
     const start = () => {
       if (audio.paused) void audio.play().catch(() => {
@@ -38,7 +45,7 @@ export function BackgroundMusic() {
       document.removeEventListener("pointerdown", start, true);
       document.removeEventListener("keydown", start, true);
     };
-  }, [welcomeOpen]);
+  }, [enabled, welcomeOpen]);
 
   function enter() {
     const audio = audioRef.current;
@@ -47,9 +54,9 @@ export function BackgroundMusic() {
   }
 
   return <>
-    <audio ref={audioRef} src="/media/sweden.mp3" loop preload="auto" aria-hidden="true" />
-    {isHome && <Button variant="music" size="music" className="music-corner" type="button" aria-haspopup="dialog" aria-expanded={welcomeOpen} onPointerDown={playClickSoundOnPointerDown} onClick={openMusic}><span>Music</span></Button>}
-    {welcomeOpen && <dialog ref={dialogRef} className="modal-card music-welcome" aria-label="Welcome to my portfolio" aria-describedby="music-welcome-message" onCancel={(event) => event.preventDefault()}>
+    <audio ref={audioRef} src="/media/sweden.mp3" loop preload={enabled ? "auto" : "none"} aria-hidden="true" />
+    {enabled && isHome && <Button variant="music" size="music" className="music-corner" type="button" aria-haspopup="dialog" aria-expanded={welcomeOpen} onPointerDown={playClickSoundOnPointerDown} onClick={openMusic}><span>Music</span></Button>}
+    {enabled && welcomeOpen && <dialog ref={dialogRef} className="modal-card music-welcome" aria-label="Welcome to my portfolio" aria-describedby="music-welcome-message" onCancel={(event) => event.preventDefault()}>
       <p id="music-welcome-message">Welcome to my portfolio, a music will be played</p>
       <div className="music-welcome-actions">
         <Button variant="game" size="game" type="button" onPointerDown={playClickSoundOnPointerDown} onClick={enter}><span>play music</span></Button>
