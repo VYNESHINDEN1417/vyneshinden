@@ -15,6 +15,7 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { LoadingScreen } from "@/components/portfolio";
 import { BackgroundMusic } from "@/components/background-music";
+import { Panorama } from "@/components/panorama";
 import { VIEW_MODE_BOOT_SCRIPT } from "@/lib/view-mode";
 import { trackPageView } from "@/lib/site-analytics";
 
@@ -175,6 +176,9 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <BackgroundMusic enabled={pathname !== "/analytics"} />
+      <div className={`persistent-panorama${pathname === "/" ? " is-visible" : " is-hidden"}`} aria-hidden="true">
+        <Panorama />
+      </div>
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       <Outlet />
       <LoadingScreen pathname={pathname} />
