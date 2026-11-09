@@ -531,3 +531,12 @@ html[data-view="desktop"] .project-button .project-date { font-size: 13px; }
 html[data-view="desktop"] .gallery-strip-wrap { max-width: none; }
 html[data-view="desktop"] .gallery-strip .gallery-thumbnail { flex-basis: 130px; width: 130px; min-width: 130px; height: 100px; }
 .panorama-face--night { transition: opacity 1s ease-in-out; }
+
+
+/* Discourage saving portfolio images through long-press, dragging, or selection. */
+img {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-user-drag: none;
+}
