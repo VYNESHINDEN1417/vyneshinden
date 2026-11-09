@@ -540,3 +540,32 @@ img {
   user-select: none;
   -webkit-user-drag: none;
 }
+
+
+/* Reuse the animated day/night panorama behind the project index only. */
+.detail-page--panorama {
+  position: relative;
+  isolation: isolate;
+  background-color: #000;
+  background-image: none;
+}
+.project-list-panorama {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.project-list-panorama .panorama {
+  position: absolute;
+  inset: 0;
+}
+.project-list-panorama-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0, 0, 0, .72), rgba(0, 0, 0, .58) 45%, rgba(0, 0, 0, .76));
+}
+.detail-page--panorama > :not(.project-list-panorama) {
+  position: relative;
+  z-index: 1;
+}
