@@ -18,6 +18,21 @@ export function Panorama({ night = false }: { night?: boolean }) {
     if (night) requestNightRef.current?.();
   }, [night]);
 
+  // The persistent panorama lives above the homepage route, so follow the shared
+  // document theme attribute instead of relying on homepage-local React state.
+  useEffect(() => {
+    const root = document.documentElement;
+    const syncTheme = () => {
+      const isNight = root.dataset.buttonTheme === "dark";
+      nightRef.current = isNight;
+      if (isNight) requestNightRef.current?.();
+    };
+    syncTheme();
+    const observer = new MutationObserver(syncTheme);
+    observer.observe(root, { attributes: true, attributeFilter: ["data-button-theme"] });
+    return () => observer.disconnect();
+  }, []);
+
   useEffect(() => {
     const scene = sceneRef.current;
     if (!scene) return;
