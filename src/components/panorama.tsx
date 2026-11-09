@@ -14,29 +14,70 @@ export function Panorama({ night = false }: { night?: boolean }) {
     let frame = 0;
     let cleanup = () => {};
 
-    // Import and create WebGL only after mounting, never during server rendering.
-    void import("three").then(async (THREE) => {
+    // Load Three.js only in the browser; keep the CSS loading cover if WebGL is unavailable.
+    void import("three").then((THREE) => {
       if (disposed) return;
       let renderer: InstanceType<typeof THREE.WebGLRenderer>;
       try {
-        renderer = new THREE.WebGLRenderer({ antialias: false, alpha: false });
+        renderer = new THREE.WebGLRenderer({
+          antialias: false,
+          alpha: false,
+          powerPreference: "low-power",
+        });
       } catch {
-        return; // The original animated background remains visible without WebGL.
+        return;
       }
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+      // A lower pixel ratio reduces GPU work on phones without changing the layout size.
+      const pixelRatio = Math.min(
+        window.devicePixelRatio || 1,
+        window.innerWidth < 768 ? 1.25 : 1.75,
+      );
+      renderer.setPixelRatio(pixelRatio);
       scene.prepend(renderer.domElement);
+
       const loader = new THREE.CubeTextureLoader();
       // WebGL order: +X, -X, +Y, -Y, +Z, -Z.
       const paths = (set: string) => [3, 1, 4, 5, 2, 0].map(
         (index) => `/media/panorama/${set}/panorama_${index}.png`,
       );
+
+      // Fetch only the morning environment at startup. The night set is ~half
+      // of the panorama payload and is requested only when the visitor enables it.
       const morning = loader.load(paths("morning"));
-      const evening = loader.load(paths("night"));
+      let evening: InstanceType<typeof THREE.CubeTexture> | null = null;
+      let eveningLoaded = false;
+      let eveningRequested = false;
+
       const uniforms = {
-        morning: { value: morning }, evening: { value: evening },
-        blend: { value: nightRef.current ? 1 : 0 },
-        yaw: { value: 0 }, aspect: { value: 1 },
+        morning: { value: morning },
+        evening: { value: morning },
+        blend: { value: 0 },
+        yaw: { value: 0 },
+        aspect: { value: 1 },
       };
+
+      const requestEvening = () => {
+        if (eveningRequested || eveningLoaded || disposed) return;
+        eveningRequested = true;
+        evening = loader.load(
+          paths("night"),
+          (texture) => {
+            if (disposed) {
+              texture.dispose();
+              return;
+            }
+            uniforms.evening.value = texture;
+            eveningLoaded = true;
+          },
+          undefined,
+          () => {
+            // Permit a later retry if the night assets fail to load temporarily.
+            eveningRequested = false;
+          },
+        );
+      };
+
       const material = new THREE.ShaderMaterial({
         uniforms,
         depthTest: false,
@@ -69,7 +110,7 @@ export function Panorama({ night = false }: { night?: boolean }) {
       const measure = () => {
         const width = Math.max(1, scene.clientWidth);
         const height = Math.max(1, scene.clientHeight);
-        renderer.setSize(width, height);
+        renderer.setSize(width, height, false);
         uniforms.aspect.value = width / height;
       };
       measure();
@@ -79,20 +120,36 @@ export function Panorama({ night = false }: { night?: boolean }) {
       const start = performance.now();
       let previous = start;
       const tick = (now: number) => {
+        if (nightRef.current && !eveningRequested && !eveningLoaded) requestEvening();
+        const showNight = nightRef.current && eveningLoaded;
         uniforms.yaw.value = reducedMotion.matches ? 0 : panoramaYaw((now - start) / 1000);
-        uniforms.blend.value = advancePanoramaBlend(uniforms.blend.value, nightRef.current, (now - previous) / 1000);
+        uniforms.blend.value = advancePanoramaBlend(
+          uniforms.blend.value,
+          showNight,
+          (now - previous) / 1000,
+        );
         previous = now;
         renderer.render(world, camera);
         frame = requestAnimationFrame(tick);
       };
       cleanup = () => {
         observer.disconnect();
-        geometry.dispose(); material.dispose(); morning.dispose(); evening.dispose();
-        renderer.dispose(); renderer.domElement.remove();
+        geometry.dispose();
+        material.dispose();
+        morning.dispose();
+        evening?.dispose();
+        renderer.dispose();
+        renderer.domElement.remove();
       };
-      if (disposed) { cleanup(); return; }
+      if (disposed) {
+        cleanup();
+        return;
+      }
       frame = requestAnimationFrame(tick);
+    }).catch(() => {
+      // Keep the static CSS cover visible if the Three.js chunk cannot be loaded.
     });
+
     return () => {
       disposed = true;
       cancelAnimationFrame(frame);
