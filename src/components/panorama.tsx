@@ -167,7 +167,7 @@ export function Panorama({ night = false }: { night?: boolean }) {
         renderer.render(world, camera);
         if (!hasRenderedMorning) {
           hasRenderedMorning = true;
-          scene.dataset.sceneReady = "true";
+          scene.dataset["sceneReady"] = "true";
           scheduleNightPreload();
         }
         frame = requestAnimationFrame(tick);
@@ -189,7 +189,7 @@ export function Panorama({ night = false }: { night?: boolean }) {
         },
         undefined,
         () => {
-          scene.dataset.sceneReady = "error";
+          scene.dataset["sceneReady"] = "error";
         },
       );
       uniforms.morning.value = morning;
@@ -208,7 +208,7 @@ export function Panorama({ night = false }: { night?: boolean }) {
         evening?.dispose();
         renderer.dispose();
         renderer.domElement.remove();
-        delete scene.dataset.sceneReady;
+        delete scene.dataset["sceneReady"];
       };
       if (disposed) {
         cleanup();
