@@ -108,6 +108,7 @@ function RootShell({ children }: { children: ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
+        <script dangerouslySetInnerHTML={{ __html: `try { document.documentElement.dataset.buttonTheme = localStorage.getItem("vyneshinden-button-theme") === "dark" ? "dark" : "light"; } catch { document.documentElement.dataset.buttonTheme = "light"; }` }} />
         <script dangerouslySetInnerHTML={{ __html: VIEW_MODE_BOOT_SCRIPT }} />
         <HeadContent />
       </head>
