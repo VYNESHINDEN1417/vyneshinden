@@ -137,11 +137,21 @@ export function Panorama({ night = false }: { night?: boolean }) {
             ray.yz = mat2(cos(pitch), -sin(pitch), sin(pitch), cos(pitch)) * ray.yz;
             ray.xz = mat2(cos(yaw), sin(yaw), -sin(yaw), cos(yaw)) * ray.xz;
             ray.x = -ray.x;
-            // Trial: rotate the upward-facing panorama_4 cube face by 180 degrees (two quarter-turns).
-            if (ray.y > 0.0 && abs(ray.y) > abs(ray.x) && abs(ray.y) > abs(ray.z)) {
-              ray.xz = -ray.xz;
-            }
-            gl_FragColor = mix(textureCube(morning, ray), textureCube(evening, ray), blend);
+            // Keep panorama_4 rotated 180 degrees, but feather its four boundaries
+            // into the neighboring side faces to prevent a hard cubemap seam.
+            vec4 morningSide = textureCube(morning, ray);
+            vec4 eveningSide = textureCube(evening, ray);
+            vec3 topRay = ray;
+            topRay.xz = -topRay.xz;
+            float topEdgeDistance = ray.y - max(abs(ray.x), abs(ray.z));
+            float topFaceBlend = ray.y > 0.0
+              ? smoothstep(0.0, 0.035, topEdgeDistance)
+              : 0.0;
+            vec4 morningTop = textureCube(morning, topRay);
+            vec4 eveningTop = textureCube(evening, topRay);
+            vec4 morningColor = mix(morningSide, morningTop, topFaceBlend);
+            vec4 eveningColor = mix(eveningSide, eveningTop, topFaceBlend);
+            gl_FragColor = mix(morningColor, eveningColor, blend);
             #include <colorspace_fragment>
           }`,
       });
