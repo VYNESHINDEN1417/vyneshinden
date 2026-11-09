@@ -4,8 +4,14 @@ import { advancePanoramaBlend, panoramaYaw, PANORAMA_PITCH_DEGREES } from "@/lib
 export function Panorama({ night = false }: { night?: boolean }) {
   const sceneRef = useRef<HTMLDivElement>(null);
   const nightRef = useRef(night);
+  const requestNightRef = useRef<(() => void) | null>(null);
 
-  useEffect(() => { nightRef.current = night; }, [night]);
+  // Keep the latest prop available to the animation loop immediately.
+  nightRef.current = night;
+
+  useEffect(() => {
+    if (night) requestNightRef.current?.();
+  }, [night]);
 
   useEffect(() => {
     const scene = sceneRef.current;
@@ -14,7 +20,6 @@ export function Panorama({ night = false }: { night?: boolean }) {
     let frame = 0;
     let cleanup = () => {};
 
-    // Load Three.js only in the browser; keep the CSS loading cover if WebGL is unavailable.
     void import("three").then((THREE) => {
       if (disposed) return;
       let renderer: InstanceType<typeof THREE.WebGLRenderer>;
@@ -28,7 +33,6 @@ export function Panorama({ night = false }: { night?: boolean }) {
         return;
       }
 
-      // A lower pixel ratio reduces GPU work on phones without changing the layout size.
       const pixelRatio = Math.min(
         window.devicePixelRatio || 1,
         window.innerWidth < 768 ? 1.25 : 1.75,
@@ -37,13 +41,10 @@ export function Panorama({ night = false }: { night?: boolean }) {
       scene.prepend(renderer.domElement);
 
       const loader = new THREE.CubeTextureLoader();
-      // WebGL order: +X, -X, +Y, -Y, +Z, -Z.
       const paths = (set: string) => [3, 1, 4, 5, 2, 0].map(
         (index) => `/media/panorama/${set}/panorama_${index}.png`,
       );
 
-      // Fetch only the morning environment at startup. The night set is ~half
-      // of the panorama payload and is requested only when the visitor enables it.
       const morning = loader.load(paths("morning"));
       let evening: InstanceType<typeof THREE.CubeTexture> | null = null;
       let eveningLoaded = false;
@@ -57,6 +58,8 @@ export function Panorama({ night = false }: { night?: boolean }) {
         aspect: { value: 1 },
       };
 
+      // The night request is triggered directly by the night prop change,
+      // rather than relying on the render loop to notice the toggle.
       const requestEvening = () => {
         if (eveningRequested || eveningLoaded || disposed) return;
         eveningRequested = true;
@@ -72,11 +75,12 @@ export function Panorama({ night = false }: { night?: boolean }) {
           },
           undefined,
           () => {
-            // Permit a later retry if the night assets fail to load temporarily.
             eveningRequested = false;
           },
         );
       };
+      requestNightRef.current = requestEvening;
+      if (nightRef.current) requestEvening();
 
       const material = new THREE.ShaderMaterial({
         uniforms,
@@ -97,7 +101,6 @@ export function Panorama({ night = false }: { night?: boolean }) {
             float pitch = radians(${PANORAMA_PITCH_DEGREES.toFixed(1)});
             ray.yz = mat2(cos(pitch), -sin(pitch), sin(pitch), cos(pitch)) * ray.yz;
             ray.xz = mat2(cos(yaw), sin(yaw), -sin(yaw), cos(yaw)) * ray.xz;
-            // Minecraft faces are viewed from inside; cube sampling needs X mirrored.
             ray.x = -ray.x;
             gl_FragColor = mix(textureCube(morning, ray), textureCube(evening, ray), blend);
             #include <colorspace_fragment>
@@ -120,12 +123,10 @@ export function Panorama({ night = false }: { night?: boolean }) {
       const start = performance.now();
       let previous = start;
       const tick = (now: number) => {
-        if (nightRef.current && !eveningRequested && !eveningLoaded) requestEvening();
-        const showNight = nightRef.current && eveningLoaded;
         uniforms.yaw.value = reducedMotion.matches ? 0 : panoramaYaw((now - start) / 1000);
         uniforms.blend.value = advancePanoramaBlend(
           uniforms.blend.value,
-          showNight,
+          nightRef.current && eveningLoaded,
           (now - previous) / 1000,
         );
         previous = now;
@@ -133,6 +134,7 @@ export function Panorama({ night = false }: { night?: boolean }) {
         frame = requestAnimationFrame(tick);
       };
       cleanup = () => {
+        requestNightRef.current = null;
         observer.disconnect();
         geometry.dispose();
         material.dispose();
