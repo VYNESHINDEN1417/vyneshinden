@@ -137,6 +137,10 @@ export function Panorama({ night = false }: { night?: boolean }) {
             ray.yz = mat2(cos(pitch), -sin(pitch), sin(pitch), cos(pitch)) * ray.yz;
             ray.xz = mat2(cos(yaw), sin(yaw), -sin(yaw), cos(yaw)) * ray.xz;
             ray.x = -ray.x;
+            // Trial: rotate the upward-facing panorama_4 cube face by 180 degrees (two quarter-turns).
+            if (ray.y > 0.0 && abs(ray.y) > abs(ray.x) && abs(ray.y) > abs(ray.z)) {
+              ray.xz = -ray.xz;
+            }
             gl_FragColor = mix(textureCube(morning, ray), textureCube(evening, ray), blend);
             #include <colorspace_fragment>
           }`,

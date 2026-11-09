@@ -31,6 +31,17 @@ function Index() {
   const [messageOpen, setMessageOpen] = useState(false);
   const [night, setNight] = useState(false);
   useEffect(() => {
+    const savedNight = window.localStorage.getItem("vyneshinden-button-theme") === "dark";
+    setNight(savedNight);
+    document.documentElement.dataset.buttonTheme = savedNight ? "dark" : "light";
+  }, []);
+  function toggleNight() {
+    const nextNight = !night;
+    setNight(nextNight);
+    document.documentElement.dataset.buttonTheme = nextNight ? "dark" : "light";
+    window.localStorage.setItem("vyneshinden-button-theme", nextNight ? "dark" : "light");
+  }
+  useEffect(() => {
     if (!messageOpen) return;
     const onKey = (event: KeyboardEvent) => {
       if (event.key === "Escape") setMessageOpen(false);
@@ -69,7 +80,7 @@ function Index() {
         <Button variant="game" size="game" type="button" onPointerDown={playClickSoundOnPointerDown} onClick={() => setMessageOpen(true)}><span>Message me</span></Button>
       </nav>
       </div>
-      <ThemeSwitch night={night} onToggle={() => setNight((value) => !value)} />
+      <ThemeSwitch night={night} onToggle={toggleNight} />
       {messageOpen &&
         createPortal(
           <div className="modal-overlay" role="dialog" aria-modal="true" aria-label="Message me" onClick={() => setMessageOpen(false)}>
