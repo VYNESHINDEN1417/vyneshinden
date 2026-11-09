@@ -141,7 +141,7 @@ export function Panorama({ night = false }: { night?: boolean }) {
             // by extending its sampling range toward the horizon. Preserve
             // its original 180-degree rotation and leave side faces untouched.
             vec3 topRay = ray;
-            const float topFaceOffset = 0.035;
+            const float topFaceOffset = 0.055;
             if (ray.y > 0.0 && ray.y + topFaceOffset > max(abs(ray.x), abs(ray.z))) {
               topRay.y += topFaceOffset;
               topRay.xz = -topRay.xz;
