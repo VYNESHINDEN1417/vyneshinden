@@ -157,6 +157,7 @@ export function PortfolioPage({ section, project }: { section: "About me" | "My 
           </div>
         </> : project ? <>
           {project.images.length > 0 ? <ProjectGallery key={project.id} project={project} /> : <><h2 className="work-title">{project.title}</h2><p className="work-description">No project added yet.</p></>}
+          {project.id === "1" && <p className="work-description" style={{ textAlign: "justify" }}>USS Dwight D. Eisenhower (CVN-69) is a Minecraft recreation of one of the United States Navy’s Nimitz-class aircraft carriers. This project brings the ship’s imposing profile and unmistakable carrier layout into a block-built form, preserving its identity as a modern naval flagship while presenting the build through a collection of in-game views.</p>}
           {project.id === "8" && <p className="work-description">USS Wisconsin (BB-64) is an Iowa-class battleship built for the United States Navy (USN) in the 1940s, i built this ship on January 2022. A Big Minecraft military channel on YouTube made a tutorial for this built, he's name is <span className="work-creator">CraftyFoxe/MC Military Force</span>, here is the <a className="work-video-link" href="https://youtu.be/jkjA2PICDks" target="_blank" rel="noopener noreferrer" onPointerDown={playClickSoundOnPointerDown}>VIDEO LINK</a></p>}
           {project.id === "2" && <p className="work-description">IJN ATAGO — Minecraft ship gallery.</p>}
           {project.id === "7" && <p className="work-description">BOMBOCLAT</p>}

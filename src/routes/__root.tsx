@@ -126,6 +126,21 @@ function RootComponent() {
   const lastTrackedPath = useRef<string | null>(null);
 
   useEffect(() => {
+    const blockImageContextMenu = (event: Event) => {
+      if (event.target instanceof HTMLImageElement) event.preventDefault();
+    };
+    const blockImageDrag = (event: Event) => {
+      if (event.target instanceof HTMLImageElement) event.preventDefault();
+    };
+    document.addEventListener("contextmenu", blockImageContextMenu);
+    document.addEventListener("dragstart", blockImageDrag);
+    return () => {
+      document.removeEventListener("contextmenu", blockImageContextMenu);
+      document.removeEventListener("dragstart", blockImageDrag);
+    };
+  }, []);
+
+  useEffect(() => {
     if (lastTrackedPath.current === pathname) return;
     lastTrackedPath.current = pathname;
     trackPageView(pathname);
