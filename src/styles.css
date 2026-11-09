@@ -439,7 +439,7 @@ html[data-view="mobile"] .gallery-arrow { width: 32px; }
 .project-button .project-date { flex-shrink: 0; padding: 0; width: auto; height: auto; font-size: 10px; background: none; box-shadow: none; }
 .project-button:active .project-name, .project-button:active .project-date, .project-button:active .project-thumb { transform: none; }
 html[data-view="mobile"] .project-button > span { gap: 8px; }
-html[data-view="mobile"] .project-button .project-thumb { width: 44px; height: 36px; }
+html[data-view="mobile"] .project-button .project-thumb { width: 46px; height: 38px; }
 html[data-view="mobile"] .project-button .project-name { font-size: 10px; }
 html[data-view="mobile"] .project-button .project-date { font-size: 8px; }
 
