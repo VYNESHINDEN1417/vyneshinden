@@ -137,18 +137,16 @@ export function Panorama({ night = false }: { night?: boolean }) {
             ray.yz = mat2(cos(pitch), -sin(pitch), sin(pitch), cos(pitch)) * ray.yz;
             ray.xz = mat2(cos(yaw), sin(yaw), -sin(yaw), cos(yaw)) * ray.xz;
             ray.x = -ray.x;
-            // Expand panorama_4 slightly past its original cubemap boundary
-            // to overlap the side faces and close the visible gap. Keep its
-            // established 180-degree rotation; do not blend or add filler.
+            // Nudge the upward-facing panorama_4 face slightly downward
+            // by extending its sampling range toward the horizon. Preserve
+            // its original 180-degree rotation and leave side faces untouched.
             vec3 topRay = ray;
-            float topEdgeRatio = ray.y / max(max(abs(ray.x), abs(ray.z)), 0.0001);
-            if (ray.y > 0.0 && topEdgeRatio > 0.94) {
-              topRay.y *= 1.06;
+            const float topFaceOffset = 0.035;
+            if (ray.y > 0.0 && ray.y + topFaceOffset > max(abs(ray.x), abs(ray.z))) {
+              topRay.y += topFaceOffset;
               topRay.xz = -topRay.xz;
             }
-            vec4 morningColor = textureCube(morning, topRay);
-            vec4 eveningColor = textureCube(evening, topRay);
-            gl_FragColor = mix(morningColor, eveningColor, blend);
+            gl_FragColor = mix(textureCube(morning, topRay), textureCube(evening, topRay), blend);
             #include <colorspace_fragment>
           }`,
       });
