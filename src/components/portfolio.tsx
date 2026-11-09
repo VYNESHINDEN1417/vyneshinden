@@ -39,7 +39,26 @@ export function playClickSound() {
 
 export function playClickSoundOnPointerDown(event: ReactPointerEvent) {
   if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
-  playClickSound();
+
+  // A pointer-down is not necessarily a click: touch scrolling and swiping
+  // can begin on top of a button. Only play after a short, stationary tap.
+  const target = event.currentTarget;
+  const pointerId = event.pointerId;
+  const startX = event.clientX;
+  const startY = event.clientY;
+  const onPointerUp = (upEvent: PointerEvent) => {
+    if (upEvent.pointerId !== pointerId) return;
+    cleanup();
+    const distance = Math.hypot(upEvent.clientX - startX, upEvent.clientY - startY);
+    const releasedInside = upEvent.target instanceof Node && target.contains(upEvent.target);
+    if (distance <= 10 && releasedInside) playClickSound();
+  };
+  const cleanup = () => {
+    window.removeEventListener("pointerup", onPointerUp, true);
+    window.removeEventListener("pointercancel", cleanup, true);
+  };
+  window.addEventListener("pointerup", onPointerUp, true);
+  window.addEventListener("pointercancel", cleanup, true);
 }
 
 export function markButtonClick(event: MouseEvent<HTMLAnchorElement>) {
