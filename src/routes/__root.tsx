@@ -132,7 +132,7 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <BackgroundMusic />
+      {pathname !== "/analytics" && <BackgroundMusic />}
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       <Outlet />
       <LoadingScreen pathname={pathname} />
