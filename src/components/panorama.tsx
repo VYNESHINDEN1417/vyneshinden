@@ -137,16 +137,11 @@ export function Panorama({ night = false }: { night?: boolean }) {
             ray.yz = mat2(cos(pitch), -sin(pitch), sin(pitch), cos(pitch)) * ray.yz;
             ray.xz = mat2(cos(yaw), sin(yaw), -sin(yaw), cos(yaw)) * ray.xz;
             ray.x = -ray.x;
-            // Nudge the upward-facing panorama_4 face slightly downward
-            // by extending its sampling range toward the horizon. Preserve
-            // its original 180-degree rotation and leave side faces untouched.
-            vec3 topRay = ray;
-            const float topFaceOffset = 0.055;
-            if (ray.y > 0.0 && ray.y + topFaceOffset > max(abs(ray.x), abs(ray.z))) {
-              topRay.y += topFaceOffset;
-              topRay.xz = -topRay.xz;
+            // Preserve the original 180-degree rotation of the upward-facing panorama_4 face.
+            if (ray.y > 0.0 && abs(ray.y) > abs(ray.x) && abs(ray.y) > abs(ray.z)) {
+              ray.xz = -ray.xz;
             }
-            gl_FragColor = mix(textureCube(morning, topRay), textureCube(evening, topRay), blend);
+            gl_FragColor = mix(textureCube(morning, ray), textureCube(evening, ray), blend);
             #include <colorspace_fragment>
           }`,
       });
