@@ -835,37 +835,36 @@ html[data-view="mobile"] .theme-switch__lamp {
   height: 46px;
 }
 
-
-/* Clearly smaller redstone lamp switch: 76 × 38px, with matching full-height thumb. */
+/* Compact redstone lamp switch: 56 × 28px, with a full-height sliding lamp. */
 .theme-switch {
-  width: 76px !important;
-  min-width: 76px !important;
-  height: 38px !important;
+  width: 56px !important;
+  min-width: 56px !important;
+  height: 28px !important;
 }
 .theme-switch__thumb {
-  width: 38px !important;
-  height: 38px !important;
+  width: 28px !important;
+  height: 28px !important;
 }
 .theme-switch[aria-checked="false"] .theme-switch__thumb {
-  transform: translateX(38px) !important;
+  transform: translateX(28px) !important;
 }
 .theme-switch__lamp {
-  width: 38px !important;
-  height: 38px !important;
+  width: 28px !important;
+  height: 28px !important;
 }
 html[data-view="mobile"] .theme-switch {
-  width: 76px !important;
-  min-width: 76px !important;
-  height: 38px !important;
+  width: 56px !important;
+  min-width: 56px !important;
+  height: 28px !important;
 }
 html[data-view="mobile"] .theme-switch__thumb {
-  width: 38px !important;
-  height: 38px !important;
+  width: 28px !important;
+  height: 28px !important;
 }
 html[data-view="mobile"] .theme-switch[aria-checked="false"] .theme-switch__thumb {
-  transform: translateX(38px) !important;
+  transform: translateX(28px) !important;
 }
 html[data-view="mobile"] .theme-switch__lamp {
-  width: 38px !important;
-  height: 38px !important;
+  width: 28px !important;
+  height: 28px !important;
 }
