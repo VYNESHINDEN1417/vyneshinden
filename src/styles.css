@@ -202,7 +202,7 @@ button, input, textarea, select { font-family: inherit; }
 .hero-title img { width: 100%; height: auto; }
 .home-menu { position: relative; z-index: 2; width: calc((100% - 48px) * .85); max-width: 460px; margin: calc(max(-208px, calc(210px - clamp(320px, 58svh, 650px))) + 96px) auto 0; }
 .main-menu { position: relative; display: grid; gap: 22.95px; }
-.secondary-menu { position: relative; margin-top: 13.6px; display: grid; grid-template-columns: 1fr 1fr; gap: 13.6px; }
+.secondary-menu { position: relative; margin-top: 36px; display: grid; grid-template-columns: 1fr 1fr; gap: 13.6px; }
 .home-menu .game-button-size { height: 45.9px; }
 .home-menu .btn-174 span { font-size: 15.3px; padding: 10.2px 17px; }
 .modal-overlay { position: fixed; inset: 0; z-index: 90; display: grid; place-items: center; padding: 24px; background: oklch(0 0 0 / 35%); }
