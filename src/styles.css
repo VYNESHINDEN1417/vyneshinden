@@ -785,3 +785,17 @@ html[data-view="mobile"] .theme-switch__lamp { width: 50px; height: 50px; }
 .theme-switch[aria-checked="false"] .theme-switch__lamp--on {
   filter: none !important;
 }
+
+
+/* Chromium pixel-art rendering: use pixelated only (crisp-edges can override it). */
+.theme-switch__lamp,
+.theme-switch__thumb img {
+  image-rendering: pixelated !important;
+  image-rendering: -moz-crisp-edges;
+  -ms-interpolation-mode: nearest-neighbor;
+  filter: none !important;
+  transform: translateZ(0);
+}
+.theme-switch__lamp--on {
+  filter: none !important;
+}
