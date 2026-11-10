@@ -772,3 +772,16 @@ html[data-view="mobile"] .theme-switch__thumb {
 }
 html[data-view="mobile"] .theme-switch[aria-checked="false"] .theme-switch__thumb { transform: translateX(50px); }
 html[data-view="mobile"] .theme-switch__lamp { width: 50px; height: 50px; }
+
+
+/* Keep the Minecraft lamp artwork hard-edged and pixel-crisp at display size. */
+.theme-switch__lamp {
+  image-rendering: pixelated !important;
+  image-rendering: crisp-edges !important;
+  object-fit: fill !important;
+  filter: none !important;
+  -webkit-font-smoothing: none;
+}
+.theme-switch[aria-checked="false"] .theme-switch__lamp--on {
+  filter: none !important;
+}
