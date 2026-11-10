@@ -799,3 +799,38 @@ html[data-view="mobile"] .theme-switch__lamp { width: 50px; height: 50px; }
 .theme-switch__lamp--on {
   filter: none !important;
 }
+
+
+/* Slightly more compact switch, keeping the lamp full-height inside its track. */
+.theme-switch {
+  width: 92px !important;
+  min-width: 92px !important;
+  height: 46px !important;
+}
+.theme-switch__thumb {
+  width: 46px;
+  height: 46px;
+}
+.theme-switch[aria-checked="false"] .theme-switch__thumb {
+  transform: translateX(46px);
+}
+.theme-switch__lamp {
+  width: 46px;
+  height: 46px;
+}
+html[data-view="mobile"] .theme-switch {
+  width: 92px !important;
+  min-width: 92px !important;
+  height: 46px !important;
+}
+html[data-view="mobile"] .theme-switch__thumb {
+  width: 46px;
+  height: 46px;
+}
+html[data-view="mobile"] .theme-switch[aria-checked="false"] .theme-switch__thumb {
+  transform: translateX(46px);
+}
+html[data-view="mobile"] .theme-switch__lamp {
+  width: 46px;
+  height: 46px;
+}
