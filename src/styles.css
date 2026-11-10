@@ -869,7 +869,7 @@ html[data-view="mobile"] .theme-switch__lamp {
   height: 28px !important;
 }
 
-/* Pause briefly before the lamp and menu colors begin fading into the new mode. */
+/* Delay only the redstone toggle's lamp-color fade by 0.40 seconds. */
 html[data-button-theme="dark"] .theme-switch__lamp {
   transition: opacity 1.50s ease-in-out 0.40s, filter 1.50s ease-in-out 0.40s !important;
 }
@@ -877,23 +877,23 @@ html[data-button-theme="light"] .theme-switch__lamp {
   transition: opacity 1.46s ease-in-out 0.40s, filter 1.46s ease-in-out 0.40s !important;
 }
 
-/* Keep the mode fade synchronized after the 0.40-second pause. */
+/* Menu buttons keep their original immediate transition timing. */
 html[data-button-theme="dark"] .btn-174 {
-  --button-theme-transition: 1.50s ease-in-out 0.40s !important;
-  transition: box-shadow 1.50s ease-in-out 0.40s !important;
+  --button-theme-transition: 1.50s ease-in-out !important;
+  transition: box-shadow 1.50s ease-in-out !important;
 }
 html[data-button-theme="dark"] .btn-174 span {
-  transition: transform .1s ease-in-out, background-color 1.50s ease-in-out 0.40s,
-    color 1.50s ease-in-out 0.40s, box-shadow 1.50s ease-in-out 0.40s,
-    text-shadow 1.50s ease-in-out 0.40s !important;
+  transition: transform .1s ease-in-out, background-color 1.50s ease-in-out,
+    color 1.50s ease-in-out, box-shadow 1.50s ease-in-out,
+    text-shadow 1.50s ease-in-out !important;
 }
 html[data-button-theme="light"] .btn-174 {
-  --button-theme-transition: 1.46s ease-in-out 0.40s !important;
-  transition: box-shadow 1.46s ease-in-out 0.40s !important;
+  --button-theme-transition: 1.46s ease-in-out !important;
+  transition: box-shadow 1.46s ease-in-out !important;
 }
 html[data-button-theme="light"] .btn-174 span {
-  transition: transform .1s ease-in-out, background-color 1.46s ease-in-out 0.40s,
-    color 1.46s ease-in-out 0.40s, box-shadow 1.46s ease-in-out 0.40s,
-    text-shadow 1.46s ease-in-out 0.40s !important;
+  transition: transform .1s ease-in-out, background-color 1.46s ease-in-out,
+    color 1.46s ease-in-out, box-shadow 1.46s ease-in-out,
+    text-shadow 1.46s ease-in-out !important;
 }
 
