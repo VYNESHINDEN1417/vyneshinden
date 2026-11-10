@@ -17,12 +17,10 @@ export function ThemeSwitch({ night, onToggle }: { night: boolean; onToggle: () 
       }}
     >
       <span className="theme-switch__container" aria-hidden="true">
-        <img
-          className="theme-switch__lamp"
-          src={night ? "/media/redstone-lamp-off.webp" : "/media/redstone-lamp-on.webp"}
-          alt=""
-          draggable={false}
-        />
+        <span className="theme-switch__thumb">
+          <img className="theme-switch__lamp theme-switch__lamp--off" src="/media/redstone-lamp-off.webp" alt="" draggable={false} />
+          <img className="theme-switch__lamp theme-switch__lamp--on" src="/media/redstone-lamp-on.webp" alt="" draggable={false} />
+        </span>
       </span>
     </Button>
   );

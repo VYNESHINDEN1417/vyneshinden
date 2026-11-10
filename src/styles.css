@@ -694,3 +694,21 @@ html[data-view="mobile"] .hero-title {
 .theme-switch[aria-checked="true"] .theme-switch__lamp { filter: brightness(.9); }
 html[data-view="mobile"] .theme-switch { width: 70px; height: 60px; min-width: 70px; }
 @media (prefers-reduced-motion: reduce) { .theme-switch, .theme-switch__lamp { transition: none; } }
+
+
+/* Redstone lamp slider: white rectangular track, lamp thumb slides left/right. */
+.theme-switch { position: fixed !important; right: max(16px, env(safe-area-inset-right)) !important; bottom: max(16px, env(safe-area-inset-bottom)) !important; z-index: 80; display: block; width: 104px !important; min-width: 104px !important; height: 52px !important; padding: 5px !important; border: 1px solid #d7d7d7 !important; border-radius: 4px !important; background: #fff !important; box-shadow: 0 2px 8px rgb(0 0 0 / 28%); transition: box-shadow 180ms ease, transform 120ms ease; }
+.theme-switch:hover, .theme-switch:focus-visible { background: #fff !important; filter: brightness(1.04); }
+.theme-switch:active { transform: scale(.97); }
+.theme-switch__container { position: relative; display: block; width: 100%; height: 100%; overflow: visible; border-radius: 2px; background: #fff; box-shadow: none; }
+.theme-switch__container::before { content: none; }
+.theme-switch__thumb { position: absolute; top: 0; left: 0; display: grid; place-items: center; width: 40px; height: 40px; background: #fff; border: 1px solid #e4e4e4; border-radius: 3px; box-shadow: 0 1px 4px rgb(0 0 0 / 22%); transition: transform 420ms cubic-bezier(.2,.8,.2,1), background-color 260ms ease; }
+.theme-switch[aria-checked="false"] .theme-switch__thumb { transform: translateX(52px); }
+.theme-switch__lamp { position: absolute; display: block; width: 34px; height: 34px; object-fit: contain; image-rendering: pixelated; transition: opacity 220ms ease, filter 220ms ease; }
+.theme-switch__lamp--off { opacity: 1; }
+.theme-switch__lamp--on { opacity: 0; }
+.theme-switch[aria-checked="false"] .theme-switch__lamp--off { opacity: 0; }
+.theme-switch[aria-checked="false"] .theme-switch__lamp--on { opacity: 1; filter: drop-shadow(0 0 3px rgb(255 174 74 / 45%)); }
+html[data-view="mobile"] .theme-switch { width: 98px !important; min-width: 98px !important; height: 50px !important; }
+html[data-view="mobile"] .theme-switch[aria-checked="false"] .theme-switch__thumb { transform: translateX(46px); }
+@media (prefers-reduced-motion: reduce) { .theme-switch, .theme-switch__thumb, .theme-switch__lamp { transition: none !important; } }
