@@ -637,5 +637,18 @@ html[data-view="desktop"] .detail-page--panorama .projects-menu {
 }
 html[data-view="mobile"] .hero-title {
   width: 94vw;
-  transform: translateX(calc(-50% - 8px));
+}
+
+
+/* Align the project-list header title to the phone's visual center, with a
+   small leftward optical correction independent of the homepage banner. */
+@media (max-width: 767px) {
+  .detail-page--panorama .detail-header {
+    position: relative;
+  }
+  .detail-page--panorama .detail-header > a[aria-label="VYNESHINDEN home"] {
+    position: absolute;
+    left: 50%;
+    transform: translateX(calc(-50% - 8px));
+  }
 }
