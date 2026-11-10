@@ -637,4 +637,5 @@ html[data-view="desktop"] .detail-page--panorama .projects-menu {
 }
 html[data-view="mobile"] .hero-title {
   width: 94vw;
+  transform: translateX(calc(-50% - 8px));
 }
