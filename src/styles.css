@@ -258,7 +258,7 @@ html[data-button-theme="dark"] .btn-174 {
   --game-button-pressed: oklch(0.38 0.025 255);
   --game-button-shadow: 0 3px var(--game-button-step-1), 0 4px var(--game-button-step-2), 0 5px var(--game-button-step-3), 0 6px var(--game-button-step-4), 0 7px var(--game-button-step-5), 0 8px var(--game-button-step-6), 0 14px 6px -1px oklch(0 0 0 / 75%);
 }
-html[data-button-theme="dark"] .btn-174 { --button-theme-transition: 1.29s ease-in-out; }
+html[data-button-theme="dark"] .btn-174 { --button-theme-transition: 1.50s ease-in-out; }
 html[data-button-theme="light"] .btn-174 { --button-theme-transition: 1.46s ease-in-out; }
 .btn-174 { --button-theme-transition: 1.5s ease-in-out; position: relative; border-radius: 10px; box-shadow: var(--game-button-shadow); transition: box-shadow var(--button-theme-transition); font-family: var(--font-portfolio); text-decoration: none; user-select: none; display: inline-flex; justify-content: center; align-items: center; border: none; padding: 0; background: none; }
 .game-button-size { width: 100%; height: 54px; }
@@ -656,4 +656,248 @@ html[data-view="mobile"] .hero-title {
   .detail-header > a[aria-label="VYNESHINDEN home"] {
     right: 32px;
   }
+}
+
+
+/* Redstone lamp theme switch: the supplied 1:1 lamp sits inside a compact rectangle. */
+.theme-switch {
+  --toggle-size: 1px;
+  position: fixed;
+  right: max(16px, env(safe-area-inset-right));
+  bottom: max(16px, env(safe-area-inset-bottom));
+  z-index: 80;
+  width: 76px;
+  height: 64px;
+  min-width: 76px;
+  padding: 7px;
+  border: 2px solid #6b6257;
+  border-radius: 3px;
+  background: #302b27;
+  box-shadow: inset 2px 2px 0 #81786d, inset -2px -2px 0 #171412, 0 4px 0 #100e0d, 0 6px 12px rgb(0 0 0 / 35%);
+  transition: transform 120ms ease, filter 160ms ease;
+}
+.theme-switch:hover, .theme-switch:focus-visible { background: #39322c; filter: brightness(1.08); }
+.theme-switch:active { transform: translateY(3px); box-shadow: inset 2px 2px 0 #81786d, inset -2px -2px 0 #171412, 0 1px 0 #100e0d, 0 3px 8px rgb(0 0 0 / 35%); }
+.theme-switch__container {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 1px;
+  background: #171412;
+  box-shadow: inset 2px 2px 3px rgb(0 0 0 / 75%), inset -1px -1px 0 rgb(255 255 255 / 8%);
+}
+.theme-switch__lamp { display: block; width: 46px; height: 46px; object-fit: contain; image-rendering: pixelated; transition: filter 180ms ease, transform 180ms ease; }
+.theme-switch[aria-checked="false"] .theme-switch__lamp { filter: drop-shadow(0 0 5px rgb(255 174 74 / 50%)); }
+.theme-switch[aria-checked="true"] .theme-switch__lamp { filter: brightness(.9); }
+html[data-view="mobile"] .theme-switch { width: 70px; height: 60px; min-width: 70px; }
+@media (prefers-reduced-motion: reduce) { .theme-switch, .theme-switch__lamp { transition: none; } }
+
+
+/* Redstone lamp slider: white rectangular track, lamp thumb slides left/right. */
+.theme-switch { position: fixed !important; right: max(16px, env(safe-area-inset-right)) !important; bottom: max(16px, env(safe-area-inset-bottom)) !important; z-index: 80; display: block; width: 104px !important; min-width: 104px !important; height: 52px !important; padding: 5px !important; border: 1px solid #d7d7d7 !important; border-radius: 4px !important; background: #fff !important; box-shadow: 0 2px 8px rgb(0 0 0 / 28%); transition: box-shadow 180ms ease, transform 120ms ease; }
+.theme-switch:hover, .theme-switch:focus-visible { background: #fff !important; filter: brightness(1.04); }
+.theme-switch:active { transform: scale(.97); }
+.theme-switch__container { position: relative; display: block; width: 100%; height: 100%; overflow: visible; border-radius: 2px; background: #fff; box-shadow: none; }
+.theme-switch__container::before { content: none; }
+.theme-switch__thumb { position: absolute; top: 0; left: 0; display: grid; place-items: center; width: 40px; height: 40px; background: #fff; border: 1px solid #e4e4e4; border-radius: 3px; box-shadow: 0 1px 4px rgb(0 0 0 / 22%); transition: transform 420ms cubic-bezier(.2,.8,.2,1), background-color 260ms ease; }
+.theme-switch[aria-checked="false"] .theme-switch__thumb { transform: translateX(52px); }
+.theme-switch__lamp { position: absolute; display: block; width: 34px; height: 34px; object-fit: contain; image-rendering: pixelated; transition: opacity 220ms ease, filter 220ms ease; }
+.theme-switch__lamp--off { opacity: 1; }
+.theme-switch__lamp--on { opacity: 0; }
+.theme-switch[aria-checked="false"] .theme-switch__lamp--off { opacity: 0; }
+.theme-switch[aria-checked="false"] .theme-switch__lamp--on { opacity: 1; filter: drop-shadow(0 0 3px rgb(255 174 74 / 45%)); }
+html[data-view="mobile"] .theme-switch { width: 98px !important; min-width: 98px !important; height: 50px !important; }
+html[data-view="mobile"] .theme-switch[aria-checked="false"] .theme-switch__thumb { transform: translateX(46px); }
+@media (prefers-reduced-motion: reduce) { .theme-switch, .theme-switch__thumb, .theme-switch__lamp { transition: none !important; } }
+
+
+/* Final pixel-clean lamp slider: no outlines, no rounded edges, full-height lamp thumb. */
+.theme-switch {
+  width: 104px !important;
+  min-width: 104px !important;
+  height: 52px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: #fff !important;
+  box-shadow: none !important;
+  overflow: hidden;
+}
+.theme-switch:hover, .theme-switch:focus-visible {
+  background: #fff !important;
+  filter: none;
+  box-shadow: none !important;
+}
+.theme-switch:active { transform: none; }
+.theme-switch__container {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border: 0;
+  border-radius: 0;
+  background: #fff;
+  box-shadow: none;
+}
+.theme-switch__thumb {
+  top: 0;
+  left: 0;
+  width: 52px;
+  height: 52px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  transition: transform 420ms cubic-bezier(.2,.8,.2,1);
+}
+.theme-switch[aria-checked="false"] .theme-switch__thumb { transform: translateX(52px); }
+.theme-switch__lamp {
+  width: 52px;
+  height: 52px;
+  object-fit: cover;
+  border: 0;
+  border-radius: 0;
+  image-rendering: pixelated;
+}
+html[data-view="mobile"] .theme-switch {
+  width: 100px !important;
+  min-width: 100px !important;
+  height: 50px !important;
+}
+html[data-view="mobile"] .theme-switch__thumb {
+  width: 50px;
+  height: 50px;
+}
+html[data-view="mobile"] .theme-switch[aria-checked="false"] .theme-switch__thumb { transform: translateX(50px); }
+html[data-view="mobile"] .theme-switch__lamp { width: 50px; height: 50px; }
+
+
+/* Keep the Minecraft lamp artwork hard-edged and pixel-crisp at display size. */
+.theme-switch__lamp {
+  image-rendering: pixelated !important;
+  image-rendering: crisp-edges !important;
+  object-fit: fill !important;
+  filter: none !important;
+  -webkit-font-smoothing: none;
+}
+.theme-switch[aria-checked="false"] .theme-switch__lamp--on {
+  filter: none !important;
+}
+
+
+/* Chromium pixel-art rendering: use pixelated only (crisp-edges can override it). */
+.theme-switch__lamp,
+.theme-switch__thumb img {
+  image-rendering: pixelated !important;
+  image-rendering: -moz-crisp-edges;
+  -ms-interpolation-mode: nearest-neighbor;
+  filter: none !important;
+  transform: translateZ(0);
+}
+.theme-switch__lamp--on {
+  filter: none !important;
+}
+
+
+/* Slightly more compact switch, keeping the lamp full-height inside its track. */
+.theme-switch {
+  width: 92px !important;
+  min-width: 92px !important;
+  height: 46px !important;
+}
+.theme-switch__thumb {
+  width: 46px;
+  height: 46px;
+}
+.theme-switch[aria-checked="false"] .theme-switch__thumb {
+  transform: translateX(46px);
+}
+.theme-switch__lamp {
+  width: 46px;
+  height: 46px;
+}
+html[data-view="mobile"] .theme-switch {
+  width: 92px !important;
+  min-width: 92px !important;
+  height: 46px !important;
+}
+html[data-view="mobile"] .theme-switch__thumb {
+  width: 46px;
+  height: 46px;
+}
+html[data-view="mobile"] .theme-switch[aria-checked="false"] .theme-switch__thumb {
+  transform: translateX(46px);
+}
+html[data-view="mobile"] .theme-switch__lamp {
+  width: 46px;
+  height: 46px;
+}
+
+/* Compact redstone lamp switch: 56 × 28px, with a full-height sliding lamp. */
+.theme-switch {
+  width: 56px !important;
+  min-width: 56px !important;
+  height: 28px !important;
+}
+.theme-switch__thumb {
+  width: 28px !important;
+  height: 28px !important;
+}
+.theme-switch[aria-checked="false"] .theme-switch__thumb {
+  transform: translateX(28px) !important;
+}
+.theme-switch__lamp {
+  width: 28px !important;
+  height: 28px !important;
+}
+html[data-view="mobile"] .theme-switch {
+  width: 56px !important;
+  min-width: 56px !important;
+  height: 28px !important;
+}
+html[data-view="mobile"] .theme-switch__thumb {
+  width: 28px !important;
+  height: 28px !important;
+}
+html[data-view="mobile"] .theme-switch[aria-checked="false"] .theme-switch__thumb {
+  transform: translateX(28px) !important;
+}
+html[data-view="mobile"] .theme-switch__lamp {
+  width: 28px !important;
+  height: 28px !important;
+}
+
+/* Delay only the redstone toggle's lamp-color fade by 0.40 seconds. */
+html[data-button-theme="dark"] .theme-switch__lamp {
+  transition: opacity 1.50s ease-in-out 0.40s, filter 1.50s ease-in-out 0.40s !important;
+}
+html[data-button-theme="light"] .theme-switch__lamp {
+  transition: opacity 1.46s ease-in-out 0.40s, filter 1.46s ease-in-out 0.40s !important;
+}
+
+/* Menu buttons keep their original immediate transition timing. */
+html[data-button-theme="dark"] .btn-174 {
+  --button-theme-transition: 1.50s ease-in-out !important;
+  transition: box-shadow 1.50s ease-in-out !important;
+}
+html[data-button-theme="dark"] .btn-174 span {
+  transition: transform .1s ease-in-out, background-color 1.50s ease-in-out,
+    color 1.50s ease-in-out, box-shadow 1.50s ease-in-out,
+    text-shadow 1.50s ease-in-out !important;
+}
+html[data-button-theme="light"] .btn-174 {
+  --button-theme-transition: 1.46s ease-in-out !important;
+  transition: box-shadow 1.46s ease-in-out !important;
+}
+html[data-button-theme="light"] .btn-174 span {
+  transition: transform .1s ease-in-out, background-color 1.46s ease-in-out,
+    color 1.46s ease-in-out, box-shadow 1.46s ease-in-out,
+    text-shadow 1.46s ease-in-out !important;
+}
+
+/* Slow only the redstone toggle's rectangular track changing between white and dark. */
+.theme-switch__container {
+  transition: background-color 1.50s ease-in-out !important;
 }
