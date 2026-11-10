@@ -70,6 +70,14 @@ export function Panorama({ night = false }: { night?: boolean }) {
           (index) => `/media/panorama/${set}/panorama_${index}.${extension}`,
         );
       };
+      const configureSeamSafeCubemap = (texture: InstanceType<typeof THREE.CubeTexture>) => {
+        // The 180° sky-face orientation correction changes ray derivatives abruptly at its four
+        // borders. Keep sampling on the full-resolution level so mip selection cannot expose seams.
+        texture.generateMipmaps = false;
+        texture.minFilter = THREE.LinearFilter;
+        texture.magFilter = THREE.LinearFilter;
+        texture.needsUpdate = true;
+      };
 
       let morningLoaded = cachedMorningTexture !== null;
       let evening: InstanceType<typeof THREE.CubeTexture> | null = null;
@@ -108,6 +116,7 @@ export function Panorama({ night = false }: { night?: boolean }) {
               texture.dispose();
               return;
             }
+            configureSeamSafeCubemap(texture);
             evening = texture;
             uniforms.evening.value = texture;
             eveningLoaded = true;
@@ -204,6 +213,7 @@ export function Panorama({ night = false }: { night?: boolean }) {
       if (cachedMorningTexture) {
         // Reuse the already-decoded cubemap and paint on the first animation frame.
         morning = cachedMorningTexture;
+        configureSeamSafeCubemap(morning);
         start = performance.now();
         previous = start;
         frame = requestAnimationFrame(tick);
@@ -213,6 +223,7 @@ export function Panorama({ night = false }: { night?: boolean }) {
           (texture) => {
             cachedMorningTexture = texture;
             if (disposed) return;
+            configureSeamSafeCubemap(texture);
             uniforms.morning.value = texture;
             uniforms.evening.value = evening ?? texture;
             morningLoaded = true;
