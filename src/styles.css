@@ -897,3 +897,7 @@ html[data-button-theme="light"] .btn-174 span {
     text-shadow 1.46s ease-in-out !important;
 }
 
+/* Slow only the redstone toggle's rectangular track changing between white and dark. */
+.theme-switch__container {
+  transition: background-color 1.50s ease-in-out !important;
+}
