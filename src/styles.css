@@ -258,7 +258,7 @@ html[data-button-theme="dark"] .btn-174 {
   --game-button-pressed: oklch(0.38 0.025 255);
   --game-button-shadow: 0 3px var(--game-button-step-1), 0 4px var(--game-button-step-2), 0 5px var(--game-button-step-3), 0 6px var(--game-button-step-4), 0 7px var(--game-button-step-5), 0 8px var(--game-button-step-6), 0 14px 6px -1px oklch(0 0 0 / 75%);
 }
-html[data-button-theme="dark"] .btn-174 { --button-theme-transition: 1.29s ease-in-out; }
+html[data-button-theme="dark"] .btn-174 { --button-theme-transition: 1.50s ease-in-out; }
 html[data-button-theme="light"] .btn-174 { --button-theme-transition: 1.46s ease-in-out; }
 .btn-174 { --button-theme-transition: 1.5s ease-in-out; position: relative; border-radius: 10px; box-shadow: var(--game-button-shadow); transition: box-shadow var(--button-theme-transition); font-family: var(--font-portfolio); text-decoration: none; user-select: none; display: inline-flex; justify-content: center; align-items: center; border: none; padding: 0; background: none; }
 .game-button-size { width: 100%; height: 54px; }
@@ -871,7 +871,7 @@ html[data-view="mobile"] .theme-switch__lamp {
 
 /* Match the lamp fade to the menu-button theme transition timing. */
 html[data-button-theme="dark"] .theme-switch__lamp {
-  transition: opacity 1.29s ease-in-out, filter 1.29s ease-in-out !important;
+  transition: opacity 1.50s ease-in-out, filter 1.50s ease-in-out !important;
 }
 html[data-button-theme="light"] .theme-switch__lamp {
   transition: opacity 1.46s ease-in-out, filter 1.46s ease-in-out !important;
@@ -880,13 +880,13 @@ html[data-button-theme="light"] .theme-switch__lamp {
 /* Force the menu-button theme colors to animate with the same timing as the lamp,
    including devices that request reduced motion. */
 html[data-button-theme="dark"] .btn-174 {
-  --button-theme-transition: 1.29s ease-in-out !important;
-  transition: box-shadow 1.29s ease-in-out !important;
+  --button-theme-transition: 1.50s ease-in-out !important;
+  transition: box-shadow 1.50s ease-in-out !important;
 }
 html[data-button-theme="dark"] .btn-174 span {
-  transition: transform .1s ease-in-out, background-color 1.29s ease-in-out,
-    color 1.29s ease-in-out, box-shadow 1.29s ease-in-out,
-    text-shadow 1.29s ease-in-out !important;
+  transition: transform .1s ease-in-out, background-color 1.50s ease-in-out,
+    color 1.50s ease-in-out, box-shadow 1.50s ease-in-out,
+    text-shadow 1.50s ease-in-out !important;
 }
 html[data-button-theme="light"] .btn-174 {
   --button-theme-transition: 1.46s ease-in-out !important;
