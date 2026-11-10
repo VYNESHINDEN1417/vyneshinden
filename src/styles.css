@@ -657,3 +657,40 @@ html[data-view="mobile"] .hero-title {
     right: 32px;
   }
 }
+
+
+/* Redstone lamp theme switch: the supplied 1:1 lamp sits inside a compact rectangle. */
+.theme-switch {
+  --toggle-size: 1px;
+  position: fixed;
+  right: max(16px, env(safe-area-inset-right));
+  bottom: max(16px, env(safe-area-inset-bottom));
+  z-index: 80;
+  width: 76px;
+  height: 64px;
+  min-width: 76px;
+  padding: 7px;
+  border: 2px solid #6b6257;
+  border-radius: 3px;
+  background: #302b27;
+  box-shadow: inset 2px 2px 0 #81786d, inset -2px -2px 0 #171412, 0 4px 0 #100e0d, 0 6px 12px rgb(0 0 0 / 35%);
+  transition: transform 120ms ease, filter 160ms ease;
+}
+.theme-switch:hover, .theme-switch:focus-visible { background: #39322c; filter: brightness(1.08); }
+.theme-switch:active { transform: translateY(3px); box-shadow: inset 2px 2px 0 #81786d, inset -2px -2px 0 #171412, 0 1px 0 #100e0d, 0 3px 8px rgb(0 0 0 / 35%); }
+.theme-switch__container {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 1px;
+  background: #171412;
+  box-shadow: inset 2px 2px 3px rgb(0 0 0 / 75%), inset -1px -1px 0 rgb(255 255 255 / 8%);
+}
+.theme-switch__lamp { display: block; width: 46px; height: 46px; object-fit: contain; image-rendering: pixelated; transition: filter 180ms ease, transform 180ms ease; }
+.theme-switch[aria-checked="false"] .theme-switch__lamp { filter: drop-shadow(0 0 5px rgb(255 174 74 / 50%)); }
+.theme-switch[aria-checked="true"] .theme-switch__lamp { filter: brightness(.9); }
+html[data-view="mobile"] .theme-switch { width: 70px; height: 60px; min-width: 70px; }
+@media (prefers-reduced-motion: reduce) { .theme-switch, .theme-switch__lamp { transition: none; } }
