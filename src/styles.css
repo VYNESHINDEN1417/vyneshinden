@@ -618,18 +618,23 @@ html[data-view="desktop"] .detail-page--panorama .projects-menu {
   max-height: min(740px, max(220px, calc(100svh - 330px)));
 }
 
-/* Keep the top hero artwork optically centered at all responsive widths. */
+/* Center the title banner by its true horizontal midpoint on every viewport. */
 .hero-title {
-  left: 0;
-  right: 0;
-  transform: none;
-  margin-inline: auto;
-  display: flex;
-  justify-content: center;
+  left: 50%;
+  right: auto;
+  transform: translateX(-50%);
+  margin: 0;
+  display: block;
+  width: min(84vw, 1000px);
 }
 .hero-title img {
   display: block;
-  margin-inline: auto;
+  width: 100%;
+  height: auto;
+  margin: 0;
   object-fit: contain;
   object-position: center center;
+}
+html[data-view="mobile"] .hero-title {
+  width: 94vw;
 }
