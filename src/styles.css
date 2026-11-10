@@ -424,7 +424,7 @@ html[data-view="desktop"][data-view-mode="desktop"] body { min-width: 900px; }
 .view-mode-option.is-active span { color: var(--loading-green); text-shadow: 0 1px var(--button-ink); }
 .modal-card .view-mode-hint { margin: 0; font-size: 12px; }
 
-.projects-menu { display: grid; gap: 24px; max-width: 600px; max-height: min(390px, 52svh); overflow-y: auto; overscroll-behavior-y: contain; padding: 4px 16px 20px 4px; scrollbar-color: var(--loading-border) var(--loading-track); }
+.projects-menu { display: grid; gap: 24px; max-width: 680px; max-height: min(520px, 68svh); overflow-y: auto; overscroll-behavior-y: contain; padding: 4px 16px 20px 4px; scrollbar-color: var(--loading-border) var(--loading-track); }
 .projects-menu .game-button-size { flex-shrink: 0; }
 .gallery-main-image { aspect-ratio: 1403 / 720; background: var(--loading-cover); }
 .gallery-main-image img { width: 100%; height: 100%; object-fit: contain; }
@@ -529,7 +529,7 @@ html[data-view="mobile"] .project-button .project-date { font-size: 8px; }
 /* Desktop sizing: larger project list, gallery, and scaling header logo. */
 html[data-view="desktop"] .detail-content { max-width: 1200px; }
 html[data-view="desktop"] .detail-logo { width: clamp(180px, 18vw, 300px); }
-html[data-view="desktop"] .projects-menu { max-width: 900px; margin-inline: auto; max-height: min(620px, 65svh); }
+html[data-view="desktop"] .projects-menu { max-width: 980px; margin-inline: auto; max-height: min(740px, 74svh); }
 html[data-view="desktop"] .projects-menu .project-button { height: 104px; }
 html[data-view="desktop"] .project-button .project-thumb { width: 112px; height: 72px; }
 html[data-view="desktop"] .project-button .project-name { font-size: 16px; }
@@ -594,3 +594,66 @@ html[data-button-theme="dark"] .music-welcome {
   box-shadow: 0 -1px oklch(0.43 0.025 255), 0 3px oklch(0.25 0.025 255), 0 4px oklch(0.23 0.025 255), 0 5px oklch(0.21 0.025 255), 0 6px oklch(0.19 0.025 255), 0 7px oklch(0.17 0.025 255), 0 8px oklch(0.15 0.025 255), 0 14px 6px -1px oklch(0 0 0 / 75%);
 }
 html[data-button-theme="dark"] .music-welcome p { color: oklch(0.82 0.012 245); }
+
+
+/* Project index spacing: lift the heading and list, and keep the fixed theme
+   switch clear of the scrollable project window on every screen size. */
+.detail-page--panorama .detail-content--project-list {
+  padding-top: 18px;
+}
+.detail-page--panorama .detail-content--project-list h1 {
+  margin-top: 0;
+  margin-bottom: 20px;
+}
+.detail-page--panorama .projects-menu {
+  max-height: min(520px, max(220px, calc(100svh - 300px)));
+}
+html[data-view="mobile"] .detail-page--panorama .detail-content--project-list {
+  padding: 14px 20px 48px;
+}
+html[data-view="desktop"] .detail-page--panorama .detail-content--project-list {
+  padding-top: 18px;
+}
+html[data-view="desktop"] .detail-page--panorama .projects-menu {
+  max-height: min(740px, max(220px, calc(100svh - 330px)));
+}
+
+/* Center the title banner by its true horizontal midpoint on every viewport. */
+.hero-title {
+  left: 50%;
+  right: auto;
+  transform: translateX(-50%);
+  margin: 0;
+  display: block;
+  width: min(84vw, 1000px);
+}
+.hero-title img {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin: 0;
+  object-fit: contain;
+  object-position: center center;
+}
+html[data-view="mobile"] .hero-title {
+  width: 94vw;
+}
+
+
+/* Keep the title PNG in the top-right corner on every inner page.
+   The homepage hero banner uses a separate class and remains centered. */
+.detail-header {
+  position: relative;
+}
+.detail-header > a[aria-label="VYNESHINDEN home"] {
+  position: absolute;
+  top: 50%;
+  right: 20px;
+  left: auto;
+  transform: translateY(-50%);
+}
+@media (min-width: 768px) {
+  .detail-header > a[aria-label="VYNESHINDEN home"] {
+    right: 32px;
+  }
+}
