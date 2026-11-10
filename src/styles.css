@@ -868,3 +868,11 @@ html[data-view="mobile"] .theme-switch__lamp {
   width: 28px !important;
   height: 28px !important;
 }
+
+/* Match the lamp fade to the menu-button theme transition timing. */
+html[data-button-theme="dark"] .theme-switch__lamp {
+  transition: opacity 1.29s ease-in-out, filter 1.29s ease-in-out !important;
+}
+html[data-button-theme="light"] .theme-switch__lamp {
+  transition: opacity 1.46s ease-in-out, filter 1.46s ease-in-out !important;
+}
