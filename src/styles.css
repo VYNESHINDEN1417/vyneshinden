@@ -834,3 +834,38 @@ html[data-view="mobile"] .theme-switch__lamp {
   width: 46px;
   height: 46px;
 }
+
+
+/* Clearly smaller redstone lamp switch: 76 × 38px, with matching full-height thumb. */
+.theme-switch {
+  width: 76px !important;
+  min-width: 76px !important;
+  height: 38px !important;
+}
+.theme-switch__thumb {
+  width: 38px !important;
+  height: 38px !important;
+}
+.theme-switch[aria-checked="false"] .theme-switch__thumb {
+  transform: translateX(38px) !important;
+}
+.theme-switch__lamp {
+  width: 38px !important;
+  height: 38px !important;
+}
+html[data-view="mobile"] .theme-switch {
+  width: 76px !important;
+  min-width: 76px !important;
+  height: 38px !important;
+}
+html[data-view="mobile"] .theme-switch__thumb {
+  width: 38px !important;
+  height: 38px !important;
+}
+html[data-view="mobile"] .theme-switch[aria-checked="false"] .theme-switch__thumb {
+  transform: translateX(38px) !important;
+}
+html[data-view="mobile"] .theme-switch__lamp {
+  width: 38px !important;
+  height: 38px !important;
+}
