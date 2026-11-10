@@ -640,15 +640,20 @@ html[data-view="mobile"] .hero-title {
 }
 
 
-/* Align the project-list header title to the phone's visual center, with a
-   small leftward optical correction independent of the homepage banner. */
-@media (max-width: 767px) {
-  .detail-page--panorama .detail-header {
-    position: relative;
-  }
-  .detail-page--panorama .detail-header > a[aria-label="VYNESHINDEN home"] {
-    position: absolute;
-    left: 50%;
-    transform: translateX(calc(-50% - 8px));
+/* Keep the title PNG in the top-right corner on every inner page.
+   The homepage hero banner uses a separate class and remains centered. */
+.detail-header {
+  position: relative;
+}
+.detail-header > a[aria-label="VYNESHINDEN home"] {
+  position: absolute;
+  top: 50%;
+  right: 20px;
+  left: auto;
+  transform: translateY(-50%);
+}
+@media (min-width: 768px) {
+  .detail-header > a[aria-label="VYNESHINDEN home"] {
+    right: 32px;
   }
 }
