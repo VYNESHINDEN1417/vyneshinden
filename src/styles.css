@@ -876,3 +876,25 @@ html[data-button-theme="dark"] .theme-switch__lamp {
 html[data-button-theme="light"] .theme-switch__lamp {
   transition: opacity 1.46s ease-in-out, filter 1.46s ease-in-out !important;
 }
+
+/* Force the menu-button theme colors to animate with the same timing as the lamp,
+   including devices that request reduced motion. */
+html[data-button-theme="dark"] .btn-174 {
+  --button-theme-transition: 1.29s ease-in-out !important;
+  transition: box-shadow 1.29s ease-in-out !important;
+}
+html[data-button-theme="dark"] .btn-174 span {
+  transition: transform .1s ease-in-out, background-color 1.29s ease-in-out,
+    color 1.29s ease-in-out, box-shadow 1.29s ease-in-out,
+    text-shadow 1.29s ease-in-out !important;
+}
+html[data-button-theme="light"] .btn-174 {
+  --button-theme-transition: 1.46s ease-in-out !important;
+  transition: box-shadow 1.46s ease-in-out !important;
+}
+html[data-button-theme="light"] .btn-174 span {
+  transition: transform .1s ease-in-out, background-color 1.46s ease-in-out,
+    color 1.46s ease-in-out, box-shadow 1.46s ease-in-out,
+    text-shadow 1.46s ease-in-out !important;
+}
+
