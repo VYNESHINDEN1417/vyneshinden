@@ -424,7 +424,7 @@ html[data-view="desktop"][data-view-mode="desktop"] body { min-width: 900px; }
 .view-mode-option.is-active span { color: var(--loading-green); text-shadow: 0 1px var(--button-ink); }
 .modal-card .view-mode-hint { margin: 0; font-size: 12px; }
 
-.projects-menu { display: grid; gap: 24px; max-width: 600px; max-height: min(390px, 52svh); overflow-y: auto; overscroll-behavior-y: contain; padding: 4px 16px 20px 4px; scrollbar-color: var(--loading-border) var(--loading-track); }
+.projects-menu { display: grid; gap: 24px; max-width: 680px; max-height: min(520px, 68svh); overflow-y: auto; overscroll-behavior-y: contain; padding: 4px 16px 20px 4px; scrollbar-color: var(--loading-border) var(--loading-track); }
 .projects-menu .game-button-size { flex-shrink: 0; }
 .gallery-main-image { aspect-ratio: 1403 / 720; background: var(--loading-cover); }
 .gallery-main-image img { width: 100%; height: 100%; object-fit: contain; }
@@ -529,7 +529,7 @@ html[data-view="mobile"] .project-button .project-date { font-size: 8px; }
 /* Desktop sizing: larger project list, gallery, and scaling header logo. */
 html[data-view="desktop"] .detail-content { max-width: 1200px; }
 html[data-view="desktop"] .detail-logo { width: clamp(180px, 18vw, 300px); }
-html[data-view="desktop"] .projects-menu { max-width: 900px; margin-inline: auto; max-height: min(620px, 65svh); }
+html[data-view="desktop"] .projects-menu { max-width: 980px; margin-inline: auto; max-height: min(740px, 74svh); }
 html[data-view="desktop"] .projects-menu .project-button { height: 104px; }
 html[data-view="desktop"] .project-button .project-thumb { width: 112px; height: 72px; }
 html[data-view="desktop"] .project-button .project-name { font-size: 16px; }
