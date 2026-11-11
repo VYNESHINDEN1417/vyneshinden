@@ -172,7 +172,7 @@ export function PortfolioPage({ section, project }: { section: "About me" | "My 
             <img className="about-portrait" src="/media/portrait.jpg" alt="Timothy Joseph Lomibao" width={768} height={768} />
           </section>
           <hr className="about-divider" />
-          <div className="about-paragraphs">
+          <div className="about-paragraphs" style={{ textAlign: "justify" }}>
             <p>My Minecraft journey started with the simple joy of building whatever came to mind. Over time, that little hobby turned into something much bigger. I became fascinated with recreating real-world ships in Minecraft Bedrock, especially military vessels with their own history, shape, and details. I built everything block by block, learning through trial and error, tutorials, and plenty of patience. One of my biggest milestones was building the USS Wisconsin (BB-64) in January 2022, a project that pushed me to take my builds more seriously.</p>
             <p>I have always built on Bedrock, using a phone as my main tool rather than a powerful PC setup. That never stopped me from experimenting, improving my techniques, and taking on bigger projects. From battleships and cruisers to other scenes and ideas, every build has taught me something new. VYNESHINDEN is where I keep that journey alive: a place to share the things I have made, the progress behind them, and whatever I decide to build next. I am still learning, still experimenting, and definitely not done building.</p>
           </div>
