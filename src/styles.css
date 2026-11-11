@@ -288,7 +288,7 @@ html[data-button-theme="light"] .btn-174 { --button-theme-transition: 1.46s ease
   background-repeat: repeat;
   background-size: 256px 256px;
 }
-.detail-header { display: flex; align-items: center; justify-content: space-between; padding: 22px 24px; border-bottom: 1px solid var(--loading-track); }
+.detail-header { display: flex; align-items: center; justify-content: space-between; padding: 22px 24px; border-bottom: none; }
 .detail-logo { width: 160px; height: auto; }
 .header-spacer { width: 70px; }
 .detail-content { max-width: 1000px; margin: 0 auto; padding: 48px 24px 64px; }
