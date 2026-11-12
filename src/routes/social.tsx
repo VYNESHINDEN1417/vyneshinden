@@ -23,8 +23,7 @@ function SocialPage() {
         <Link to="/" onPointerDown={playClickSoundOnPointerDown} aria-label="VYNESHINDEN home"><img className="detail-logo" src="/media/title.png" alt="VYNESHINDEN" /></Link>
         <span className="header-spacer" aria-hidden="true" />
       </header>
-      <div className="detail-content">
-        <p className="section-label">VYNESHINDEN / PORTFOLIO</p>
+      <div className="detail-content detail-content--simple-page">
         <h1>Socials</h1>
         <nav className="social-menu" aria-label="Social links">
           {SOCIAL_LINKS.map((link) => (
