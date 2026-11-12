@@ -180,7 +180,7 @@ function AnalyticsPage() {
     const bucketTime = new Date(start);
     return {
       key: bucketTime.toISOString(),
-      label: index % 3 === 0 ? bucketTime.toLocaleTimeString("en", { hour: "numeric" }) : "",
+      label: bucketTime.toLocaleTimeString("en", { hour: "numeric", hour12: true }),
       count: filtered.filter((row) => {
         const timestamp = new Date(row.visited_at).getTime();
         return timestamp >= start && timestamp < end;
@@ -276,20 +276,44 @@ function AnalyticsPage() {
         <section className="mt-4 grid gap-4 lg:grid-cols-[1.5fr_1fr]">
           <div className="rounded-xl border border-white/10 bg-[#11151d] p-4 sm:p-5">
             <div className="flex items-center justify-between"><h2 className="font-semibold">Traffic over time</h2><span className="text-xs text-slate-500">{range === 1 ? "Hourly views · last 24 hours" : "Daily views"}</span></div>
-            <div className="mt-6 flex h-44 items-end gap-1 sm:gap-2">
-              {chartBars.map((day) => {
-                const barHeight = day.count ? Math.max(5, (day.count / maxDay) * 78) : 1;
-                return (
-                  <div key={day.key} className="flex h-full min-w-0 flex-1 flex-col items-center">
-                    <div className="relative flex w-full flex-1 items-end justify-center">
-                      {day.count > 0 && <span className="absolute left-1/2 -translate-x-1/2 whitespace-nowrap text-[9px] tabular-nums text-slate-400" style={{ bottom: `calc(${barHeight}% + 4px)` }}>{day.count}</span>}
-                      <div className="w-full rounded-t-sm bg-[#FF7300]/80" style={{ height: `${barHeight}%` }} />
-                    </div>
-                    <span className="mt-2 h-3 text-[10px] text-slate-500">{day.label}</span>
+            {range === 1 ? (
+              <div className="mt-5">
+                <p className="mb-3 text-[11px] text-slate-500">Swipe horizontally to move through all 24 hours</p>
+                <div className="overflow-x-auto overscroll-x-contain pb-3 touch-pan-x" aria-label="Swipeable hourly traffic chart">
+                  <div className="flex h-52 min-w-max items-end gap-2">
+                    {hourlyBars.map((hour) => {
+                      const barHeight = hour.count ? Math.max(5, (hour.count / maxDay) * 68) : 2;
+                      return (
+                        <div key={hour.key} className="flex h-full w-10 shrink-0 flex-col items-center">
+                          <div className="flex h-6 w-full items-end justify-center">
+                            <span className="whitespace-nowrap text-[10px] font-medium tabular-nums text-slate-300">{hour.count}</span>
+                          </div>
+                          <div className="flex w-full flex-1 items-end justify-center">
+                            <div className="w-6 rounded-t-sm bg-[#FF7300]/80" style={{ height: `${barHeight}%` }} />
+                          </div>
+                          <span className="mt-2 h-4 whitespace-nowrap text-[10px] text-slate-400">{hour.label}</span>
+                        </div>
+                      );
+                    })}
                   </div>
-                );
-              })}
-            </div>
+                </div>
+              </div>
+            ) : (
+              <div className="mt-6 flex h-44 items-end gap-1 sm:gap-2">
+                {dailyBars.map((day) => {
+                  const barHeight = day.count ? Math.max(5, (day.count / maxDay) * 78) : 1;
+                  return (
+                    <div key={day.key} className="flex h-full min-w-0 flex-1 flex-col items-center">
+                      <div className="relative flex w-full flex-1 items-end justify-center">
+                        {day.count > 0 && <span className="absolute left-1/2 -translate-x-1/2 whitespace-nowrap text-[9px] tabular-nums text-slate-400" style={{ bottom: `calc(${barHeight}% + 4px)` }}>{day.count}</span>}
+                        <div className="w-full rounded-t-sm bg-[#FF7300]/80" style={{ height: `${barHeight}%` }} />
+                      </div>
+                      <span className="mt-2 h-3 text-[10px] text-slate-500">{day.label}</span>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
           </div>
           <div className="rounded-xl border border-white/10 bg-[#11151d] p-4 sm:p-5">
             <h2 className="font-semibold">Traffic sources</h2>
