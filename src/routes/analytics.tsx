@@ -149,8 +149,14 @@ function AnalyticsPage() {
   const rows = payload?.rows ?? [];
   const filtered = useMemo(() => {
     if (!range) return rows;
-    const cutoff = Date.now() - range * 24 * 60 * 60 * 1000;
-    return rows.filter((row) => new Date(row.visited_at).getTime() >= cutoff);
+    const now = new Date();
+    const cutoff = new Date(now);
+    cutoff.setHours(0, 0, 0, 0);
+    if (range !== 1) cutoff.setDate(cutoff.getDate() - range);
+    return rows.filter((row) => {
+      const timestamp = new Date(row.visited_at).getTime();
+      return timestamp >= cutoff.getTime() && timestamp <= now.getTime();
+    });
   }, [rows, range]);
 
   const botCounts = { chatgpt: filtered.filter((row) => row.bot_type === "chatgpt").length, worker: filtered.filter((row) => row.bot_type === "worker").length, human: filtered.filter((row) => row.bot_type === "human").length, unknown: filtered.filter((row) => !row.bot_type || row.bot_type === "unknown").length };
@@ -174,16 +180,16 @@ function AnalyticsPage() {
     return { key, label: date.toLocaleDateString("en", { weekday: "short" }), count: filtered.filter((row) => { const visitDate = new Date(row.visited_at); const visitKey = `${visitDate.getFullYear()}-${String(visitDate.getMonth() + 1).padStart(2, "0")}-${String(visitDate.getDate()).padStart(2, "0")}`; return visitKey === key; }).length };
   });
   const hourlyBars = Array.from({ length: 24 }, (_, index) => {
-    const now = Date.now();
-    const start = now - (24 - index) * 60 * 60 * 1000;
-    const end = start + 60 * 60 * 1000;
-    const bucketTime = new Date(start);
+    const start = new Date();
+    start.setHours(index, 0, 0, 0);
+    const end = new Date(start);
+    end.setHours(index + 1, 0, 0, 0);
     return {
-      key: bucketTime.toISOString(),
-      label: bucketTime.toLocaleTimeString("en", { hour: "numeric", hour12: true }),
+      key: start.toISOString(),
+      label: start.toLocaleTimeString("en", { hour: "numeric", hour12: true }),
       count: filtered.filter((row) => {
         const timestamp = new Date(row.visited_at).getTime();
-        return timestamp >= start && timestamp < end;
+        return timestamp >= start.getTime() && timestamp < end.getTime();
       }).length,
     };
   });
@@ -275,10 +281,10 @@ function AnalyticsPage() {
 
         <section className="mt-4 grid min-w-0 gap-4 lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)]">
           <div className="min-w-0 rounded-xl border border-white/10 bg-[#11151d] p-4 sm:p-5">
-            <div className="flex items-center justify-between"><h2 className="font-semibold">Traffic over time</h2><span className="text-xs text-slate-500">{range === 1 ? "Hourly views · last 24 hours" : "Daily views"}</span></div>
+            <div className="flex items-center justify-between"><h2 className="font-semibold">Traffic over time</h2><span className="text-xs text-slate-500">{range === 1 ? "Today · hourly views" : "Daily views"}</span></div>
             {range === 1 ? (
               <div className="mt-5">
-                <p className="mb-3 text-[11px] text-slate-500">Swipe horizontally to move through all 24 hours</p>
+                <p className="mb-3 text-[11px] text-slate-500">Today · 12 AM to 11 PM</p>
                 <div className="block w-full min-w-0 max-w-full overflow-x-auto overscroll-x-contain pb-3 touch-pan-x" aria-label="Swipeable hourly traffic chart">
                   <div className="flex h-52 min-w-max items-end gap-2">
                     {hourlyBars.map((hour) => {
