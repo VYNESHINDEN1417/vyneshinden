@@ -273,13 +273,13 @@ function AnalyticsPage() {
           ))}
         </section>
 
-        <section className="mt-4 grid gap-4 lg:grid-cols-[1.5fr_1fr]">
-          <div className="rounded-xl border border-white/10 bg-[#11151d] p-4 sm:p-5">
+        <section className="mt-4 grid min-w-0 gap-4 lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)]">
+          <div className="min-w-0 rounded-xl border border-white/10 bg-[#11151d] p-4 sm:p-5">
             <div className="flex items-center justify-between"><h2 className="font-semibold">Traffic over time</h2><span className="text-xs text-slate-500">{range === 1 ? "Hourly views · last 24 hours" : "Daily views"}</span></div>
             {range === 1 ? (
               <div className="mt-5">
                 <p className="mb-3 text-[11px] text-slate-500">Swipe horizontally to move through all 24 hours</p>
-                <div className="overflow-x-auto overscroll-x-contain pb-3 touch-pan-x" aria-label="Swipeable hourly traffic chart">
+                <div className="block w-full min-w-0 max-w-full overflow-x-auto overscroll-x-contain pb-3 touch-pan-x" aria-label="Swipeable hourly traffic chart">
                   <div className="flex h-52 min-w-max items-end gap-2">
                     {hourlyBars.map((hour) => {
                       const barHeight = hour.count ? Math.max(5, (hour.count / maxDay) * 68) : 2;
