@@ -163,12 +163,12 @@ export function PortfolioPage({ section, project }: { section: "About me" | "My 
         <Link to="/" onPointerDown={playClickSoundOnPointerDown} aria-label="VYNESHINDEN home"><img className="detail-logo" src="/media/title.png" alt="VYNESHINDEN" /></Link>
         <span className="header-spacer" aria-hidden="true" />
       </header>
-      <div className={`detail-content${isProjectList ? " detail-content--project-list" : ""}${section === "About me" ? " detail-content--simple-page" : ""}`}>
+      <div className={`detail-content${isProjectList ? " detail-content--project-list" : ""}${section === "About me" ? " detail-content--simple-page detail-content--about-page" : ""}`}>
         {!isProjectList && section !== "About me" && <p className="section-label">VYNESHINDEN / PORTFOLIO</p>}
         <h1>{section}</h1>
         {section === "About me" ? <>
           <section className="about-intro">
-            <div className="placeholder-copy"><span className="section-label">COMING SOON</span><h2>Hi, Im Timothy Lomibao</h2><p>KAREN FAYE BALAJADIA owner of VYNESHINDEN</p><p>Placeholder description. A little about me, my story, and what I love creating.</p></div>
+            <div className="placeholder-copy"><h2>Hi, Im Timothy Lomibao</h2><p>KAREN FAYE BALAJADIA owner of VYNESHINDEN</p><p>Placeholder description. A little about me, my story, and what I love creating.</p></div>
             <img className="about-portrait" src="/media/portrait.jpg" alt="Timothy Joseph Lomibao" width={768} height={768} />
           </section>
           <hr className="about-divider" />
