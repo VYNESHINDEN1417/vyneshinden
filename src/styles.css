@@ -944,3 +944,9 @@ html[data-button-theme="light"] .btn-174 span {
 /* About and socials pages: remove the eyebrow gap and bring content closer to the header. */
 .detail-content--simple-page { padding-top: 20px; }
 html[data-view="mobile"] .detail-content--simple-page { padding-top: 16px; }
+
+
+/* Bring the About Me heading up toward the Back control. */
+.detail-content--about-page { padding-top: 0; }
+.detail-content--about-page h1 { margin-top: 0; }
+html[data-view="mobile"] .detail-content--about-page { padding-top: 0; }
