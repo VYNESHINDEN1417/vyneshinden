@@ -13,6 +13,7 @@ type Visit = {
   page_path: string;
   traffic_source: string;
   search_engine: string | null;
+  bot_type?: "human" | "chatgpt" | "worker" | "unknown";
 };
 type AnalyticsPayload = { totalViews: number; rows: Visit[]; truncated: boolean };
 
@@ -152,7 +153,8 @@ function AnalyticsPage() {
     return rows.filter((row) => new Date(row.visited_at).getTime() >= cutoff);
   }, [rows, range]);
 
-  const uniqueVisitors = new Set(filtered.map((row) => row.visitor_id)).size;
+  const botCounts = { chatgpt: filtered.filter((row) => row.bot_type === "chatgpt").length, worker: filtered.filter((row) => row.bot_type === "worker").length, human: filtered.filter((row) => row.bot_type === "human").length, unknown: filtered.filter((row) => !row.bot_type || row.bot_type === "unknown").length };
+  const uniqueVisitors = new Set(filtered.filter((row) => row.bot_type !== "chatgpt" && row.bot_type !== "worker").map((row) => row.visitor_id)).size;
   const uniqueSessions = new Set(filtered.map((row) => row.session_id).filter(Boolean)).size;
   const pages = Object.entries(filtered.reduce<Record<string, number>>((acc, row) => {
     acc[row.page_path] = (acc[row.page_path] ?? 0) + 1;
@@ -241,6 +243,21 @@ function AnalyticsPage() {
           ))}
         </section>
 
+        <section className="mt-4 grid grid-cols-2 gap-3 lg:grid-cols-4">
+          {[
+            { label: "ChatGPT", value: botCounts.chatgpt, note: "Identifiable OpenAI agents" },
+            { label: "Worker bots", value: botCounts.worker, note: "Other recognized automation" },
+            { label: "Human / browser", value: botCounts.human, note: "Regular browser visits" },
+            { label: "Unclassified", value: botCounts.unknown, note: "Older or unidentified visits" },
+          ].map((item) => (
+            <div key={item.label} className="rounded-xl border border-white/10 bg-[#11151d] p-4">
+              <p className="text-xs text-slate-400">{item.label}</p>
+              <p className="mt-2 text-2xl font-semibold tabular-nums">{item.value.toLocaleString()}</p>
+              <p className="mt-1 text-[11px] text-slate-500">{item.note}</p>
+            </div>
+          ))}
+        </section>
+
         <section className="mt-4 grid gap-4 lg:grid-cols-[1.5fr_1fr]">
           <div className="rounded-xl border border-white/10 bg-[#11151d] p-4 sm:p-5">
             <div className="flex items-center justify-between"><h2 className="font-semibold">Traffic over time</h2><span className="text-xs text-slate-500">Daily views</span></div>
@@ -281,7 +298,7 @@ function AnalyticsPage() {
             <div className="mt-4 divide-y divide-white/5">
               {rows.slice(0, 7).length ? rows.slice(0, 7).map((row, index) => (
                 <div key={`${row.visited_at}-${index}`} className="flex items-center justify-between gap-3 py-3 text-sm">
-                  <div className="min-w-0"><p className="truncate text-slate-300">{row.page_path}</p><p className="mt-1 text-[11px] capitalize text-slate-500">{row.traffic_source || "unknown"} traffic</p></div>
+                  <div className="min-w-0"><p className="truncate text-slate-300">{row.page_path}</p><p className="mt-1 text-[11px] capitalize text-slate-500">{row.bot_type === "chatgpt" ? "ChatGPT" : row.bot_type === "worker" ? "Worker bot" : row.bot_type === "human" ? "Human / browser" : "Unclassified"} · {row.traffic_source || "unknown"} traffic</p></div>
                   <time className="shrink-0 text-[11px] text-slate-500">{new Date(row.visited_at).toLocaleString()}</time>
                 </div>
               )) : <p className="py-4 text-sm text-slate-500">No activity recorded yet.</p>}
