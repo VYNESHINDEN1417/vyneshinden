@@ -106,6 +106,7 @@ export function trackPageView(pathname: string): void {
         session_id: sessionId,
         page_path: pathname,
         ...attribution,
+        user_agent: navigator.userAgent,
       }),
       keepalive: true,
     }).catch((error) => {
