@@ -163,8 +163,8 @@ export function PortfolioPage({ section, project }: { section: "About me" | "My 
         <Link to="/" onPointerDown={playClickSoundOnPointerDown} aria-label="VYNESHINDEN home"><img className="detail-logo" src="/media/title.png" alt="VYNESHINDEN" /></Link>
         <span className="header-spacer" aria-hidden="true" />
       </header>
-      <div className={`detail-content${isProjectList ? " detail-content--project-list" : ""}`}>
-        {!isProjectList && <p className="section-label">VYNESHINDEN / PORTFOLIO</p>}
+      <div className={`detail-content${isProjectList ? " detail-content--project-list" : ""}${section === "About me" ? " detail-content--simple-page" : ""}`}>
+        {!isProjectList && section !== "About me" && <p className="section-label">VYNESHINDEN / PORTFOLIO</p>}
         <h1>{section}</h1>
         {section === "About me" ? <>
           <section className="about-intro">
