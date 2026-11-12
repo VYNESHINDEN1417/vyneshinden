@@ -43,5 +43,5 @@ export const PROJECTS: PortfolioProject[] = Array.from({ length: 10 }, (_, index
     })),
   ];
 
-  return { id: String(number), title: `${number}. ${entry.name}`, images };
+  return { id: String(number), title: `${number}.${entry.name}`, images };
 });
