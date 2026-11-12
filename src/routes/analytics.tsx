@@ -71,7 +71,7 @@ function AnalyticsPage() {
   const [password, setPassword] = useState("");
   const [session, setSession] = useState<AuthSession | null>(null);
   const [payload, setPayload] = useState<AnalyticsPayload | null>(null);
-  const [range, setRange] = useState<7 | 30 | 0>(7);
+  const [range, setRange] = useState<1 | 7 | 30 | 0>(7);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [loaded, setLoaded] = useState(false);
@@ -166,14 +166,29 @@ function AnalyticsPage() {
     return acc;
   }, {})).sort((a, b) => b[1] - a[1]);
   const dayCount = range === 7 ? 7 : 14;
-  const days = Array.from({ length: dayCount }, (_, index) => {
+  const dailyBars = Array.from({ length: dayCount }, (_, index) => {
     const date = new Date();
     date.setHours(0, 0, 0, 0);
     date.setDate(date.getDate() - (dayCount - 1 - index));
     const key = date.toLocaleDateString("en-CA");
     return { key, label: date.toLocaleDateString("en", { weekday: "short" }), count: filtered.filter((row) => { const visitDate = new Date(row.visited_at); const visitKey = `${visitDate.getFullYear()}-${String(visitDate.getMonth() + 1).padStart(2, "0")}-${String(visitDate.getDate()).padStart(2, "0")}`; return visitKey === key; }).length };
   });
-  const maxDay = Math.max(1, ...days.map((day) => day.count));
+  const hourlyBars = Array.from({ length: 24 }, (_, index) => {
+    const start = new Date();
+    start.setMinutes(0, 0, 0);
+    start.setHours(start.getHours() - (23 - index));
+    const end = new Date(start.getTime() + 60 * 60 * 1000);
+    return {
+      key: start.toISOString(),
+      label: index % 3 === 0 ? start.toLocaleTimeString("en", { hour: "numeric" }) : "",
+      count: filtered.filter((row) => {
+        const timestamp = new Date(row.visited_at).getTime();
+        return timestamp >= start.getTime() && timestamp < end.getTime();
+      }).length,
+    };
+  });
+  const chartBars = range === 1 ? hourlyBars : dailyBars;
+  const maxDay = Math.max(1, ...chartBars.map((bar) => bar.count));
 
   if (!loaded) return <div className="min-h-screen bg-[#080a0f]" />;
 
@@ -220,8 +235,8 @@ function AnalyticsPage() {
         <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
           <p className="text-sm text-slate-400">{busy ? "Refreshing data…" : "Analytics overview"}</p>
           <div className="flex rounded-lg border border-white/10 bg-[#11151d] p-1">
-            {([7, 30, 0] as const).map((value) => (
-              <button key={value} onClick={() => setRange(value)} className={`rounded-md px-3 py-1.5 text-xs font-medium transition ${range === value ? "bg-[#FF7300] text-slate-950" : "text-slate-400 hover:text-white"}`}>{value === 0 ? "All" : `${value} days`}</button>
+            {([1, 7, 30, 0] as const).map((value) => (
+              <button key={value} onClick={() => setRange(value)} className={`rounded-md px-3 py-1.5 text-xs font-medium transition ${range === value ? "bg-[#FF7300] text-slate-950" : "text-slate-400 hover:text-white"}`}>{value === 1 ? "24 hours" : value === 0 ? "All" : `${value} days`}</button>
             ))}
           </div>
         </div>
@@ -260,9 +275,9 @@ function AnalyticsPage() {
 
         <section className="mt-4 grid gap-4 lg:grid-cols-[1.5fr_1fr]">
           <div className="rounded-xl border border-white/10 bg-[#11151d] p-4 sm:p-5">
-            <div className="flex items-center justify-between"><h2 className="font-semibold">Traffic over time</h2><span className="text-xs text-slate-500">Daily views</span></div>
+            <div className="flex items-center justify-between"><h2 className="font-semibold">Traffic over time</h2><span className="text-xs text-slate-500">{range === 1 ? "Hourly views · last 24 hours" : "Daily views"}</span></div>
             <div className="mt-6 flex h-44 items-end gap-2 sm:gap-3">
-              {days.map((day) => (
+              {chartBars.map((day) => (
                 <div key={day.key} className="flex h-full min-w-0 flex-1 flex-col items-center justify-end gap-2">
                   <span className="text-[10px] tabular-nums text-slate-400">{day.count || ""}</span>
                   <div className="flex w-full flex-1 items-end"><div className="w-full rounded-t-sm bg-[#FF7300]/80" style={{ height: `${Math.max(day.count ? 5 : 1, (day.count / maxDay) * 100)}%` }} /></div>
@@ -296,7 +311,7 @@ function AnalyticsPage() {
           <div className="rounded-xl border border-white/10 bg-[#11151d] p-4 sm:p-5">
             <h2 className="font-semibold">Recent activity</h2>
             <div className="mt-4 divide-y divide-white/5">
-              {rows.slice(0, 7).length ? rows.slice(0, 7).map((row, index) => (
+              {filtered.slice(0, 7).length ? filtered.slice(0, 7).map((row, index) => (
                 <div key={`${row.visited_at}-${index}`} className="flex items-center justify-between gap-3 py-3 text-sm">
                   <div className="min-w-0"><p className="truncate text-slate-300">{row.page_path}</p><p className="mt-1 text-[11px] capitalize text-slate-500">{row.bot_type === "chatgpt" ? "ChatGPT" : row.bot_type === "worker" ? "Worker bot" : row.bot_type === "human" ? "Human / browser" : "Unclassified"} · {row.traffic_source || "unknown"} traffic</p></div>
                   <time className="shrink-0 text-[11px] text-slate-500">{new Date(row.visited_at).toLocaleString()}</time>
