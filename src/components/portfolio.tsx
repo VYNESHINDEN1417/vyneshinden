@@ -189,7 +189,7 @@ export function PortfolioPage({ section, project }: { section: "About me" | "My 
         </> : <>
           <nav className="projects-menu" aria-label="Projects" tabIndex={0}>
             {PROJECTS.map((item) => <Button key={item.id} variant="game" size="game" className="project-button" asChild><Link to="/works/$projectId" params={{ projectId: item.id }} onPointerDown={playClickSoundOnPointerDown}><span>
-              {item.images[0] ? <img className="project-thumb" src={item.images[0].src} alt="" loading="lazy" /> : <span className="project-thumb" aria-hidden="true" />}
+              {item.images[0] ? <img className="project-thumb" src={item.images[0].thumbnail ?? item.images[0].src} alt="" loading="lazy" decoding="async" width={320} height={220} /> : <span className="project-thumb" aria-hidden="true" />}
               <span className="project-name">{item.images.length ? item.title : `Project ${item.id}`}</span>
               <span className="project-date">MM/DD/YYYY</span>
             </span></Link></Button>)}
