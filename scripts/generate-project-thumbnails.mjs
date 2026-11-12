@@ -1,4 +1,4 @@
-import { readdir, mkdir, stat } from "node:fs/promises";
+import { readdir, mkdir, stat, writeFile } from "node:fs/promises";
 import path from "node:path";
 import sharp from "sharp";
 
@@ -6,28 +6,28 @@ const root = process.cwd();
 const projectsDir = path.join(root, "public/media/projects");
 const outputDir = path.join(root, "public/media/thumbnails");
 
-// A few legacy projects keep their cover image outside the numbered project
-// folders. New projects should use public/media/projects/<id>/1.webp (or any
-// supported image filename); the first image is picked automatically.
+// Legacy covers live outside their numbered project folders.
 const coverOverrides = new Map([
   ["2", "public/media/ATAGO1.jpg"],
   ["8", "public/media/Ship1.jpg"],
 ]);
 const imageExtensions = new Set([".avif", ".jpeg", ".jpg", ".png", ".webp"]);
 const thumbnailWidths = [320, 640, 960];
-const quality = 72;
+const targetBytesRatio = 0.10; // Aim for at least 90% fewer bytes than the source.
+const qualitySteps = [72, 68, 64, 60, 56, 52, 48];
+const minimumQuality = 48;
 
 await mkdir(outputDir, { recursive: true });
 
 const folders = await readdir(projectsDir, { withFileTypes: true });
 const projectIds = new Set(
-  folders.filter((entry) => entry.isDirectory() && /^\d+$/.test(entry.name)).map((entry) => entry.name),
+  folders.filter((entry) => entry.isDirectory() && /^\\d+$/.test(entry.name)).map((entry) => entry.name),
 );
 for (const id of coverOverrides.keys()) projectIds.add(id);
 
-let originalTotal = 0;
-let thumbnailTotal = 0;
 let generated = 0;
+let variantsMeetingTarget = 0;
+let totalVariants = 0;
 
 for (const id of [...projectIds].sort((a, b) => Number(a) - Number(b))) {
   let source = coverOverrides.get(id);
@@ -49,37 +49,49 @@ for (const id of [...projectIds].sort((a, b) => Number(a) - Number(b))) {
 
   try {
     const sourceInfo = await stat(sourcePath);
-    let largestVariantSize = 0;
+    const targetBytes = Math.floor(sourceInfo.size * targetBytesRatio);
+    const results = [];
 
     for (const width of thumbnailWidths) {
       const outputPath = path.join(outputDir, `project-${id}-${width}.webp`);
-      await sharp(sourcePath)
-        .rotate()
-        .resize(width, Math.round(width * 220 / 320), {
-          fit: "cover",
-          position: "centre",
-          withoutEnlargement: true,
-        })
-        .webp({ quality, effort: 4 })
-        .toFile(outputPath);
+      let bestBuffer = null;
+      let chosenQuality = qualitySteps[0];
 
-      const outputInfo = await stat(outputPath);
-      thumbnailTotal += outputInfo.size;
-      largestVariantSize = Math.max(largestVariantSize, outputInfo.size);
+      // Lower quality gradually, stopping as soon as the 90%-smaller byte
+      // target is met. Never push quality below the defined visual floor.
+      for (const quality of qualitySteps) {
+        const buffer = await sharp(sourcePath)
+          .rotate()
+          .resize(width, Math.round(width * 220 / 320), {
+            fit: "cover",
+            position: "centre",
+            withoutEnlargement: true,
+          })
+          .webp({ quality, effort: 5 })
+          .toBuffer();
+
+        bestBuffer = buffer;
+        chosenQuality = quality;
+        if (buffer.length <= targetBytes) break;
+      }
+
+      // If the source is already highly compressed or unusually small, retain
+      // the best result at quality 48 instead of crushing image clarity.
+      await writeFile(outputPath, bestBuffer);
+      const reduction = sourceInfo.size ? (1 - bestBuffer.length / sourceInfo.size) * 100 : 0;
+      const metTarget = bestBuffer.length <= targetBytes;
+      totalVariants += 1;
+      if (metTarget) variantsMeetingTarget += 1;
+      results.push(`${width}px ${(reduction).toFixed(1)}% reduction, q${chosenQuality}${metTarget ? "" : " (best quality-preserving effort; target not feasible)"}`);
     }
 
-    originalTotal += sourceInfo.size;
     generated += 1;
-    console.log(
-      `Project ${id}: original ${(sourceInfo.size / 1024).toFixed(1)} KB; largest responsive variant ${(largestVariantSize / 1024).toFixed(1)} KB`,
-    );
+    console.log(`Project ${id}: ${results.join(" | ")}`);
   } catch (error) {
     throw new Error(`Could not generate thumbnails for project ${id} from ${source}: ${error.message}`);
   }
 }
 
-const saved = originalTotal - thumbnailTotal;
-const percentage = originalTotal ? (saved / originalTotal) * 100 : 0;
 console.log(
-  `Generated ${generated} projects × ${thumbnailWidths.length} responsive sizes. Combined variants: ${(originalTotal / 1024).toFixed(1)} KB source total vs ${(thumbnailTotal / 1024).toFixed(1)} KB across all variants (${percentage.toFixed(1)}% aggregate difference; each visitor downloads only one size).`,
+  `Generated responsive thumbnails for ${generated} projects. ${variantsMeetingTarget}/${totalVariants} variants met the 90% byte-reduction target. Every visitor downloads only the single size selected by the browser; original gallery images remain untouched.`,
 );
