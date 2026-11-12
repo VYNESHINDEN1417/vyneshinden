@@ -174,16 +174,16 @@ function AnalyticsPage() {
     return { key, label: date.toLocaleDateString("en", { weekday: "short" }), count: filtered.filter((row) => { const visitDate = new Date(row.visited_at); const visitKey = `${visitDate.getFullYear()}-${String(visitDate.getMonth() + 1).padStart(2, "0")}-${String(visitDate.getDate()).padStart(2, "0")}`; return visitKey === key; }).length };
   });
   const hourlyBars = Array.from({ length: 24 }, (_, index) => {
-    const start = new Date();
-    start.setMinutes(0, 0, 0);
-    start.setHours(start.getHours() - (23 - index));
-    const end = new Date(start.getTime() + 60 * 60 * 1000);
+    const now = Date.now();
+    const start = now - (24 - index) * 60 * 60 * 1000;
+    const end = start + 60 * 60 * 1000;
+    const bucketTime = new Date(start);
     return {
-      key: start.toISOString(),
-      label: index % 3 === 0 ? start.toLocaleTimeString("en", { hour: "numeric" }) : "",
+      key: bucketTime.toISOString(),
+      label: index % 3 === 0 ? bucketTime.toLocaleTimeString("en", { hour: "numeric" }) : "",
       count: filtered.filter((row) => {
         const timestamp = new Date(row.visited_at).getTime();
-        return timestamp >= start.getTime() && timestamp < end.getTime();
+        return timestamp >= start && timestamp < end;
       }).length,
     };
   });
@@ -276,14 +276,19 @@ function AnalyticsPage() {
         <section className="mt-4 grid gap-4 lg:grid-cols-[1.5fr_1fr]">
           <div className="rounded-xl border border-white/10 bg-[#11151d] p-4 sm:p-5">
             <div className="flex items-center justify-between"><h2 className="font-semibold">Traffic over time</h2><span className="text-xs text-slate-500">{range === 1 ? "Hourly views · last 24 hours" : "Daily views"}</span></div>
-            <div className="mt-6 flex h-44 items-end gap-2 sm:gap-3">
-              {chartBars.map((day) => (
-                <div key={day.key} className="flex h-full min-w-0 flex-1 flex-col items-center justify-end gap-2">
-                  <span className="text-[10px] tabular-nums text-slate-400">{day.count || ""}</span>
-                  <div className="flex w-full flex-1 items-end"><div className="w-full rounded-t-sm bg-[#FF7300]/80" style={{ height: `${Math.max(day.count ? 5 : 1, (day.count / maxDay) * 100)}%` }} /></div>
-                  <span className="text-[10px] text-slate-500">{day.label}</span>
-                </div>
-              ))}
+            <div className="mt-6 flex h-44 items-end gap-1 sm:gap-2">
+              {chartBars.map((day) => {
+                const barHeight = day.count ? Math.max(5, (day.count / maxDay) * 78) : 1;
+                return (
+                  <div key={day.key} className="flex h-full min-w-0 flex-1 flex-col items-center">
+                    <div className="relative flex w-full flex-1 items-end justify-center">
+                      {day.count > 0 && <span className="absolute left-1/2 -translate-x-1/2 whitespace-nowrap text-[9px] tabular-nums text-slate-400" style={{ bottom: `calc(${barHeight}% + 4px)` }}>{day.count}</span>}
+                      <div className="w-full rounded-t-sm bg-[#FF7300]/80" style={{ height: `${barHeight}%` }} />
+                    </div>
+                    <span className="mt-2 h-3 text-[10px] text-slate-500">{day.label}</span>
+                  </div>
+                );
+              })}
             </div>
           </div>
           <div className="rounded-xl border border-white/10 bg-[#11151d] p-4 sm:p-5">
