@@ -926,7 +926,7 @@ html[data-button-theme="light"] .btn-174 span {
 }
 @keyframes hero-splash-pulse {
   from { scale: .97; }
-  to { scale: 1.035; }
+  to { scale: 1.08; }
 }
 @media (max-width: 600px) {
   .hero-splash-text {
