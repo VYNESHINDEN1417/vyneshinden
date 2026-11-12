@@ -168,7 +168,7 @@ export function PortfolioPage({ section, project }: { section: "About me" | "My 
         <h1>{section}</h1>
         {section === "About me" ? <>
           <section className="about-intro">
-            <div className="placeholder-copy"><h2>Hi, Im Timothy Lomibao</h2><p>KAREN FAYE BALAJADIA owner of VYNESHINDEN</p><p>Placeholder description. A little about me, my story, and what I love creating.</p></div>
+            <div className="placeholder-copy"><h2>Hi, Im Timothy Lomibao</h2><p>You may know me as VYNESHINDEN, im a builder on bedrock, i just use phone, YES I ONLY BUILD IN MY PHONE LOL. Granted i also have a laptop for renderings and such.</p></div>
             <img className="about-portrait" src="/media/portrait.jpg" alt="Timothy Joseph Lomibao" width={768} height={768} />
           </section>
           <hr className="about-divider" />
