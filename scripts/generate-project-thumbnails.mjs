@@ -21,7 +21,7 @@ await mkdir(outputDir, { recursive: true });
 
 const folders = await readdir(projectsDir, { withFileTypes: true });
 const projectIds = new Set(
-  folders.filter((entry) => entry.isDirectory() && /^\\d+$/.test(entry.name)).map((entry) => entry.name),
+  folders.filter((entry) => entry.isDirectory() && /^\d+$/.test(entry.name)).map((entry) => entry.name),
 );
 for (const id of coverOverrides.keys()) projectIds.add(id);
 
