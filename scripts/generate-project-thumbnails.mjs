@@ -14,12 +14,14 @@ const coverOverrides = new Map([
   ["8", "public/media/Ship1.jpg"],
 ]);
 const imageExtensions = new Set([".avif", ".jpeg", ".jpg", ".png", ".webp"]);
+const thumbnailWidths = [320, 640, 960];
+const quality = 72;
 
 await mkdir(outputDir, { recursive: true });
 
 const folders = await readdir(projectsDir, { withFileTypes: true });
 const projectIds = new Set(
-  folders.filter((entry) => entry.isDirectory() && /^\d+$/.test(entry.name)).map((entry) => entry.name),
+  folders.filter((entry) => entry.isDirectory() && /^\\d+$/.test(entry.name)).map((entry) => entry.name),
 );
 for (const id of coverOverrides.keys()) projectIds.add(id);
 
@@ -44,34 +46,40 @@ for (const id of [...projectIds].sort((a, b) => Number(a) - Number(b))) {
   }
 
   const sourcePath = path.join(root, source);
-  const outputPath = path.join(outputDir, `project-${id}.webp`);
 
   try {
     const sourceInfo = await stat(sourcePath);
-    await sharp(sourcePath)
-      .rotate()
-      .resize(320, 220, {
-        fit: "cover",
-        position: "centre",
-        withoutEnlargement: true,
-      })
-      .webp({ quality: 72, effort: 4 })
-      .toFile(outputPath);
+    let largestVariantSize = 0;
 
-    const outputInfo = await stat(outputPath);
+    for (const width of thumbnailWidths) {
+      const outputPath = path.join(outputDir, `project-${id}-${width}.webp`);
+      await sharp(sourcePath)
+        .rotate()
+        .resize(width, Math.round(width * 220 / 320), {
+          fit: "cover",
+          position: "centre",
+          withoutEnlargement: true,
+        })
+        .webp({ quality, effort: 4 })
+        .toFile(outputPath);
+
+      const outputInfo = await stat(outputPath);
+      thumbnailTotal += outputInfo.size;
+      largestVariantSize = Math.max(largestVariantSize, outputInfo.size);
+    }
+
     originalTotal += sourceInfo.size;
-    thumbnailTotal += outputInfo.size;
     generated += 1;
     console.log(
-      `Project ${id}: ${(sourceInfo.size / 1024).toFixed(1)} KB → ${(outputInfo.size / 1024).toFixed(1)} KB`,
+      `Project ${id}: original ${(sourceInfo.size / 1024).toFixed(1)} KB; largest responsive variant ${(largestVariantSize / 1024).toFixed(1)} KB`,
     );
   } catch (error) {
-    throw new Error(`Could not generate thumbnail for project ${id} from ${source}: ${error.message}`);
+    throw new Error(`Could not generate thumbnails for project ${id} from ${source}: ${error.message}`);
   }
 }
 
 const saved = originalTotal - thumbnailTotal;
 const percentage = originalTotal ? (saved / originalTotal) * 100 : 0;
 console.log(
-  `Generated ${generated} project thumbnails. Total: ${(originalTotal / 1024).toFixed(1)} KB → ${(thumbnailTotal / 1024).toFixed(1)} KB (${percentage.toFixed(1)}% smaller).`,
+  `Generated ${generated} projects × ${thumbnailWidths.length} responsive sizes. Combined variants: ${(originalTotal / 1024).toFixed(1)} KB source total vs ${(thumbnailTotal / 1024).toFixed(1)} KB across all variants (${percentage.toFixed(1)}% aggregate difference; each visitor downloads only one size).`,
 );
