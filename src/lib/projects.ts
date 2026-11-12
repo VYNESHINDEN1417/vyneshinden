@@ -1,4 +1,4 @@
-export type ProjectImage = { src: string; alt: string; thumbnail?: string };
+export type ProjectImage = { src: string; alt: string; thumbnail?: string; thumbnailSrcSet?: string };
 export type PortfolioProject = { id: string; title: string; images: ProjectImage[] };
 
 const entries = [
@@ -17,13 +17,17 @@ export const PROJECTS: PortfolioProject[] = Array.from({ length: 10 }, (_, index
   const entry = entries[index];
   if (!entry) return { id: String(number), title: `Project ${number}`, images: [] };
 
-  const thumbnail = `/media/thumbnails/project-${number}.webp`;
+  const thumbnail = `/media/thumbnails/project-${number}-320.webp`;
+  const thumbnailSrcSet = [320, 640, 960]
+    .map((width) => `/media/thumbnails/project-${number}-${width}.webp ${width}w`)
+    .join(", ");
   const images: ProjectImage[] = [
     ...(number === 8
       ? [{
           src: "/media/Ship1.jpg",
           alt: "USS Wisconsin block-built battleship, with overhead, side, bow, and stern views",
           thumbnail,
+          thumbnailSrcSet,
         }]
       : []),
     ...Array.from({ length: entry.count }, (_, image) => ({
@@ -31,7 +35,7 @@ export const PROJECTS: PortfolioProject[] = Array.from({ length: 10 }, (_, index
         ? `/media/ATAGO${image + 1}.jpg`
         : `/media/projects/${number}/${image + (number === 8 ? 2 : 1)}.webp`,
       alt: `${entry.name} — view ${image + (number === 8 ? 2 : 1)}`,
-      ...(image === 0 && number !== 8 ? { thumbnail } : {}),
+      ...(image === 0 && number !== 8 ? { thumbnail, thumbnailSrcSet } : {}),
     })),
   ];
 
