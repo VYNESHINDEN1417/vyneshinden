@@ -15,7 +15,6 @@ const imageExtensions = new Set([".avif", ".jpeg", ".jpg", ".png", ".webp"]);
 const thumbnailWidths = [320, 640, 960];
 const targetBytesRatio = 0.10; // Aim for at least 90% fewer bytes than the source.
 const qualitySteps = [72, 68, 64, 60, 56, 52, 48];
-const minimumQuality = 48;
 
 await mkdir(outputDir, { recursive: true });
 
