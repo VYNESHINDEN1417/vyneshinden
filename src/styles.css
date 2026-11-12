@@ -907,8 +907,8 @@ html[data-button-theme="light"] .btn-174 span {
 .hero-splash-text {
   position: absolute;
   z-index: 4;
-  top: 84%;
-  right: -2%;
+  top: 81%;
+  right: -0.5%;
   display: block;
   color: #ffff55;
   font-family: "Minecraftia", monospace;
@@ -930,8 +930,8 @@ html[data-button-theme="light"] .btn-174 span {
 }
 @media (max-width: 600px) {
   .hero-splash-text {
-    top: 82%;
-    right: -3%;
+    top: 79%;
+    right: -1.5%;
     font-size: clamp(9px, 2.45vw, 12px);
     text-shadow: 1px 1px 0 #3f3f00, 0 0 4px rgb(0 0 0 / 75%);
   }
