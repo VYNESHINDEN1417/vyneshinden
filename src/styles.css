@@ -939,3 +939,8 @@ html[data-button-theme="light"] .btn-174 span {
 @media (prefers-reduced-motion: reduce) {
   .hero-splash-text { animation: none; }
 }
+
+
+/* About and socials pages: remove the eyebrow gap and bring content closer to the header. */
+.detail-content--simple-page { padding-top: 20px; }
+html[data-view="mobile"] .detail-content--simple-page { padding-top: 16px; }
