@@ -65,7 +65,7 @@ function Index() {
     <main className="home-page">
       <div className="hero-scene">
         <div className="hero-fade" />
-        <h1 className="hero-title"><img src="/media/title.png" alt="VYNESHINDEN" width={1920} height={480} /></h1>
+        <h1 className="hero-title"><img src="/media/title.png" alt="VYNESHINDEN" width={1920} height={480} /><span className="hero-splash-text">All built from my phone</span></h1>
       </div>
       <div className="home-menu">
       <nav className="main-menu" aria-label="Portfolio">
