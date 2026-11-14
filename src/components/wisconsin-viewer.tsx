@@ -73,6 +73,11 @@ export function WisconsinViewer() {
         if (!aliveRef.current) return;
         localViewer = await Viewer.create(canvas, obj, mtl, () => {});
         viewerRef.current = localViewer;
+        const backgroundResponse = await fetch("/images/3d-viewer/3untitled.png", { signal: controller.signal });
+        if (backgroundResponse.ok) {
+          const backgroundBytes = new Uint8Array(await backgroundResponse.arrayBuffer());
+          localViewer.set_background_image(backgroundBytes);
+        }
         setProgress(65);
         setStatus("Loading Minecraft textures…");
         const textureNames = localViewer.texture_names();
@@ -93,7 +98,7 @@ export function WisconsinViewer() {
           }
         }));
         if (!aliveRef.current) return;
-        localViewer.set_background(3);
+        localViewer.set_background(4);
         localViewer.set_light(2);
         localViewer.set_fancy(true, 1);
         localViewer.set_shadow_mode(1);
