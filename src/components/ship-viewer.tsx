@@ -430,7 +430,7 @@ export function ShipViewer({ name, objUrl, mtlUrl, archiveUrl, sizeLabel, textur
       {!open ? (
         <button type="button" className="wisconsin-3d-launch" onClick={() => { setError(""); setTextureMissing(false); setProgress(0); setStartDownload(false); setConfirmDownload(true); setOpen(true); }}>
           <span>VIEW IN 3D</span>
-          <span className="wisconsin-3d-launch-sub">Interactive ship model</span>
+          <span className="wisconsin-3d-launch-sub">{name}</span>
         </button>
       ) : (
         <div className="wisconsin-viewer-shell" ref={hostRef}>
