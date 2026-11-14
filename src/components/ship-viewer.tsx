@@ -170,8 +170,15 @@ export function ShipViewer({ name, objUrl, mtlUrl, sizeLabel, textureBasePath = 
           fetch(mtlUrl, { signal: controller.signal }),
         ]);
         if (!objResponse.ok || !mtlResponse.ok) throw new Error("Could not load the ship model files.");
-        const [obj, mtl] = await Promise.all([objResponse.text(), mtlResponse.text()]);
+        const [rawObj, mtl] = await Promise.all([objResponse.text(), mtlResponse.text()]);
         if (!aliveRef.current) return;
+        // These exports encode material assignments in OBJ group names (g),
+        // while Pathfinder/tobj reads actual material assignments from usemtl.
+        // Convert each group into a matching MTL material assignment before parsing.
+        const obj = /^\\s*usemtl\\s+/m.test(rawObj) ? rawObj : rawObj.replace(
+          /^(\\s*g\\s+)(.+)$/gm,
+          (_line, prefix: string, group: string) => `${prefix}${group}\\nusemtl ${group.trim()}`
+        );
         setProgress(35);
         setStatus("Starting Pathfinder renderer…");
         // Set the backing-store dimensions BEFORE creating the GPU surface.
