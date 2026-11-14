@@ -4,6 +4,50 @@ import initWasm, { Viewer } from "@/lib/wasm/viewer/viewer";
 
 const WASM_URL = "https://raw.githubusercontent.com/VYNESHINDEN1417/view-pathfinder/d8f38e06152ca8ce853431a2993682794206d3bc/public/wasm/viewer_bg.wasm";
 
+type ArchivedModel = { obj: string; mtl: string; textures: Map<string, Uint8Array> };
+async function loadModelArchive(url: string, signal: AbortSignal): Promise<ArchivedModel> {
+  const response = await fetch(url, { signal });
+  if (!response.ok) throw new Error("Could not download the Valkyrie model archive.");
+  const buffer = await response.arrayBuffer();
+  const view = new DataView(buffer);
+  const decoder = new TextDecoder();
+  let end = -1;
+  for (let offset = buffer.byteLength - 22; offset >= Math.max(0, buffer.byteLength - 65558); offset--) {
+    if (view.getUint32(offset, true) === 0x06054b50) { end = offset; break; }
+  }
+  if (end < 0) throw new Error("The Valkyrie ZIP archive is invalid.");
+  const count = view.getUint16(end + 10, true);
+  let offset = view.getUint32(end + 16, true);
+  let obj = "";
+  let mtl = "";
+  const textures = new Map<string, Uint8Array>();
+  for (let i = 0; i < count; i++) {
+    if (view.getUint32(offset, true) !== 0x02014b50) break;
+    const method = view.getUint16(offset + 10, true);
+    const compressedSize = view.getUint32(offset + 20, true);
+    const nameLength = view.getUint16(offset + 28, true);
+    const extraLength = view.getUint16(offset + 30, true);
+    const commentLength = view.getUint16(offset + 32, true);
+    const local = view.getUint32(offset + 42, true);
+    const filename = decoder.decode(new Uint8Array(buffer, offset + 46, nameLength));
+    offset += 46 + nameLength + extraLength + commentLength;
+    if (filename.endsWith("/")) continue;
+    const dataStart = local + 30 + view.getUint16(local + 26, true) + view.getUint16(local + 28, true);
+    const compressed = buffer.slice(dataStart, dataStart + compressedSize);
+    let data: ArrayBuffer;
+    if (method === 0) data = compressed;
+    else if (method === 8) data = await new Response(new Blob([compressed]).stream().pipeThrough(new DecompressionStream("deflate-raw"))).arrayBuffer();
+    else continue;
+    const lower = filename.toLowerCase();
+    if (lower.endsWith("/model.obj") || lower === "model.obj") obj = decoder.decode(data);
+    else if (lower.endsWith("/model.mtl") || lower === "model.mtl") mtl = decoder.decode(data);
+    else if (lower.endsWith(".png")) textures.set(filename.split("/").pop()!.toLowerCase(), new Uint8Array(data));
+  }
+  if (!obj || !mtl) throw new Error("The Valkyrie archive is missing model.obj or model.mtl.");
+  return { obj, mtl, textures };
+}
+
+
 const RESOURCE_PACK_URL = "/resource-pack/minecraft_resource_pack_1.18.zip";
 let packCache: Promise<Map<string, Blob>> | null = null;
 async function loadPack(): Promise<Map<string, Blob>> {
@@ -108,7 +152,7 @@ async function rebuildModelAtlases(obj: string, names: string[]): Promise<Map<st
   return result;
 }
 
-type ShipViewerProps = { name: string; objUrl: string; mtlUrl: string; sizeLabel: string; textureBasePath?: string; textureUrls?: Record<string, string>; };
+type ShipViewerProps = { name: string; objUrl?: string; mtlUrl?: string; archiveUrl?: string; sizeLabel: string; textureBasePath?: string; textureUrls?: Record<string, string>; };
 export function ShipViewer({ name, objUrl, mtlUrl, sizeLabel, textureBasePath, textureUrls }: ShipViewerProps) {
   const [open, setOpen] = useState(false);
   const [confirmDownload, setConfirmDownload] = useState(false);
@@ -165,12 +209,24 @@ export function ShipViewer({ name, objUrl, mtlUrl, sizeLabel, textureBasePath, t
       try {
         setStatus("Downloading ship model…");
         setProgress(5);
-        const [objResponse, mtlResponse] = await Promise.all([
-          fetch(objUrl, { signal: controller.signal }),
-          fetch(mtlUrl, { signal: controller.signal }),
-        ]);
-        if (!objResponse.ok || !mtlResponse.ok) throw new Error("Could not load the ship model files.");
-        const [rawObj, mtl] = await Promise.all([objResponse.text(), mtlResponse.text()]);
+        let rawObj: string;
+        let mtl: string;
+        let archiveTextures: Map<string, Uint8Array> | null = null;
+        if (archiveUrl) {
+          setStatus("Extracting Valkyrie model archive…");
+          const archive = await loadModelArchive(archiveUrl, controller.signal);
+          rawObj = archive.obj;
+          mtl = archive.mtl;
+          archiveTextures = archive.textures;
+        } else {
+          if (!objUrl || !mtlUrl) throw new Error("The ship model URLs are missing.");
+          const [objResponse, mtlResponse] = await Promise.all([
+            fetch(objUrl, { signal: controller.signal }),
+            fetch(mtlUrl, { signal: controller.signal }),
+          ]);
+          if (!objResponse.ok || !mtlResponse.ok) throw new Error("Could not load the ship model files.");
+          [rawObj, mtl] = await Promise.all([objResponse.text(), mtlResponse.text()]);
+        }
         if (!aliveRef.current) return;
         // These exports encode material assignments in OBJ group names (g),
         // while Pathfinder/tobj reads actual material assignments from usemtl.
@@ -225,7 +281,21 @@ export function ShipViewer({ name, objUrl, mtlUrl, sizeLabel, textureBasePath, t
         setProgress(65);
         setStatus("Loading Minecraft textures…");
         const textureNames = localViewer.texture_names();
-        if (textureBasePath || textureUrls) {
+        if (archiveTextures) {
+          setStatus("Applying Valkyrie textures…");
+          let loadedTextures = 0;
+          for (const textureName of textureNames) {
+            const basename = textureName.replace(/\\\\/g, "/").split("/").pop()?.toLowerCase() || "";
+            const bytes = archiveTextures.get(basename);
+            if (bytes) {
+              localViewer.set_texture(textureName, bytes);
+              loadedTextures++;
+            } else {
+              console.warn("Valkyrie texture is not present in the archive:", textureName);
+            }
+          }
+          if (loadedTextures < textureNames.length) setTextureMissing(true);
+        } else if (textureBasePath || textureUrls) {
           setStatus("Loading exported MTL textures…");
           let loadedTextures = 0;
           for (const textureName of textureNames) {
