@@ -143,9 +143,11 @@ export function ShipViewer({ name, objUrl, mtlUrl, sizeLabel, textureBasePath = 
       if (canvas.width !== width || canvas.height !== height) {
         canvas.width = width;
         canvas.height = height;
-        localViewer.resize(width, height, rect.width, rect.height);
-        requestRender();
       }
+      // Always synchronize the WebGPU surface, even when the backing canvas
+      // already has the requested dimensions.
+      localViewer.resize(width, height, rect.width, rect.height);
+      requestRender();
     };
 
     const load = async () => {
@@ -161,6 +163,13 @@ export function ShipViewer({ name, objUrl, mtlUrl, sizeLabel, textureBasePath = 
         if (!aliveRef.current) return;
         setProgress(35);
         setStatus("Starting Pathfinder renderer…");
+        // Set the backing-store dimensions BEFORE creating the GPU surface.
+        // Viewer.create reads canvas.width/height to configure that surface
+        // and uses the same dimensions when fitting its initial camera.
+        const initialRect = canvas.getBoundingClientRect();
+        const initialDpr = Math.min(window.devicePixelRatio || 1, 1.5);
+        canvas.width = Math.max(1, Math.round(initialRect.width * initialDpr));
+        canvas.height = Math.max(1, Math.round(initialRect.height * initialDpr));
         await initWasm(WASM_URL);
         if (!aliveRef.current) return;
         localViewer = await Viewer.create(canvas, obj, mtl, () => {});
@@ -190,6 +199,9 @@ export function ShipViewer({ name, objUrl, mtlUrl, sizeLabel, textureBasePath = 
         localViewer.set_fancy(true, 1);
         localViewer.set_shadow_mode(1);
         resize();
+        // Refit after the real CSS dimensions are applied; the renderer's
+        // first camera fit happens during create(), before CSS sizing is known.
+        localViewer.reset();
         requestRender();
         await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
         setProgress(65);
