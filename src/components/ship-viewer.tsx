@@ -225,14 +225,44 @@ export function ShipViewer({ name, objUrl, mtlUrl, sizeLabel, textureBasePath = 
         setProgress(65);
         setStatus("Loading Minecraft textures…");
         const textureNames = localViewer.texture_names();
-        setStatus("Rebuilding Minecraft block textures…");
-        try {
-          const atlases = await rebuildModelAtlases(obj, textureNames);
-          for (const [textureName, bytes] of atlases) localViewer.set_texture(textureName, bytes);
-          if (atlases.size === 0) setTextureMissing(true);
-        } catch (atlasError) {
-          console.warn("Minecraft atlas reconstruction failed:", atlasError);
-          setTextureMissing(true);
+        if (textureBasePath || textureUrls) {
+          setStatus("Loading exported MTL textures…");
+          let loadedTextures = 0;
+          for (const textureName of textureNames) {
+            const explicitUrl = textureUrls?.[textureName];
+            const normalized = textureName.replace(/\\\\/g, "/").replace(/^\\.\\//, "").replace(/^\\//, "");
+            const candidates = [
+              explicitUrl,
+              textureBasePath ? new URL(normalized, window.location.origin + (textureBasePath.endsWith("/") ? textureBasePath : textureBasePath + "/")).toString() : undefined,
+              textureBasePath ? new URL("textures/" + normalized.split("/").pop(), window.location.origin + (textureBasePath.endsWith("/") ? textureBasePath : textureBasePath + "/")).toString() : undefined,
+            ].filter((url): url is string => Boolean(url));
+            let applied = false;
+            for (const url of [...new Set(candidates)]) {
+              try {
+                const response = await fetch(url, { signal: controller.signal });
+                if (!response.ok) continue;
+                const bytes = new Uint8Array(await response.arrayBuffer());
+                localViewer.set_texture(textureName, bytes);
+                loadedTextures++;
+                applied = true;
+                break;
+              } catch (textureError) {
+                if (controller.signal.aborted) throw textureError;
+              }
+            }
+            if (!applied) console.warn("Pathfinder texture could not be loaded:", textureName);
+          }
+          if (loadedTextures === 0 || loadedTextures < textureNames.length) setTextureMissing(true);
+        } else {
+          setStatus("Rebuilding Minecraft block textures…");
+          try {
+            const atlases = await rebuildModelAtlases(obj, textureNames);
+            for (const [textureName, bytes] of atlases) localViewer.set_texture(textureName, bytes);
+            if (atlases.size === 0) setTextureMissing(true);
+          } catch (atlasError) {
+            console.warn("Minecraft atlas reconstruction failed:", atlasError);
+            setTextureMissing(true);
+          }
         }
         if (aliveRef.current) setProgress(99);
         if (!aliveRef.current) return;
