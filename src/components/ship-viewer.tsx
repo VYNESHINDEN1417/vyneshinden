@@ -3,6 +3,100 @@ import { RotateCcw, Maximize2, Minimize2, X } from "lucide-react";
 import initWasm, { Viewer } from "@/lib/wasm/viewer/viewer";
 
 const WASM_URL = "https://raw.githubusercontent.com/VYNESHINDEN1417/view-pathfinder/d8f38e06152ca8ce853431a2993682794206d3bc/public/wasm/viewer_bg.wasm";
+
+const RESOURCE_PACK_URL = "/resource-pack/minecraft_resource_pack_1.18.zip";
+let packCache: Promise<Map<string, Blob>> | null = null;
+async function loadPack(): Promise<Map<string, Blob>> {
+  if (packCache) return packCache;
+  packCache = (async () => {
+    const response = await fetch(RESOURCE_PACK_URL);
+    if (!response.ok) throw new Error("Resource pack unavailable");
+    const buffer = await response.arrayBuffer();
+    const view = new DataView(buffer);
+    const decoder = new TextDecoder();
+    let end = -1;
+    for (let p = buffer.byteLength - 22; p >= Math.max(0, buffer.byteLength - 65558); p--) {
+      if (view.getUint32(p, true) === 0x06054b50) { end = p; break; }
+    }
+    if (end < 0) throw new Error("Invalid resource pack ZIP");
+    const count = view.getUint16(end + 10, true);
+    let offset = view.getUint32(end + 16, true);
+    const result = new Map<string, Blob>();
+    for (let i = 0; i < count; i++) {
+      if (view.getUint32(offset, true) !== 0x02014b50) break;
+      const method = view.getUint16(offset + 10, true);
+      const size = view.getUint32(offset + 20, true);
+      const nameLength = view.getUint16(offset + 28, true);
+      const extraLength = view.getUint16(offset + 30, true);
+      const commentLength = view.getUint16(offset + 32, true);
+      const local = view.getUint32(offset + 42, true);
+      const filename = decoder.decode(new Uint8Array(buffer, offset + 46, nameLength)).toLowerCase();
+      offset += 46 + nameLength + extraLength + commentLength;
+      if (!filename.endsWith(".png")) continue;
+      const start = local + 30 + view.getUint16(local + 26, true) + view.getUint16(local + 28, true);
+      const compressed = buffer.slice(start, start + size);
+      let data: ArrayBuffer;
+      if (method === 0) data = compressed;
+      else if (method === 8) data = await new Response(new Blob([compressed]).stream().pipeThrough(new DecompressionStream("deflate-raw"))).arrayBuffer();
+      else continue;
+      result.set(filename, new Blob([data], { type: "image/png" }));
+    }
+    return result;
+  })();
+  return packCache;
+}
+function blockTextureName(material: string): string {
+  const aliases: Record<string, string> = { stationary_water: "water_still", mob_head: "skull", wall_sign: "oak_sign", block_of_gold: "gold_block", block_of_quartz: "quartz_block_side", monster_spawner: "mob_spawner", colored_terracotta: "hardened_clay", smooth_stone: "stone", dried_kelp_block: "dried_kelp_side" };
+  const key = material.toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_|_$/g, "");
+  return aliases[key] || key;
+}
+async function rebuildModelAtlases(obj: string, names: string[]): Promise<Map<string, Uint8Array>> {
+  const pack = await loadPack();
+  const textures = [...pack.entries()];
+  const uv: Array<[number, number]> = [];
+  const tilesByMaterial = new Map<string, Set<string>>();
+  let material = "";
+  for (const line of obj.split(/\r?\n/)) {
+    const p = line.trim().split(/\s+/);
+    if (p[0] === "vt") uv.push([Number(p[1]), Number(p[2])]);
+    else if (p[0] === "usemtl") material = p.slice(1).join(" ");
+    else if (p[0] === "f" && material) {
+      const tiles = tilesByMaterial.get(material) || new Set<string>();
+      for (const v of p.slice(1)) {
+        const index = Number(v.split("/")[1]) - 1, point = uv[index];
+        if (!point) continue;
+        const x = Math.max(0, Math.min(31, Math.floor((point[0] - Math.floor(point[0])) * 32)));
+        const y = Math.max(0, Math.min(31, Math.floor((point[1] - Math.floor(point[1])) * 32)));
+        tiles.add(x + "," + y);
+      }
+      tilesByMaterial.set(material, tiles);
+    }
+  }
+  const canvas = document.createElement("canvas");
+  canvas.width = canvas.height = 512;
+  const ctx = canvas.getContext("2d");
+  if (!ctx) throw new Error("Canvas unavailable");
+  ctx.imageSmoothingEnabled = false;
+  const bitmaps = new Map<string, ImageBitmap>();
+  for (const [mat, tiles] of tilesByMaterial) {
+    const key = blockTextureName(mat);
+    const entry = textures.find(([file]) => file.endsWith("/" + key + ".png")) || textures.find(([file]) => file.endsWith("/" + key + "_side.png")) || textures.find(([file]) => file.endsWith("/" + key + "_top.png"));
+    if (!entry) continue;
+    let bitmap = bitmaps.get(key);
+    if (!bitmap) { bitmap = await createImageBitmap(entry[1]); bitmaps.set(key, bitmap); }
+    for (const tile of tiles) {
+      const [x, y] = tile.split(",").map(Number);
+      ctx.drawImage(bitmap, x * 16, y * 16, 16, 16);
+    }
+  }
+  const blob = await new Promise<Blob>((resolve, reject) => canvas.toBlob(b => b ? resolve(b) : reject(new Error("PNG encoding failed")), "image/png"));
+  const bytes = new Uint8Array(await blob.arrayBuffer());
+  const result = new Map<string, Uint8Array>();
+  for (const name of names) result.set(name, bytes);
+  bitmaps.forEach(bitmap => bitmap.close());
+  return result;
+}
+
 type ShipViewerProps = { name: string; objUrl: string; mtlUrl: string; sizeLabel: string; textureBasePath?: string; textureUrls?: Record<string, string>; };
 export function ShipViewer({ name, objUrl, mtlUrl, sizeLabel, textureBasePath = "/models", textureUrls }: ShipViewerProps) {
   const [open, setOpen] = useState(false);
@@ -94,23 +188,16 @@ export function ShipViewer({ name, objUrl, mtlUrl, sizeLabel, textureBasePath = 
         setProgress(65);
         setStatus("Loading Minecraft textures…");
         const textureNames = localViewer.texture_names();
-        let loaded = 0;
-        await Promise.all(textureNames.map(async (name) => {
-          const safeName = name.split("/").filter((part) => part && part !== "." && part !== "..").map(encodeURIComponent).join("/");
-          const url = textureUrls?.[name] || textureBasePath + "/" + safeName;
-          
-          try {
-            const response = await fetch(url, { signal: controller.signal });
-            if (!response.ok) { setTextureMissing(true); return; }
-            const bytes = new Uint8Array(await response.arrayBuffer());
-            localViewer?.set_texture(name, bytes);
-          } catch {
-            // Keep the material's base color if an optional texture is unavailable.
-          } finally {
-            loaded += 1;
-            if (aliveRef.current) setProgress(65 + Math.round((loaded / Math.max(1, textureNames.length)) * 34));
-          }
-        }));
+        setStatus("Rebuilding Minecraft block textures…");
+        try {
+          const atlases = await rebuildModelAtlases(obj, textureNames);
+          for (const [textureName, bytes] of atlases) localViewer.set_texture(textureName, bytes);
+          if (atlases.size === 0) setTextureMissing(true);
+        } catch (atlasError) {
+          console.warn("Minecraft atlas reconstruction failed:", atlasError);
+          setTextureMissing(true);
+        }
+        if (aliveRef.current) setProgress(99);
         if (!aliveRef.current) return;
         localViewer.set_light(2.5);
         localViewer.set_fancy(true, 1);
