@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { RotateCcw, Maximize2, Minimize2, X } from "lucide-react";
 import initWasm, { Viewer } from "@/lib/wasm/viewer/viewer";
 
-const WASM_URL = "https://raw.githubusercontent.com/VYNESHINDEN1417/view-pathfinder/d8f38e06152ca8ce853431a2993682794206d3bc/public/wasm/viewer_bg.wasm";
+const WASM_URL = "https://raw.githubusercontent.com/VYNESHINDEN1417/view-pathfinder/e41cbb09a03b20fa095dbb98d1f29b197f6afaaf/public/wasm/viewer_bg.wasm";
 
 type ArchivedModel = { obj: string; mtl: string; textures: Map<string, Uint8Array> };
 async function loadModelArchive(url: string, signal: AbortSignal): Promise<ArchivedModel> {
