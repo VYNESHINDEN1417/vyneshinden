@@ -429,8 +429,8 @@ export function ShipViewer({ name, objUrl, mtlUrl, archiveUrl, sizeLabel, textur
     <section className="wisconsin-3d-section" aria-label={"Interactive " + name + " 3D model"}>
       {!open ? (
         <button type="button" className="wisconsin-3d-launch" onClick={() => { setError(""); setTextureMissing(false); setProgress(0); setStartDownload(false); setConfirmDownload(true); setOpen(true); }}>
-          <span>VIEW IN 3D</span>
-          <span className="wisconsin-3d-launch-sub">Interactive ship model</span>
+          <span>3D VIEWER</span>
+          <span className="wisconsin-3d-launch-sub">{name.charAt(0) + name.slice(1).toLowerCase()}</span>
         </button>
       ) : (
         <div className="wisconsin-viewer-shell" ref={hostRef}>
