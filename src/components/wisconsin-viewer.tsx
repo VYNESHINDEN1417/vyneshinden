@@ -5,7 +5,7 @@ import textureUrls from "@/lib/wasm/viewer/wisconsin-textures";
 
 const OBJ_URL = "/models/wisconsin/Wisconsin%202025v2.obj";
 const MTL_URL = "/models/wisconsin/Wisconsin_2025v2.mtl";
-const WASM_URL = "https://raw.githubusercontent.com/VYNESHINDEN1417/view-pathfinder/cd6cb49c3826549d698885d2d217aa3001fc591e/public/wasm/viewer_bg.wasm";
+const WASM_URL = "https://raw.githubusercontent.com/VYNESHINDEN1417/view-pathfinder/preview/texture-mipmaps-anisotropy/public/wasm/viewer_bg.wasm";
 
 export function WisconsinViewer() {
   const [open, setOpen] = useState(false);
