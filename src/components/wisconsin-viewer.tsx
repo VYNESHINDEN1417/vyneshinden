@@ -204,6 +204,11 @@ export function WisconsinViewer() {
             {error ? <div className="wisconsin-viewer-message" role="alert">{error}</div> : progress < 100 ? (
               <div className="wisconsin-viewer-loading" role="status">
                 <span>{status}</span>
+                {progress < 35 && (
+                  <small className="wisconsin-viewer-download-note">
+                    The ship model is approximately 18 MB. Downloading may take 1–2 minutes depending on your connection.
+                  </small>
+                )}
                 <div><i style={{ width: progress + "%" }} /></div>
                 <small>{progress}%</small>
               </div>
