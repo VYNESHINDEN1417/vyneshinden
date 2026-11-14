@@ -153,7 +153,7 @@ async function rebuildModelAtlases(obj: string, names: string[]): Promise<Map<st
 }
 
 type ShipViewerProps = { name: string; objUrl?: string; mtlUrl?: string; archiveUrl?: string; sizeLabel: string; textureBasePath?: string; textureUrls?: Record<string, string>; };
-export function ShipViewer({ name, objUrl, mtlUrl, sizeLabel, textureBasePath, textureUrls }: ShipViewerProps) {
+export function ShipViewer({ name, objUrl, mtlUrl, archiveUrl, sizeLabel, textureBasePath, textureUrls }: ShipViewerProps) {
   const [open, setOpen] = useState(false);
   const [confirmDownload, setConfirmDownload] = useState(false);
   const [startDownload, setStartDownload] = useState(false);
@@ -399,7 +399,7 @@ export function ShipViewer({ name, objUrl, mtlUrl, sizeLabel, textureBasePath, t
       localViewer?.destroy();
       viewerRef.current = null;
     };
-  }, [open, startDownload]);
+  }, [open, startDownload, archiveUrl, objUrl, mtlUrl, textureBasePath, textureUrls]);
 
   const reset = () => {
     viewerRef.current?.reset();
