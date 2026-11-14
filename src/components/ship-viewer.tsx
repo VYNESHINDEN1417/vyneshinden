@@ -109,7 +109,7 @@ async function rebuildModelAtlases(obj: string, names: string[]): Promise<Map<st
 }
 
 type ShipViewerProps = { name: string; objUrl: string; mtlUrl: string; sizeLabel: string; textureBasePath?: string; textureUrls?: Record<string, string>; };
-export function ShipViewer({ name, objUrl, mtlUrl, sizeLabel, textureBasePath = "/models", textureUrls }: ShipViewerProps) {
+export function ShipViewer({ name, objUrl, mtlUrl, sizeLabel, textureBasePath, textureUrls }: ShipViewerProps) {
   const [open, setOpen] = useState(false);
   const [confirmDownload, setConfirmDownload] = useState(false);
   const [startDownload, setStartDownload] = useState(false);
