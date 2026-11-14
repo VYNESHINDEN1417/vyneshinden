@@ -9,6 +9,8 @@ const WASM_URL = "https://raw.githubusercontent.com/VYNESHINDEN1417/view-pathfin
 
 export function WisconsinViewer() {
   const [open, setOpen] = useState(false);
+  const [confirmDownload, setConfirmDownload] = useState(false);
+  const [startDownload, setStartDownload] = useState(false);
   const [status, setStatus] = useState("Preparing viewer…");
   const [progress, setProgress] = useState(0);
   const [error, setError] = useState("");
@@ -20,7 +22,7 @@ export function WisconsinViewer() {
   const aliveRef = useRef(true);
 
   useEffect(() => {
-    if (!open || !canvasRef.current || !hostRef.current) return;
+    if (!open || !startDownload || !canvasRef.current || !hostRef.current) return;
     aliveRef.current = true;
     const canvas = canvasRef.current;
     const host = hostRef.current;
@@ -155,7 +157,7 @@ export function WisconsinViewer() {
       localViewer?.destroy();
       viewerRef.current = null;
     };
-  }, [open]);
+  }, [open, startDownload]);
 
   const reset = () => {
     viewerRef.current?.reset();
@@ -184,8 +186,7 @@ export function WisconsinViewer() {
   return (
     <section className="wisconsin-3d-section" aria-label="Interactive USS Wisconsin 3D model">
       {!open ? (
-        <button type="button" className="wisconsin-3d-launch" onClick={() => { setOpen(true); setError(""); }}>
-          <span className="wisconsin-3d-launch-icon">◇</span>
+        <button type="button" className="wisconsin-3d-launch" onClick={() => { setError(""); setProgress(0); setStartDownload(false); setConfirmDownload(true); setOpen(true); }}>
           <span>VIEW IN 3D</span>
           <span className="wisconsin-3d-launch-sub">Interactive ship model</span>
         </button>
@@ -196,12 +197,24 @@ export function WisconsinViewer() {
             <div>
               <button type="button" onClick={reset} aria-label="Reset camera" title="Reset camera"><RotateCcw size={18} /></button>
               <button type="button" onClick={toggleFullscreen} aria-label="Toggle fullscreen" title="Fullscreen">{fullscreen ? <Minimize2 size={18} /> : <Maximize2 size={18} />}</button>
-              <button type="button" onClick={() => setOpen(false)} aria-label="Close 3D viewer" title="Close"><X size={18} /></button>
+              <button type="button" onClick={() => { setConfirmDownload(false); setStartDownload(false); setOpen(false); }} aria-label="Close 3D viewer" title="Close"><X size={18} /></button>
             </div>
           </div>
           <div className="wisconsin-viewer-stage">
-            <canvas ref={canvasRef} aria-label="Drag to rotate the USS Wisconsin, scroll to zoom" />
-            {error ? <div className="wisconsin-viewer-message" role="alert">{error}</div> : progress < 100 ? (
+            {confirmDownload ? (
+              <div className="wisconsin-download-notice" role="dialog" aria-labelledby="wisconsin-download-title" aria-describedby="wisconsin-download-description">
+                <div className="wisconsin-download-symbol" aria-hidden="true">!</div>
+                <h2 id="wisconsin-download-title">BEFORE YOU CONTINUE</h2>
+                <p id="wisconsin-download-description">The USS Wisconsin 3D model is approximately 18 MB. Downloading may take 1–2 minutes depending on your internet connection. Additional textures will also load afterward.</p>
+                <div className="wisconsin-download-actions">
+                  <button type="button" className="wisconsin-download-cancel" onClick={() => { setConfirmDownload(false); setOpen(false); setStartDownload(false); }}>Cancel</button>
+                  <button type="button" className="wisconsin-download-continue" onClick={() => { setConfirmDownload(false); setError(""); setStartDownload(true); }}>Continue</button>
+                </div>
+              </div>
+            ) : (
+              <>
+                <canvas ref={canvasRef} aria-label="Drag to rotate the USS Wisconsin, scroll to zoom" />
+                {error ? <div className="wisconsin-viewer-message" role="alert">{error}</div> : progress < 100 ? (
               <div className="wisconsin-viewer-loading" role="status">
                 <span>{status}</span>
                 {progress < 35 && (
@@ -212,10 +225,13 @@ export function WisconsinViewer() {
                 <div><i style={{ width: progress + "%" }} /></div>
                 <small>{progress}%</small>
               </div>
-            ) : <div className="wisconsin-viewer-hint">DRAG TO ROTATE · SCROLL TO ZOOM · DOUBLE-TAP TO RESET</div>}
+                ) : <div className="wisconsin-viewer-hint">DRAG TO ROTATE · SCROLL TO ZOOM · DOUBLE-TAP TO RESET</div>}
+              </>
+            )}
           </div>
         </div>
       )}
+
     </section>
   );
 }
