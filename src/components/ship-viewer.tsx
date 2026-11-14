@@ -56,10 +56,14 @@ async function rebuildModelAtlases(obj: string, names: string[]): Promise<Map<st
   const uv: Array<[number, number]> = [];
   const tilesByMaterial = new Map<string, Set<string>>();
   let material = "";
+  const hasUseMtl = /^\s*usemtl\s+/m.test(obj);
   for (const line of obj.split(/\r?\n/)) {
     const p = line.trim().split(/\s+/);
     if (p[0] === "vt") uv.push([Number(p[1]), Number(p[2])]);
     else if (p[0] === "usemtl") material = p.slice(1).join(" ");
+    // These Minecraft exports often store material names in OBJ group (g)
+    // records instead of usemtl. Use groups only when usemtl is absent.
+    else if (p[0] === "g" && !hasUseMtl) material = p.slice(1).join(" ");
     else if (p[0] === "f" && material) {
       const tiles = tilesByMaterial.get(material) || new Set<string>();
       for (const v of p.slice(1)) {
@@ -72,12 +76,17 @@ async function rebuildModelAtlases(obj: string, names: string[]): Promise<Map<st
       tilesByMaterial.set(material, tiles);
     }
   }
+  // Never upload an empty transparent atlas: the renderer treats its alpha
+  // as real material transparency, which would discard every model fragment.
+  if (tilesByMaterial.size === 0) return new Map();
+
   const canvas = document.createElement("canvas");
   canvas.width = canvas.height = 512;
   const ctx = canvas.getContext("2d");
   if (!ctx) throw new Error("Canvas unavailable");
   ctx.imageSmoothingEnabled = false;
   const bitmaps = new Map<string, ImageBitmap>();
+  let drawnTiles = 0;
   for (const [mat, tiles] of tilesByMaterial) {
     const key = blockTextureName(mat);
     const entry = textures.find(([file]) => file.endsWith("/" + key + ".png")) || textures.find(([file]) => file.endsWith("/" + key + "_side.png")) || textures.find(([file]) => file.endsWith("/" + key + "_top.png"));
@@ -87,13 +96,15 @@ async function rebuildModelAtlases(obj: string, names: string[]): Promise<Map<st
     for (const tile of tiles) {
       const [x, y] = tile.split(",").map(Number);
       ctx.drawImage(bitmap, x * 16, y * 16, 16, 16);
+      drawnTiles++;
     }
   }
+  bitmaps.forEach(bitmap => bitmap.close());
+  if (drawnTiles === 0) return new Map();
   const blob = await new Promise<Blob>((resolve, reject) => canvas.toBlob(b => b ? resolve(b) : reject(new Error("PNG encoding failed")), "image/png"));
   const bytes = new Uint8Array(await blob.arrayBuffer());
   const result = new Map<string, Uint8Array>();
   for (const name of names) result.set(name, bytes);
-  bitmaps.forEach(bitmap => bitmap.close());
   return result;
 }
 
