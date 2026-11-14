@@ -10,13 +10,9 @@ const entries = [
   { name: "BATTLE OF HALLELUJAH MOUNTAINS", count: 14 },
   { name: "USS MICHAEL MONSOOR", count: 9 },
   { name: "USS WISCONSIN 1.5:1", count: 18 },
-  { name: "DRAGONSHIP", count: 0 },
-  { name: "VALKYRIE", count: 0 },
-  { name: "SAMPSON", count: 0 },
-  { name: "SCORPION", count: 0 },
 ];
 
-export const PROJECTS: PortfolioProject[] = Array.from({ length: 12 }, (_, index) => {
+export const PROJECTS: PortfolioProject[] = Array.from({ length: 8 }, (_, index) => {
   const number = index + 1;
   const entry = entries[index];
   if (!entry) return { id: String(number), title: `Project ${number}`, images: [] };
