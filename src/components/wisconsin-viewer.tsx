@@ -5,7 +5,7 @@ import textureUrls from "@/lib/wasm/viewer/wisconsin-textures";
 
 const OBJ_URL = "/models/wisconsin/Wisconsin%202025v2.obj";
 const MTL_URL = "/models/wisconsin/Wisconsin_2025v2.mtl";
-const WASM_URL = "https://raw.githubusercontent.com/VYNESHINDEN1417/view-pathfinder/2bdc11959b1822af933492ed7916f48bf0558e75/public/wasm/viewer_bg.wasm";
+const WASM_URL = "https://raw.githubusercontent.com/VYNESHINDEN1417/view-pathfinder/cb718d5041faa03a40942830937a70000822c0ff/public/wasm/viewer_bg.wasm";
 
 export function WisconsinViewer() {
   const [open, setOpen] = useState(false);
