@@ -136,7 +136,7 @@ export function ShipViewer({ name, objUrl, mtlUrl, sizeLabel, textureBasePath = 
     };
     const resize = () => {
       if (!localViewer) return;
-      const rect = host.getBoundingClientRect();
+      const rect = canvas.getBoundingClientRect();
       const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
       const width = Math.max(1, Math.round(rect.width * dpr));
       const height = Math.max(1, Math.round(rect.height * dpr));
@@ -185,6 +185,13 @@ export function ShipViewer({ name, objUrl, mtlUrl, sizeLabel, textureBasePath = 
           }
           bitmap.close();
         }
+        // Draw parsed geometry before optional resource-pack reconstruction.
+        localViewer.set_light(2.5);
+        localViewer.set_fancy(true, 1);
+        localViewer.set_shadow_mode(1);
+        resize();
+        requestRender();
+        await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
         setProgress(65);
         setStatus("Loading Minecraft textures…");
         const textureNames = localViewer.texture_names();
