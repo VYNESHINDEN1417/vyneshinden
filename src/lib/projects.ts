@@ -12,7 +12,7 @@ const entries = [
   { name: "USS WISCONSIN 1.5:1", count: 18 },
 ];
 
-export const PROJECTS: PortfolioProject[] = Array.from({ length: 10 }, (_, index) => {
+export const PROJECTS: PortfolioProject[] = Array.from({ length: 8 }, (_, index) => {
   const number = index + 1;
   const entry = entries[index];
   if (!entry) return { id: String(number), title: `Project ${number}`, images: [] };

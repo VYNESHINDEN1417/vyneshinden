@@ -1,0 +1,279 @@
+# Bedrock Mineways materials
+
+newmtl wool_colored_black
+Ka 0 0 0
+Kd 1 1 1
+Ks 0 0 0
+d 1
+illum 1
+map_Kd wool_colored_black.png
+
+newmtl warped_planks
+Ka 0 0 0
+Kd 1 1 1
+Ks 0 0 0
+d 1
+illum 1
+map_Kd warped_planks.png
+
+newmtl hardened_clay_stained_green
+Ka 0 0 0
+Kd 1 1 1
+Ks 0 0 0
+d 1
+illum 1
+map_Kd hardened_clay_stained_green.png
+
+newmtl dark_oak_trapdoor
+Ka 0 0 0
+Kd 1 1 1
+Ks 0 0 0
+d 1
+illum 1
+map_Kd dark_oak_trapdoor.png
+
+newmtl cobblestone
+Ka 0 0 0
+Kd 1 1 1
+Ks 0 0 0
+d 1
+illum 1
+map_Kd cobblestone.png
+
+newmtl prismarine_dark
+Ka 0 0 0
+Kd 1 1 1
+Ks 0 0 0
+d 1
+illum 1
+map_Kd prismarine_dark.png
+
+newmtl wool_colored_purple
+Ka 0 0 0
+Kd 1 1 1
+Ks 0 0 0
+d 1
+illum 1
+map_Kd wool_colored_purple.png
+
+newmtl polished_blackstone
+Ka 0 0 0
+Kd 1 1 1
+Ks 0 0 0
+d 1
+illum 1
+map_Kd polished_blackstone.png
+
+newmtl blackstone_top
+Ka 0 0 0
+Kd 1 1 1
+Ks 0 0 0
+d 1
+illum 1
+map_Kd blackstone_top.png
+
+newmtl blackstone
+Ka 0 0 0
+Kd 1 1 1
+Ks 0 0 0
+d 1
+illum 1
+map_Kd blackstone.png
+
+newmtl unmapped_stained_glass_pane
+Ka 0 0 0
+Kd 0.78 0.16 0.78
+Ks 0 0 0
+d 1
+illum 1
+
+newmtl unmapped_warped_wall_sign
+Ka 0 0 0
+Kd 0.78 0.16 0.78
+Ks 0 0 0
+d 1
+illum 1
+
+newmtl nether_brick
+Ka 0 0 0
+Kd 1 1 1
+Ks 0 0 0
+d 1
+illum 1
+map_Kd nether_brick.png
+
+newmtl unmapped_fence
+Ka 0 0 0
+Kd 0.78 0.16 0.78
+Ks 0 0 0
+d 1
+illum 1
+
+newmtl unmapped_dried_kelp_block
+Ka 0 0 0
+Kd 0.78 0.16 0.78
+Ks 0 0 0
+d 1
+illum 1
+
+newmtl unmapped_darkoak_wall_sign
+Ka 0 0 0
+Kd 0.78 0.16 0.78
+Ks 0 0 0
+d 1
+illum 1
+
+newmtl observer_top
+Ka 0 0 0
+Kd 1 1 1
+Ks 0 0 0
+d 1
+illum 1
+map_Kd observer_top.png
+
+newmtl observer_side
+Ka 0 0 0
+Kd 1 1 1
+Ks 0 0 0
+d 1
+illum 1
+map_Kd observer_side.png
+
+newmtl unmapped_skull
+Ka 0 0 0
+Kd 0.78 0.16 0.78
+Ks 0 0 0
+d 1
+illum 1
+
+newmtl dispenser_front_horizontal
+Ka 0 0 0
+Kd 1 1 1
+Ks 0 0 0
+d 1
+illum 1
+map_Kd dispenser_front_horizontal.png
+
+newmtl wool_colored_orange
+Ka 0 0 0
+Kd 1 1 1
+Ks 0 0 0
+d 1
+illum 1
+map_Kd wool_colored_orange.png
+
+newmtl concrete_black
+Ka 0 0 0
+Kd 1 1 1
+Ks 0 0 0
+d 1
+illum 1
+map_Kd concrete_black.png
+
+newmtl cobblestone_mossy
+Ka 0 0 0
+Kd 1 1 1
+Ks 0 0 0
+d 1
+illum 1
+map_Kd cobblestone_mossy.png
+
+newmtl quartz_block_side
+Ka 0 0 0
+Kd 1 1 1
+Ks 0 0 0
+d 1
+illum 1
+map_Kd quartz_block_side.png
+
+newmtl quartz_block_bottom
+Ka 0 0 0
+Kd 1 1 1
+Ks 0 0 0
+d 1
+illum 1
+map_Kd quartz_block_bottom.png
+
+newmtl end_rod
+Ka 0 0 0
+Kd 1 1 1
+Ks 0 0 0
+d 1
+illum 1
+map_Kd end_rod.png
+map_d end_rod.png
+
+newmtl grindstone_pivot
+Ka 0 0 0
+Kd 1 1 1
+Ks 0 0 0
+d 1
+illum 1
+map_Kd grindstone_pivot.png
+map_d grindstone_pivot.png
+
+newmtl mob_spawner
+Ka 0 0 0
+Kd 1 1 1
+Ks 0 0 0
+d 1
+illum 1
+map_Kd mob_spawner.png
+map_d mob_spawner.png
+
+newmtl concrete_powder_green
+Ka 0 0 0
+Kd 1 1 1
+Ks 0 0 0
+d 1
+illum 1
+map_Kd concrete_powder_green.png
+
+newmtl warped_trapdoor
+Ka 0 0 0
+Kd 1 1 1
+Ks 0 0 0
+d 1
+illum 1
+map_Kd warped_trapdoor.png
+map_d warped_trapdoor.png
+
+newmtl wool_colored_gray
+Ka 0 0 0
+Kd 1 1 1
+Ks 0 0 0
+d 1
+illum 1
+map_Kd wool_colored_gray.png
+
+newmtl spruce_trapdoor
+Ka 0 0 0
+Kd 1 1 1
+Ks 0 0 0
+d 1
+illum 1
+map_Kd spruce_trapdoor.png
+
+newmtl planks_birch
+Ka 0 0 0
+Kd 1 1 1
+Ks 0 0 0
+d 1
+illum 1
+map_Kd planks_birch.png
+
+newmtl wool_colored_green
+Ka 0 0 0
+Kd 1 1 1
+Ks 0 0 0
+d 1
+illum 1
+map_Kd wool_colored_green.png
+
+newmtl hardened_clay_stained_yellow
+Ka 0 0 0
+Kd 1 1 1
+Ks 0 0 0
+d 1
+illum 1
+map_Kd hardened_clay_stained_yellow.png
