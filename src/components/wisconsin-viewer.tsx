@@ -187,7 +187,6 @@ export function WisconsinViewer() {
     <section className="wisconsin-3d-section" aria-label="Interactive USS Wisconsin 3D model">
       {!open ? (
         <button type="button" className="wisconsin-3d-launch" onClick={() => { setError(""); setProgress(0); setStartDownload(false); setConfirmDownload(true); setOpen(true); }}>
-          <span className="wisconsin-3d-launch-icon">◇</span>
           <span>VIEW IN 3D</span>
           <span className="wisconsin-3d-launch-sub">Interactive ship model</span>
         </button>
