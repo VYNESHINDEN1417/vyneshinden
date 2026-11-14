@@ -9,6 +9,7 @@ const WASM_URL = "https://raw.githubusercontent.com/VYNESHINDEN1417/view-pathfin
 
 export function WisconsinViewer() {
   const [open, setOpen] = useState(false);
+  const [confirmDownload, setConfirmDownload] = useState(false);
   const [status, setStatus] = useState("Preparing viewer…");
   const [progress, setProgress] = useState(0);
   const [error, setError] = useState("");
@@ -184,7 +185,7 @@ export function WisconsinViewer() {
   return (
     <section className="wisconsin-3d-section" aria-label="Interactive USS Wisconsin 3D model">
       {!open ? (
-        <button type="button" className="wisconsin-3d-launch" onClick={() => { setOpen(true); setError(""); }}>
+        <button type="button" className="wisconsin-3d-launch" onClick={() => setConfirmDownload(true)}>
           <span className="wisconsin-3d-launch-icon">◇</span>
           <span>VIEW IN 3D</span>
           <span className="wisconsin-3d-launch-sub">Interactive ship model</span>
@@ -213,6 +214,22 @@ export function WisconsinViewer() {
                 <small>{progress}%</small>
               </div>
             ) : <div className="wisconsin-viewer-hint">DRAG TO ROTATE · SCROLL TO ZOOM · DOUBLE-TAP TO RESET</div>}
+          </div>
+        </div>
+      )}
+
+      {confirmDownload && !open && (
+        <div className="wisconsin-download-overlay">
+          <div className="wisconsin-download-dialog" role="dialog" aria-modal="true" aria-labelledby="wisconsin-download-title" aria-describedby="wisconsin-download-description">
+            <div className="wisconsin-download-symbol" aria-hidden="true">!</div>
+            <h2 id="wisconsin-download-title">BEFORE YOU CONTINUE</h2>
+            <p id="wisconsin-download-description">
+              The USS Wisconsin 3D model is approximately 18 MB. Downloading may take 1–2 minutes depending on your internet connection. Additional textures will also load afterward.
+            </p>
+            <div className="wisconsin-download-actions">
+              <button type="button" className="wisconsin-download-cancel" onClick={() => setConfirmDownload(false)}>Cancel</button>
+              <button type="button" className="wisconsin-download-continue" onClick={() => { setConfirmDownload(false); setError(""); setOpen(true); }}>Continue</button>
+            </div>
           </div>
         </div>
       )}
