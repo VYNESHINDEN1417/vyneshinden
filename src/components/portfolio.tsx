@@ -191,7 +191,7 @@ export function PortfolioPage({ section, project }: { section: "About me" | "My 
           {project.id === "6" && <p className="work-description" style={{ textAlign: "justify" }}>Battle of Hallelujah Mountains is a Minecraft-built scene centered on a dramatic clash among the towering formations of the Hallelujah Mountains. The project focuses on the scale and atmosphere of the setting, turning its rugged terrain into a backdrop for a large battle sequence. It brings together landscape and action in a world built block by block.</p>}
           {project.id === "6" && <div className="battle-ship-viewers" aria-label="Battle of Hallelujah Mountains 3D models">
             <ShipViewer name="DRAGONSHIP" objUrl="/models/dragonship-replacement/model.obj" mtlUrl="/models/dragonship-replacement/model.mtl" textureBasePath="/models/dragonship-replacement" sizeLabel="1.5 MB" />
-            <ShipViewer name="VALKYRIE" objUrl="/models/Valkyrie2.obj" mtlUrl="/models/Valkyrie2.mtl" sizeLabel="5.4 MB" />
+            <ShipViewer name="VALKYRIE" archiveUrl="/models/valkyrie/Valkyrie.zip" sizeLabel="4.5 MB" />
             <ShipViewer name="SAMPSON" objUrl="/models/Samson.obj" mtlUrl="/models/Samson.mtl" sizeLabel="164 KB" />
             <ShipViewer name="SCORPION" objUrl="/models/Scorpion.obj" mtlUrl="/models/Scorpion.mtl" sizeLabel="170 KB" />
           </div>}
