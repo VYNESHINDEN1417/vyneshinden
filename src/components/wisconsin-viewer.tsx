@@ -95,7 +95,7 @@ export function WisconsinViewer() {
         if (!aliveRef.current) return;
         localViewer.set_background(0);
         localViewer.set_light(2);
-        localViewer.set_fancy(false, 0);
+        localViewer.set_fancy(true, 1);
         localViewer.set_shadow_mode(1);
         setProgress(100);
         setStatus("Ready");
