@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import { RotateCcw, Maximize2, Minimize2, X } from "lucide-react";
 import initWasm, { Viewer } from "@/lib/wasm/viewer/viewer";
-import textureUrls from "@/lib/wasm/viewer/wisconsin-textures.json";
+import textureUrls from "@/lib/wasm/viewer/wisconsin-textures";
 
 const OBJ_URL = "/models/wisconsin/Wisconsin%202025v2.obj";
 const MTL_URL = "/models/wisconsin/Wisconsin_2025v2.mtl";
-const WASM_URL = "https://raw.githubusercontent.com/VYNESHINDEN1417/view-pathfinder/main/public/wasm/viewer_bg.wasm";
+const WASM_URL = "https://raw.githubusercontent.com/VYNESHINDEN1417/view-pathfinder/15d0cfb48ba80953a009ed94445af79a02e001f2/public/wasm/viewer_bg.wasm";
 
 export function WisconsinViewer() {
   const [open, setOpen] = useState(false);
