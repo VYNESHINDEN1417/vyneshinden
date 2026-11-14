@@ -230,7 +230,7 @@ export function ShipViewer({ name, objUrl, mtlUrl, sizeLabel, textureBasePath, t
           let loadedTextures = 0;
           for (const textureName of textureNames) {
             const explicitUrl = textureUrls?.[textureName];
-            const normalized = textureName.replace(/\\\\/g, "/").replace(/^\\.\\//, "").replace(/^\\//, "");
+            const normalized = textureName.replace(/\\/g, "/").replace(/^\.\//, "").replace(/^\//, "");
             const candidates = [
               explicitUrl,
               textureBasePath ? new URL(normalized, window.location.origin + (textureBasePath.endsWith("/") ? textureBasePath : textureBasePath + "/")).toString() : undefined,
