@@ -175,9 +175,9 @@ export function ShipViewer({ name, objUrl, mtlUrl, sizeLabel, textureBasePath = 
         // These exports encode material assignments in OBJ group names (g),
         // while Pathfinder/tobj reads actual material assignments from usemtl.
         // Convert each group into a matching MTL material assignment before parsing.
-        const obj = /^\\s*usemtl\\s+/m.test(rawObj) ? rawObj : rawObj.replace(
-          /^(\\s*g\\s+)(.+)$/gm,
-          (_line, prefix: string, group: string) => `${prefix}${group}\\nusemtl ${group.trim()}`
+        const obj = /^\s*usemtl\s+/m.test(rawObj) ? rawObj : rawObj.replace(
+          /^(\s*g\s+)(.+)$/gm,
+          (_line, prefix: string, group: string) => `${prefix}${group}\nusemtl ${group.trim()}`
         );
         setProgress(35);
         setStatus("Starting Pathfinder renderer…");
