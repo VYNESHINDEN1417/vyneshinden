@@ -75,8 +75,23 @@ export function WisconsinViewer() {
         viewerRef.current = localViewer;
         const backgroundResponse = await fetch("/images/3d-viewer/3untitled.png", { signal: controller.signal });
         if (backgroundResponse.ok) {
-          const backgroundBytes = new Uint8Array(await backgroundResponse.arrayBuffer());
-          localViewer.set_background_image(backgroundBytes);
+          const bitmap = await createImageBitmap(await backgroundResponse.blob());
+          const maxBackgroundDimension = 2048;
+          const scale = Math.min(1, maxBackgroundDimension / Math.max(bitmap.width, bitmap.height));
+          const backgroundCanvas = document.createElement("canvas");
+          backgroundCanvas.width = Math.max(1, Math.round(bitmap.width * scale));
+          backgroundCanvas.height = Math.max(1, Math.round(bitmap.height * scale));
+          const backgroundContext = backgroundCanvas.getContext("2d");
+          if (backgroundContext) {
+            backgroundContext.drawImage(bitmap, 0, 0, backgroundCanvas.width, backgroundCanvas.height);
+            const backgroundBlob = await new Promise<Blob>((resolve, reject) => {
+              backgroundCanvas.toBlob((blob) => blob ? resolve(blob) : reject(new Error("Could not prepare the viewer background image.")), "image/png");
+            });
+            const backgroundBytes = new Uint8Array(await backgroundBlob.arrayBuffer());
+            const backgroundApplied = localViewer.set_background_image(backgroundBytes);
+            if (!backgroundApplied) console.warn("Pathfinder could not apply the custom background image.");
+          }
+          bitmap.close();
         }
         setProgress(65);
         setStatus("Loading Minecraft textures…");
@@ -98,7 +113,6 @@ export function WisconsinViewer() {
           }
         }));
         if (!aliveRef.current) return;
-        localViewer.set_background(4);
         localViewer.set_light(2);
         localViewer.set_fancy(true, 1);
         localViewer.set_shadow_mode(1);
