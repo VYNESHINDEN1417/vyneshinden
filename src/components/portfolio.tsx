@@ -8,6 +8,7 @@ import { Panorama } from "@/components/panorama";
 import { PROJECTS, type PortfolioProject } from "@/lib/projects";
 import clickSound from "@/assets/button-trim.wav";
 import { WisconsinViewer } from "@/components/wisconsin-viewer";
+import { ShipViewer } from "@/components/ship-viewer";
 
 // Run the sequence in the persistent root, independently of route mounting.
 const BUTTON_ANIMATION_MS = 150;
@@ -178,21 +179,28 @@ export function PortfolioPage({ section, project }: { section: "About me" | "My 
             <p>I have always built on Bedrock, using a phone as my main tool rather than a powerful PC setup. That never stopped me from experimenting, improving my techniques, and taking on bigger projects. From battleships and cruisers to other scenes and ideas, every build has taught me something new. VYNESHINDEN is where I keep that journey alive: a place to share the things I have made, the progress behind them, and whatever I decide to build next. I am still learning, still experimenting, and definitely not done building.</p>
           </div>
         </> : project ? <>
-          {project.images.length > 0 ? <ProjectGallery key={project.id} project={project} /> : <><h2 className="work-title">{project.title}</h2><p className="work-description">No project added yet.</p></>}
+          {project.images.length > 0 ? <ProjectGallery key={project.id} project={project} /> : <><h2 className="work-title">{project.title}</h2><p className="work-description">Explore this Minecraft build through its interactive 3D model.</p></>}
           {project.id === "1" && <p className="work-description" style={{ textAlign: "justify" }}>USS Dwight D. Eisenhower (CVN-69) is a Minecraft recreation of one of the United States Navy’s Nimitz-class aircraft carriers. This project brings the ship’s imposing profile and unmistakable carrier layout into a block-built form, preserving its identity as a modern naval flagship while presenting the build through a collection of in-game views.</p>}
           {project.id === "8" && <p className="work-description">USS Wisconsin (BB-64) is an Iowa-class battleship built for the United States Navy (USN) in the 1940s, i built this ship on January 2022. A Big Minecraft military channel on YouTube made a tutorial for this built, he's name is <span className="work-creator">CraftyFoxe/MC Military Force</span>, here is the <a className="work-video-link" href="https://youtu.be/jkjA2PICDks" target="_blank" rel="noopener noreferrer" onPointerDown={playClickSoundOnPointerDown}>VIDEO LINK</a></p>}
           {project.id === "8" && <WisconsinViewer />}
+
           {project.id === "2" && <p className="work-description" style={{ textAlign: "justify" }}>IJN Atago is a Minecraft recreation of an Imperial Japanese Navy Takao-class heavy cruiser. Known for its powerful armament, distinctive pagoda-style superstructure, and commanding silhouette, Atago represents the striking design language of Japan’s pre-war surface fleet. This project brings those defining features into a block-built form, presented through a collection of in-game views.</p>}
           {project.id === "3" && <p className="work-description" style={{ textAlign: "justify" }}>Admiral Nakhimov, originally commissioned as Kalinin, is a Kirov-class nuclear-powered guided-missile cruiser of the Soviet and Russian Navy. Its immense hull, layered superstructure, and formidable missile systems make it one of the most imposing surface combatants ever built. This Minecraft recreation translates that unmistakable profile into a block-built naval vessel.</p>}
           {project.id === "4" && <p className="work-description" style={{ textAlign: "justify" }}>Varyag, formerly known as Chervona Ukraina, is a Slava-class guided-missile cruiser built for the Soviet Navy. Recognized by its long hull, distinctive twin missile launchers, and towering bridge structure, the ship carries a bold Cold War-era silhouette. This project recreates those defining details in Minecraft, bringing the cruiser to life through a series of in-game views.</p>}
           {project.id === "5" && <p className="work-description" style={{ textAlign: "justify" }}>USS Savannah (CL-42) was a Brooklyn-class light cruiser that served with the United States Navy during the Second World War. Built around a powerful main battery and a recognizable multi-level profile, Savannah reflects the balance of speed, protection, and firepower found in American light cruiser design. This Minecraft build recreates the historic warship in a block-built form.</p>}
           {project.id === "6" && <p className="work-description" style={{ textAlign: "justify" }}>Battle of Hallelujah Mountains is a Minecraft-built scene centered on a dramatic clash among the towering formations of the Hallelujah Mountains. The project focuses on the scale and atmosphere of the setting, turning its rugged terrain into a backdrop for a large battle sequence. It brings together landscape and action in a world built block by block.</p>}
+          {project.id === "6" && <div className="battle-ship-viewers" aria-label="Battle of Hallelujah Mountains 3D models">
+            <ShipViewer name="DRAGONSHIP" objUrl="/models/Dragon.obj" mtlUrl="/models/Dragon.mtl" sizeLabel="1.7 MB" />
+            <ShipViewer name="VALKYRIE" objUrl="/models/Valkyrie2.obj" mtlUrl="/models/Valkyrie2.mtl" sizeLabel="5.4 MB" />
+            <ShipViewer name="SAMPSON" objUrl="/models/Samson.obj" mtlUrl="/models/Samson.mtl" sizeLabel="164 KB" />
+            <ShipViewer name="SCORPION" objUrl="/models/Scorpion.obj" mtlUrl="/models/Scorpion.mtl" sizeLabel="170 KB" />
+          </div>}
           {project.id === "7" && <p className="work-description" style={{ textAlign: "justify" }}>USS Michael Monsoor (DDG-1001) is a Zumwalt-class guided-missile destroyer of the United States Navy. Its angular stealth design, integrated superstructure, and unusually broad hull give it one of the most distinctive silhouettes in modern naval engineering. This Minecraft recreation captures the destroyer’s futuristic appearance in a block-built form, showcased through a collection of in-game views.</p>}
         </> : <>
           <nav className="projects-menu" aria-label="Projects" tabIndex={0}>
             {PROJECTS.map((item) => <Button key={item.id} variant="game" size="game" className="project-button" asChild><Link to="/works/$projectId" params={{ projectId: item.id }} onPointerDown={playClickSoundOnPointerDown}><span>
               {item.images[0] ? <img className="project-thumb" src={item.images[0].thumbnail ?? item.images[0].src} sizes="(min-width: 768px) 112px, 64px" alt="" loading="lazy" decoding="async" width={320} height={220} /> : <span className="project-thumb" aria-hidden="true" />}
-              <span className="project-name">{item.images.length ? item.title : `Project ${item.id}`}</span>
+              <span className="project-name">{item.title}</span>
               <span className="project-date">MM/DD/YYYY</span>
             </span></Link></Button>)}
           </nav>
