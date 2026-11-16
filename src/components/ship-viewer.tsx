@@ -156,6 +156,7 @@ type ShipViewerProps = { name: string; objUrl?: string; mtlUrl?: string; archive
 export function ShipViewer({ name, objUrl, mtlUrl, archiveUrl, sizeLabel, textureBasePath, textureUrls }: ShipViewerProps) {
   const [open, setOpen] = useState(false);
   const [closing, setClosing] = useState(false);
+  const [launchVisible, setLaunchVisible] = useState(false);
   const returnScrollYRef = useRef<number | null>(null);
   const [confirmDownload, setConfirmDownload] = useState(false);
   const [startDownload, setStartDownload] = useState(false);
@@ -438,11 +439,13 @@ export function ShipViewer({ name, objUrl, mtlUrl, archiveUrl, sizeLabel, textur
       return;
     }
     window.scrollTo({ top: targetY, behavior: "smooth" });
+    const revealLaunch = window.setTimeout(() => setLaunchVisible(true), 680);
     const finish = window.setTimeout(() => {
       setOpen(false);
       setClosing(false);
+      setLaunchVisible(false);
     }, 800);
-    return () => window.clearTimeout(finish);
+    return () => { window.clearTimeout(revealLaunch); window.clearTimeout(finish); };
   }, [closing]);
 
   // Start viewport targeting on the same frame as the opening morph.
@@ -465,11 +468,11 @@ export function ShipViewer({ name, objUrl, mtlUrl, archiveUrl, sizeLabel, textur
     <section className="wisconsin-3d-section" aria-label={"Interactive " + name + " 3D model"}>
       <div
         ref={hostRef}
-        className={`wisconsin-morph-shell${open ? " is-open" : ""}${closing ? " is-closing" : ""}`}
+        className={`wisconsin-morph-shell${open ? " is-open" : ""}${closing ? " is-closing" : ""}${closing && launchVisible ? " is-launch-visible" : ""}`}
         role={open ? undefined : "button"}
         tabIndex={open ? undefined : 0}
         aria-label={open ? undefined : "View " + name + " in 3D"}
-        onClick={!open ? () => { returnScrollYRef.current = window.scrollY; setClosing(false); setError(""); setTextureMissing(false); setProgress(0); setStartDownload(false); setConfirmDownload(true); setOpen(true); } : undefined}
+        onClick={!open ? () => { returnScrollYRef.current = window.scrollY; setClosing(false); setLaunchVisible(false); setError(""); setTextureMissing(false); setProgress(0); setStartDownload(false); setConfirmDownload(true); setOpen(true); } : undefined}
         onKeyDown={!open ? (event) => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); returnScrollYRef.current = window.scrollY; setClosing(false); setError(""); setTextureMissing(false); setProgress(0); setStartDownload(false); setConfirmDownload(true); setOpen(true); } } : undefined}
       >
         <div className="wisconsin-morph-launch">
