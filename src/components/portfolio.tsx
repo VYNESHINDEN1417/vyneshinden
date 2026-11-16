@@ -73,6 +73,7 @@ export function markButtonClick(event: MouseEvent<HTMLAnchorElement>) {
 export function LoadingScreen({ pathname }: { pathname: string }) {
   const [visible, setVisible] = useState(false);
   const [covered, setCovered] = useState(true);
+  const [loadingDuration, setLoadingDuration] = useState(LOADING_MS);
   const timers = useRef<number[]>([]);
   const previousPath = useRef(pathname);
   const pendingPath = useRef<string | null>(null);
@@ -82,6 +83,7 @@ export function LoadingScreen({ pathname }: { pathname: string }) {
   }, []);
   const start = useCallback((waitForPress = false, duration = LOADING_MS, initialDelay = BUTTON_ANIMATION_MS) => {
     clearTimers();
+    setLoadingDuration(duration);
     setCovered(!waitForPress);
     if (waitForPress) {
       timers.current.push(window.setTimeout(() => setCovered(true), BUTTON_ANIMATION_MS));
@@ -142,7 +144,7 @@ export function LoadingScreen({ pathname }: { pathname: string }) {
       <div className="loading-center">
         <p>Loading level</p>
         <p>Building terrain</p>
-        <div className="loading-track" aria-hidden="true"><div className="loading-fill" /></div>
+        <div className="loading-track" aria-hidden="true"><div className="loading-fill" style={{ animationDuration: `${loadingDuration}ms` }} /></div>
       </div>
     </div>
       )}
