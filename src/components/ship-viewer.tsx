@@ -157,6 +157,7 @@ export function ShipViewer({ name, objUrl, mtlUrl, archiveUrl, sizeLabel, textur
   const [open, setOpen] = useState(false);
   const [closing, setClosing] = useState(false);
   const [launchVisible, setLaunchVisible] = useState(false);
+  const [entranceReady, setEntranceReady] = useState(false);
   const returnScrollYRef = useRef<number | null>(null);
   const [confirmDownload, setConfirmDownload] = useState(false);
   const [startDownload, setStartDownload] = useState(false);
@@ -445,6 +446,16 @@ export function ShipViewer({ name, objUrl, mtlUrl, archiveUrl, sizeLabel, textur
     }
   }, [closing]);
 
+  // Wait one animation frame after mounting the viewer content so its opacity transition has a real starting state.
+  useEffect(() => {
+    if (!open || closing) {
+      if (!open) setEntranceReady(false);
+      return;
+    }
+    const frame = requestAnimationFrame(() => setEntranceReady(true));
+    return () => cancelAnimationFrame(frame);
+  }, [open, closing]);
+
   // Start viewport targeting on the same frame as the opening morph.
   useEffect(() => {
     if (!open) return;
@@ -465,7 +476,7 @@ export function ShipViewer({ name, objUrl, mtlUrl, archiveUrl, sizeLabel, textur
     <section className="wisconsin-3d-section" aria-label={"Interactive " + name + " 3D model"}>
       <div
         ref={hostRef}
-        className={`wisconsin-morph-shell${open ? " is-open" : ""}${closing ? " is-closing" : ""}${closing && launchVisible ? " is-launch-visible" : ""}`}
+        className={`wisconsin-morph-shell${open ? " is-open" : ""}${closing ? " is-closing" : ""}${closing && launchVisible ? " is-launch-visible" : ""}${entranceReady ? " is-entrance-ready" : ""}`}
         onTransitionEnd={(event) => {
           if (event.target === event.currentTarget && event.propertyName === "height" && closing) {
             setLaunchVisible(true);
