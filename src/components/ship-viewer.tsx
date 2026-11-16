@@ -436,15 +436,17 @@ export function ShipViewer({ name, objUrl, mtlUrl, archiveUrl, sizeLabel, textur
     if (targetY === null || reduceMotion) {
       setOpen(false);
       setClosing(false);
+      setLaunchVisible(false);
       return;
     }
     window.scrollTo({ top: targetY, behavior: "smooth" });
     const revealLaunch = window.setTimeout(() => setLaunchVisible(true), 680);
+    // Keep the closing state alive until the full 300ms launch-label fade has completed.
     const finish = window.setTimeout(() => {
       setOpen(false);
       setClosing(false);
       setLaunchVisible(false);
-    }, 800);
+    }, 1020);
     return () => { window.clearTimeout(revealLaunch); window.clearTimeout(finish); };
   }, [closing]);
 
