@@ -445,20 +445,27 @@ export function ShipViewer({ name, objUrl, mtlUrl, archiveUrl, sizeLabel, textur
     return () => window.clearTimeout(finish);
   }, [closing]);
 
+  // Start viewport targeting on the same frame as the opening morph.
+  useEffect(() => {
+    if (!open) return;
+    const frame = requestAnimationFrame(() => {
+      const target = hostRef.current;
+      if (!target) return;
+      const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      target.scrollIntoView({
+        behavior: reduceMotion ? "auto" : "smooth",
+        block: "center",
+        inline: "nearest",
+      });
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [open]);
+
   return (
     <section className="wisconsin-3d-section" aria-label={"Interactive " + name + " 3D model"}>
       <div
         ref={hostRef}
         className={`wisconsin-morph-shell${open ? " is-open" : ""}${closing ? " is-closing" : ""}`}
-        onTransitionRun={(event) => {
-          if (event.target !== event.currentTarget || event.propertyName !== "height" || !open || closing) return;
-          const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-          hostRef.current?.scrollIntoView({
-            behavior: reduceMotion ? "auto" : "smooth",
-            block: "center",
-            inline: "nearest",
-          });
-        }}
         role={open ? undefined : "button"}
         tabIndex={open ? undefined : 0}
         aria-label={open ? undefined : "View " + name + " in 3D"}
