@@ -463,59 +463,58 @@ export function ShipViewer({ name, objUrl, mtlUrl, archiveUrl, sizeLabel, textur
 
   return (
     <section className="wisconsin-3d-section" aria-label={"Interactive " + name + " 3D model"}>
-      <button
-        type="button"
-        className={`wisconsin-3d-launch${open ? " is-viewer-open" : ""}${closing ? " is-returning" : ""}`}
-        aria-hidden={open}
-        tabIndex={open ? -1 : 0}
-        disabled={open}
-        onClick={() => { returnScrollYRef.current = window.scrollY; setClosing(false); setError(""); setTextureMissing(false); setProgress(0); setStartDownload(false); setConfirmDownload(true); setOpen(true); }}
+      <div
+        ref={hostRef}
+        className={`wisconsin-morph-shell${open ? " is-open" : ""}${closing ? " is-closing" : ""}`}
+        role={open ? undefined : "button"}
+        tabIndex={open ? undefined : 0}
+        aria-label={open ? undefined : "View " + name + " in 3D"}
+        onClick={!open ? () => { returnScrollYRef.current = window.scrollY; setClosing(false); setError(""); setTextureMissing(false); setProgress(0); setStartDownload(false); setConfirmDownload(true); setOpen(true); } : undefined}
+        onKeyDown={!open ? (event) => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); returnScrollYRef.current = window.scrollY; setClosing(false); setError(""); setTextureMissing(false); setProgress(0); setStartDownload(false); setConfirmDownload(true); setOpen(true); } } : undefined}
       >
-        <span>VIEW IN 3D</span>
-        <span className="wisconsin-3d-launch-sub">{name}</span>
-      </button>
-      {open && (
-        <div className={`wisconsin-viewer-shell${closing ? " is-closing" : ""}`} ref={hostRef}>
-          <div className="wisconsin-viewer-toolbar">
-            <span>{name.toUpperCase()} / 3D VIEWER</span>
-            <div>
-              <button type="button" onClick={reset} aria-label="Reset camera" title="Reset camera"><RotateCcw size={18} /></button>
-              <button type="button" onClick={toggleFullscreen} aria-label="Toggle fullscreen" title="Fullscreen">{fullscreen ? <Minimize2 size={18} /> : <Maximize2 size={18} />}</button>
-              <button type="button" onClick={() => { setConfirmDownload(false); setStartDownload(false); setClosing(true); }} aria-label="Close 3D viewer" title="Close"><X size={18} /></button>
+        {!open ? (
+          <div className="wisconsin-morph-launch">
+            <span>VIEW IN 3D</span>
+            <span className="wisconsin-3d-launch-sub">{name}</span>
+          </div>
+        ) : (
+          <div className="wisconsin-morph-content">
+            <div className="wisconsin-viewer-toolbar">
+              <span>{name.toUpperCase()} / 3D VIEWER</span>
+              <div>
+                <button type="button" onClick={reset} aria-label="Reset camera" title="Reset camera"><RotateCcw size={18} /></button>
+                <button type="button" onClick={toggleFullscreen} aria-label="Toggle fullscreen" title="Fullscreen">{fullscreen ? <Minimize2 size={18} /> : <Maximize2 size={18} />}</button>
+                <button type="button" onClick={() => { setConfirmDownload(false); setStartDownload(false); setClosing(true); }} aria-label="Close 3D viewer" title="Close"><X size={18} /></button>
+              </div>
+            </div>
+            <div className="wisconsin-viewer-stage">
+              {confirmDownload ? (
+                <div className="wisconsin-download-notice" role="dialog" aria-labelledby="ship-download-title" aria-describedby="ship-download-description">
+                  <div className="wisconsin-download-symbol" aria-hidden="true">!</div>
+                  <h2 id="ship-download-title">BEFORE YOU CONTINUE</h2>
+                  <p id="ship-download-description">The {name} OBJ model is approximately {sizeLabel}. Downloading time depends on your internet connection. Referenced texture maps are checked separately.</p>
+                  <div className="wisconsin-download-actions">
+                    <button type="button" className="wisconsin-download-cancel" onClick={() => { setConfirmDownload(false); setStartDownload(false); setClosing(true); }}>Cancel</button>
+                    <button type="button" className="wisconsin-download-continue" onClick={() => { setConfirmDownload(false); setError(""); setStartDownload(true); }}>Continue</button>
+                  </div>
+                </div>
+              ) : (
+                <>
+                  <canvas ref={canvasRef} aria-label={"Drag to rotate " + name + ", scroll to zoom"} />
+                  {error ? <div className="wisconsin-viewer-message" role="alert">{error}</div> : progress < 100 ? (
+                    <div className="wisconsin-viewer-loading" role="status">
+                      <span>{status}</span>
+                      {progress < 35 && <small className="wisconsin-viewer-download-note">The {name} OBJ model is approximately {sizeLabel}. Texture maps may add to the download.</small>}
+                      <div><i style={{ width: progress + "%" }} /></div>
+                      <small>{progress}%</small>
+                    </div>
+                  ) : <div className="wisconsin-viewer-hint">{textureMissing ? "MODEL LOADED · SOME TEXTURE MAPS ARE MISSING" : "DRAG TO ROTATE · SCROLL TO ZOOM · DOUBLE-TAP TO RESET"}</div>}
+                </>
+              )}
             </div>
           </div>
-          <div className="wisconsin-viewer-stage">
-            {confirmDownload ? (
-              <div className="wisconsin-download-notice" role="dialog" aria-labelledby="ship-download-title" aria-describedby="ship-download-description">
-                <div className="wisconsin-download-symbol" aria-hidden="true">!</div>
-                <h2 id="ship-download-title">BEFORE YOU CONTINUE</h2>
-                <p id="ship-download-description">The {name} OBJ model is approximately {sizeLabel}. Downloading time depends on your internet connection. Referenced texture maps are checked separately.</p>
-                <div className="wisconsin-download-actions">
-                  <button type="button" className="wisconsin-download-cancel" onClick={() => { setConfirmDownload(false); setStartDownload(false); setClosing(true); }}>Cancel</button>
-                  <button type="button" className="wisconsin-download-continue" onClick={() => { setConfirmDownload(false); setError(""); setStartDownload(true); }}>Continue</button>
-                </div>
-              </div>
-            ) : (
-              <>
-                <canvas ref={canvasRef} aria-label={"Drag to rotate " + name + ", scroll to zoom"} />
-                {error ? <div className="wisconsin-viewer-message" role="alert">{error}</div> : progress < 100 ? (
-              <div className="wisconsin-viewer-loading" role="status">
-                <span>{status}</span>
-                {progress < 35 && (
-                  <small className="wisconsin-viewer-download-note">
-                    The {name} OBJ model is approximately {sizeLabel}. Texture maps may add to the download.
-                  </small>
-                )}
-                <div><i style={{ width: progress + "%" }} /></div>
-                <small>{progress}%</small>
-              </div>
-                ) : <div className="wisconsin-viewer-hint">{textureMissing ? "MODEL LOADED · SOME TEXTURE MAPS ARE MISSING" : "DRAG TO ROTATE · SCROLL TO ZOOM · DOUBLE-TAP TO RESET"}</div>}
-              </>
-            )}
-          </div>
-        </div>
-      )}
-
+        )}
+      </div>
     </section>
   );
 }
