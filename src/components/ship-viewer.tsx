@@ -446,7 +446,7 @@ export function ShipViewer({ name, objUrl, mtlUrl, archiveUrl, sizeLabel, textur
       setOpen(false);
       setClosing(false);
       setLaunchVisible(false);
-    }, 1020);
+    }, 1080);
     return () => { window.clearTimeout(revealLaunch); window.clearTimeout(finish); };
   }, [closing]);
 
