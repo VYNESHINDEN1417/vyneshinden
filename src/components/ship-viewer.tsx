@@ -469,7 +469,7 @@ export function ShipViewer({ name, objUrl, mtlUrl, archiveUrl, sizeLabel, textur
           <span className="wisconsin-3d-launch-sub">{name}</span>
         </button>
       ) : (
-        <div className="wisconsin-viewer-shell" ref={hostRef}>
+        <div className={`wisconsin-viewer-shell${closing ? " is-closing" : ""}`} ref={hostRef}>
           <div className="wisconsin-viewer-toolbar">
             <span>{name.toUpperCase()} / 3D VIEWER</span>
             <div>
