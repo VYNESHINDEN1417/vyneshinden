@@ -509,6 +509,12 @@ export function ShipViewer({ name, objUrl, mtlUrl, archiveUrl, sizeLabel, textur
           </div>
         </div>
       )}
+      {open && closing && (
+        <button type="button" className="wisconsin-3d-launch is-returning" disabled aria-hidden="true" tabIndex={-1}>
+          <span>VIEW IN 3D</span>
+          <span className="wisconsin-3d-launch-sub">{name}</span>
+        </button>
+      )}
 
     </section>
   );
