@@ -154,12 +154,14 @@ export function LoadingScreen({ pathname }: { pathname: string }) {
 
 export function PortfolioPage({ section, project }: { section: "About me" | "My works" | "Social"; project?: PortfolioProject }) {
   const isProjectList = section === "My works" && !project;
-  const [night, setNight] = useState(false);
+  const [night, setNight] = useState(() => {
+    if (typeof window === "undefined") return false;
+    return window.localStorage.getItem("vyneshinden-button-theme") === "dark";
+  });
 
   useEffect(() => {
     if (!isProjectList) return;
     const savedNight = window.localStorage.getItem("vyneshinden-button-theme") === "dark";
-    setNight(savedNight);
     document.documentElement.dataset.buttonTheme = savedNight ? "dark" : "light";
   }, [isProjectList]);
 
