@@ -456,21 +456,26 @@ export function ShipViewer({ name, objUrl, mtlUrl, archiveUrl, sizeLabel, textur
     return () => cancelAnimationFrame(frame);
   }, [open, closing]);
 
-  // Start viewport targeting on the same frame as the opening morph.
+  // Re-center shortly before the opening height transition finishes.
+  // Waiting for transitionend felt late; this keeps the focus correction
+  // close to the end of the morph while the shell is already nearly full size.
   useEffect(() => {
-    if (!open) return;
-    const frame = requestAnimationFrame(() => {
-      const target = hostRef.current;
-      if (!target) return;
-      const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      target.scrollIntoView({
+    if (!open || closing) return;
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const focusViewport = () => {
+      hostRef.current?.scrollIntoView({
         behavior: reduceMotion ? "auto" : "smooth",
         block: "center",
         inline: "nearest",
       });
-    });
-    return () => cancelAnimationFrame(frame);
-  }, [open]);
+    };
+    const frame = requestAnimationFrame(focusViewport);
+    const focusTimer = window.setTimeout(focusViewport, reduceMotion ? 0 : 520);
+    return () => {
+      cancelAnimationFrame(frame);
+      window.clearTimeout(focusTimer);
+    };
+  }, [open, closing]);
 
   return (
     <section className="wisconsin-3d-section" aria-label={"Interactive " + name + " 3D model"}>
@@ -479,22 +484,7 @@ export function ShipViewer({ name, objUrl, mtlUrl, archiveUrl, sizeLabel, textur
         className={`wisconsin-morph-shell${open ? " is-open" : ""}${closing ? " is-closing" : ""}${closing && launchVisible ? " is-launch-visible" : ""}${entranceReady ? " is-entrance-ready" : ""}`}
         onTransitionEnd={(event) => {
           if (event.target !== event.currentTarget || event.propertyName !== "height") return;
-          if (closing) {
-            setLaunchVisible(true);
-            return;
-          }
-          if (open) {
-            // Re-center after the shell reaches its expanded height. The initial
-            // scroll runs while the shell is collapsed, so this corrects the
-            // final viewport position without changing the collapse sequence.
-            requestAnimationFrame(() => {
-              hostRef.current?.scrollIntoView({
-                behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth",
-                block: "center",
-                inline: "nearest",
-              });
-            });
-          }
+          if (closing) setLaunchVisible(true);
         }}
         role={open ? undefined : "button"}
         tabIndex={open ? undefined : 0}
