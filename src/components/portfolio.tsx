@@ -80,11 +80,19 @@ export function LoadingScreen({ pathname }: { pathname: string }) {
     timers.current.forEach(window.clearTimeout);
     timers.current = [];
   }, []);
-  const start = useCallback((waitForPress = false) => {
+  const start = useCallback((waitForPress = false, duration = LOADING_MS, initialDelay = BUTTON_ANIMATION_MS) => {
     clearTimers();
     setCovered(!waitForPress);
     if (waitForPress) {
       timers.current.push(window.setTimeout(() => setCovered(true), BUTTON_ANIMATION_MS));
+    }
+    if (initialDelay === 0) {
+      setVisible(true);
+      timers.current.push(window.setTimeout(() => {
+        setCovered(false);
+        setVisible(false);
+      }, duration));
+      return;
     }
     setVisible(false);
     timers.current.push(window.setTimeout(() => {
@@ -92,8 +100,8 @@ export function LoadingScreen({ pathname }: { pathname: string }) {
       timers.current.push(window.setTimeout(() => {
         setCovered(false);
         setVisible(false);
-      }, LOADING_MS));
-    }, BUTTON_ANIMATION_MS));
+      }, duration));
+    }, initialDelay));
   }, [clearTimers]);
   useEffect(() => {
     const enter = (event: Event) => {
@@ -109,6 +117,7 @@ export function LoadingScreen({ pathname }: { pathname: string }) {
   }, [start, clearTimers]);
   useEffect(() => {
     if (previousPath.current === pathname) return;
+    const previous = previousPath.current;
     previousPath.current = pathname;
     if (pendingPath.current === pathname) {
       pendingPath.current = null;
@@ -119,6 +128,8 @@ export function LoadingScreen({ pathname }: { pathname: string }) {
       clearTimers();
       setCovered(false);
       setVisible(false);
+    } else if (pathname === "/works" && previous.startsWith("/works/")) {
+      start(false, RETURN_LOADING_MS, 0);
     } else {
       start();
     }
