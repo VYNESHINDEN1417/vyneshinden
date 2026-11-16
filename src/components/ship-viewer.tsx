@@ -478,8 +478,22 @@ export function ShipViewer({ name, objUrl, mtlUrl, archiveUrl, sizeLabel, textur
         ref={hostRef}
         className={`wisconsin-morph-shell${open ? " is-open" : ""}${closing ? " is-closing" : ""}${closing && launchVisible ? " is-launch-visible" : ""}${entranceReady ? " is-entrance-ready" : ""}`}
         onTransitionEnd={(event) => {
-          if (event.target === event.currentTarget && event.propertyName === "height" && closing) {
+          if (event.target !== event.currentTarget || event.propertyName !== "height") return;
+          if (closing) {
             setLaunchVisible(true);
+            return;
+          }
+          if (open) {
+            // Re-center after the shell reaches its expanded height. The initial
+            // scroll runs while the shell is collapsed, so this corrects the
+            // final viewport position without changing the collapse sequence.
+            requestAnimationFrame(() => {
+              hostRef.current?.scrollIntoView({
+                behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth",
+                block: "center",
+                inline: "nearest",
+              });
+            });
           }
         }}
         role={open ? undefined : "button"}
