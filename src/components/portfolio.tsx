@@ -12,7 +12,7 @@ import { ShipViewer } from "@/components/ship-viewer";
 
 // Run the sequence in the persistent root, independently of route mounting.
 const BUTTON_ANIMATION_MS = 150;
-const LOADING_MS = 1300;
+const LOADING_MS = 1000;
 const RETURN_LOADING_MS = 1200;
 
 let clickAudio: HTMLAudioElement | null = null;
