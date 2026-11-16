@@ -425,6 +425,22 @@ export function ShipViewer({ name, objUrl, mtlUrl, archiveUrl, sizeLabel, textur
     return () => document.removeEventListener("fullscreenchange", update);
   }, []);
 
+  // Bring the newly opened viewer into focus without snapping the page.
+  useEffect(() => {
+    if (!open) return;
+    const frame = requestAnimationFrame(() => {
+      const target = hostRef.current;
+      if (!target) return;
+      const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      target.scrollIntoView({
+        behavior: reduceMotion ? "auto" : "smooth",
+        block: "center",
+        inline: "nearest",
+      });
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [open]);
+
   return (
     <section className="wisconsin-3d-section" aria-label={"Interactive " + name + " 3D model"}>
       {!open ? (
