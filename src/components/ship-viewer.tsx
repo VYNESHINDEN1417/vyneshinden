@@ -450,7 +450,7 @@ export function ShipViewer({ name, objUrl, mtlUrl, archiveUrl, sizeLabel, textur
       <div
         ref={hostRef}
         className={`wisconsin-morph-shell${open ? " is-open" : ""}${closing ? " is-closing" : ""}`}
-        onTransitionEnd={(event) => {
+        onTransitionRun={(event) => {
           if (event.target !== event.currentTarget || event.propertyName !== "height" || !open || closing) return;
           const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
           hostRef.current?.scrollIntoView({
