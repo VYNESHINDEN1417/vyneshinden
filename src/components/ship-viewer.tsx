@@ -472,12 +472,11 @@ export function ShipViewer({ name, objUrl, mtlUrl, archiveUrl, sizeLabel, textur
         onClick={!open ? () => { returnScrollYRef.current = window.scrollY; setClosing(false); setError(""); setTextureMissing(false); setProgress(0); setStartDownload(false); setConfirmDownload(true); setOpen(true); } : undefined}
         onKeyDown={!open ? (event) => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); returnScrollYRef.current = window.scrollY; setClosing(false); setError(""); setTextureMissing(false); setProgress(0); setStartDownload(false); setConfirmDownload(true); setOpen(true); } } : undefined}
       >
-        {!open ? (
-          <div className="wisconsin-morph-launch">
-            <span>VIEW IN 3D</span>
-            <span className="wisconsin-3d-launch-sub">{name}</span>
-          </div>
-        ) : (
+        <div className="wisconsin-morph-launch">
+          <span>VIEW IN 3D</span>
+          <span className="wisconsin-3d-launch-sub">{name}</span>
+        </div>
+        {open && (
           <div className="wisconsin-morph-content">
             <div className="wisconsin-viewer-toolbar">
               <span>{name.toUpperCase()} / 3D VIEWER</span>
