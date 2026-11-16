@@ -978,8 +978,8 @@ html[data-view="mobile"] .detail-content--about-page { padding-top: 0; }
 .wisconsin-morph-shell.is-open:not(.is-closing) .wisconsin-morph-launch{opacity:0}
 .wisconsin-morph-shell.is-closing .wisconsin-morph-content{opacity:1;animation:none;transition:none;pointer-events:none}
 .wisconsin-morph-shell.is-closing .wisconsin-morph-launch{opacity:0;transition:none}
-.wisconsin-morph-shell.is-closing.is-launch-visible .wisconsin-morph-launch{opacity:1;animation:wisconsin-launch-fade-in .36s ease-out both}
-@keyframes wisconsin-launch-fade-in{from{opacity:0}to{opacity:1}}
+.wisconsin-morph-shell.is-closing.is-launch-visible .wisconsin-morph-launch{z-index:2;opacity:1;animation:wisconsin-launch-fade-in .5s ease-out both}
+@keyframes wisconsin-launch-fade-in{0%{opacity:0}100%{opacity:1}}
 @keyframes wisconsin-viewer-fade-in{from{opacity:0}to{opacity:1}}
 @media(prefers-reduced-motion:reduce){.wisconsin-morph-shell{transition:none}.wisconsin-morph-launch,.wisconsin-morph-content{transition:none}}
 .wisconsin-viewer-toolbar{height:44px;padding:0 10px 0 14px;display:flex;align-items:center;justify-content:space-between;background:#FF7300;color:#fff;font:600 10px/1 inherit;letter-spacing:.12em}
