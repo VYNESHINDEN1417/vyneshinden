@@ -511,7 +511,7 @@ export function ShipViewer({ name, objUrl, mtlUrl, archiveUrl, sizeLabel, textur
                 <button type="button" onClick={() => { setConfirmDownload(false); setStartDownload(false); setClosing(true); }} aria-label="Close 3D viewer" title="Close"><X size={18} /></button>
               </div>
             </div>
-            <div className="wisconsin-viewer-stage">
+            <div className={`wisconsin-viewer-stage${startDownload ? " has-model-background" : ""}`}>
               {confirmDownload ? (
                 <div className="wisconsin-download-notice" role="dialog" aria-labelledby="ship-download-title" aria-describedby="ship-download-description">
                   <div className="wisconsin-download-symbol" aria-hidden="true">!</div>
