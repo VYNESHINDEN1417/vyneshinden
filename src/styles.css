@@ -994,7 +994,7 @@ html[data-view="mobile"] .detail-content--about-page { padding-top: 0; }
 .wisconsin-viewer-loading small{opacity:.65;font-variant-numeric:tabular-nums}
 .wisconsin-viewer-message{position:absolute;inset:0;display:grid;place-items:center;padding:24px;text-align:center;color:#ffb8b8;font-size:13px}
 .wisconsin-viewer-hint{position:absolute;left:0;right:0;bottom:10px;text-align:center;font-size:9px;letter-spacing:.1em;color:rgba(255,255,255,.55);pointer-events:none}
-@media(max-width:600px){.wisconsin-morph-shell.is-open{height:424px}.wisconsin-viewer-stage{height:auto}.wisconsin-viewer-toolbar{font-size:9px}}
+@media(max-width:600px){.wisconsin-morph-shell.is-open:not(.is-closing){height:424px}.wisconsin-viewer-stage{height:auto}.wisconsin-viewer-toolbar{font-size:9px}}
 
 
 /* USS Wisconsin inline download confirmation */
