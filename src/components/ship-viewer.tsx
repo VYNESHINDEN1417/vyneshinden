@@ -456,9 +456,8 @@ export function ShipViewer({ name, objUrl, mtlUrl, archiveUrl, sizeLabel, textur
     return () => cancelAnimationFrame(frame);
   }, [open, closing]);
 
-  // Re-center shortly before the opening height transition finishes.
-  // Waiting for transitionend felt late; this keeps the focus correction
-  // close to the end of the morph while the shell is already nearly full size.
+  // Perform one focus correction near the end of the opening morph.
+  // A second early scroll caused a visible two-step movement on some screens.
   useEffect(() => {
     if (!open || closing) return;
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -469,12 +468,8 @@ export function ShipViewer({ name, objUrl, mtlUrl, archiveUrl, sizeLabel, textur
         inline: "nearest",
       });
     };
-    const frame = requestAnimationFrame(focusViewport);
     const focusTimer = window.setTimeout(focusViewport, reduceMotion ? 0 : 520);
-    return () => {
-      cancelAnimationFrame(frame);
-      window.clearTimeout(focusTimer);
-    };
+    return () => window.clearTimeout(focusTimer);
   }, [open, closing]);
 
   return (
