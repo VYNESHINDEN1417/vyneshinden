@@ -485,7 +485,7 @@ export function ShipViewer({ name, objUrl, mtlUrl, archiveUrl, sizeLabel, textur
                 <h2 id="ship-download-title">BEFORE YOU CONTINUE</h2>
                 <p id="ship-download-description">The {name} OBJ model is approximately {sizeLabel}. Downloading time depends on your internet connection. Referenced texture maps are checked separately.</p>
                 <div className="wisconsin-download-actions">
-                  <button type="button" className="wisconsin-download-cancel" onClick={() => { setConfirmDownload(false); setOpen(false); setStartDownload(false); }}>Cancel</button>
+                  <button type="button" className="wisconsin-download-cancel" onClick={() => { setConfirmDownload(false); setStartDownload(false); setClosing(true); }}>Cancel</button>
                   <button type="button" className="wisconsin-download-continue" onClick={() => { setConfirmDownload(false); setError(""); setStartDownload(true); }}>Continue</button>
                 </div>
               </div>
