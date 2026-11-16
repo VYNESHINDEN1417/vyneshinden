@@ -441,7 +441,7 @@ export function ShipViewer({ name, objUrl, mtlUrl, archiveUrl, sizeLabel, textur
     const finish = window.setTimeout(() => {
       setOpen(false);
       setClosing(false);
-    }, 750);
+    }, 800);
     return () => window.clearTimeout(finish);
   }, [closing]);
 
@@ -472,7 +472,7 @@ export function ShipViewer({ name, objUrl, mtlUrl, archiveUrl, sizeLabel, textur
         onClick={!open ? () => { returnScrollYRef.current = window.scrollY; setClosing(false); setError(""); setTextureMissing(false); setProgress(0); setStartDownload(false); setConfirmDownload(true); setOpen(true); } : undefined}
         onKeyDown={!open ? (event) => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); returnScrollYRef.current = window.scrollY; setClosing(false); setError(""); setTextureMissing(false); setProgress(0); setStartDownload(false); setConfirmDownload(true); setOpen(true); } } : undefined}
       >
-        <div className="wisconsin-morph-launch" style={closing ? { transition: "opacity .08s linear .68s" } : undefined}>
+        <div className="wisconsin-morph-launch">
           <span>VIEW IN 3D</span>
           <span className="wisconsin-3d-launch-sub">{name}</span>
         </div>
