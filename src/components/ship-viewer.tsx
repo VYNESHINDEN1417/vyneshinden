@@ -463,12 +463,18 @@ export function ShipViewer({ name, objUrl, mtlUrl, archiveUrl, sizeLabel, textur
 
   return (
     <section className="wisconsin-3d-section" aria-label={"Interactive " + name + " 3D model"}>
-      {!open ? (
-        <button type="button" className="wisconsin-3d-launch" onClick={() => { returnScrollYRef.current = window.scrollY; setClosing(false); setError(""); setTextureMissing(false); setProgress(0); setStartDownload(false); setConfirmDownload(true); setOpen(true); }}>
-          <span>VIEW IN 3D</span>
-          <span className="wisconsin-3d-launch-sub">{name}</span>
-        </button>
-      ) : (
+      <button
+        type="button"
+        className={`wisconsin-3d-launch${open ? " is-viewer-open" : ""}${closing ? " is-returning" : ""}`}
+        aria-hidden={open}
+        tabIndex={open ? -1 : 0}
+        disabled={open}
+        onClick={() => { returnScrollYRef.current = window.scrollY; setClosing(false); setError(""); setTextureMissing(false); setProgress(0); setStartDownload(false); setConfirmDownload(true); setOpen(true); }}
+      >
+        <span>VIEW IN 3D</span>
+        <span className="wisconsin-3d-launch-sub">{name}</span>
+      </button>
+      {open && (
         <div className={`wisconsin-viewer-shell${closing ? " is-closing" : ""}`} ref={hostRef}>
           <div className="wisconsin-viewer-toolbar">
             <span>{name.toUpperCase()} / 3D VIEWER</span>
@@ -508,12 +514,6 @@ export function ShipViewer({ name, objUrl, mtlUrl, archiveUrl, sizeLabel, textur
             )}
           </div>
         </div>
-      )}
-      {open && closing && (
-        <button type="button" className="wisconsin-3d-launch is-returning" disabled aria-hidden="true" tabIndex={-1}>
-          <span>VIEW IN 3D</span>
-          <span className="wisconsin-3d-launch-sub">{name}</span>
-        </button>
       )}
 
     </section>
