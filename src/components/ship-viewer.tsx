@@ -428,7 +428,8 @@ export function ShipViewer({ name, objUrl, mtlUrl, archiveUrl, sizeLabel, textur
     return () => document.removeEventListener("fullscreenchange", update);
   }, []);
 
-  // Return the page to its original position before unmounting the viewer.
+  // Restore the page position while the shell performs its actual collapse.
+  // The launch text is revealed by the shell's height transition event, not a timer.
   useEffect(() => {
     if (!closing) return;
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -436,15 +437,12 @@ export function ShipViewer({ name, objUrl, mtlUrl, archiveUrl, sizeLabel, textur
     if (targetY !== null) {
       window.scrollTo({ top: targetY, behavior: reduceMotion ? "auto" : "smooth" });
     }
-    // The label reveal must still run when the device requests reduced motion.
-    // Only the page scroll behavior is reduced; the short opacity fade remains.
-    const revealLaunch = window.setTimeout(() => setLaunchVisible(true), 680);
-    const finish = window.setTimeout(() => {
-      setOpen(false);
-      setClosing(false);
-      setLaunchVisible(false);
-    }, 1250);
-    return () => { window.clearTimeout(revealLaunch); window.clearTimeout(finish); };
+    // With motion reduced there is no CSS transitionend event, so start the
+    // same launch-label animation on the next frame instead.
+    if (reduceMotion) {
+      const frame = requestAnimationFrame(() => setLaunchVisible(true));
+      return () => cancelAnimationFrame(frame);
+    }
   }, [closing]);
 
   // Start viewport targeting on the same frame as the opening morph.
@@ -468,13 +466,27 @@ export function ShipViewer({ name, objUrl, mtlUrl, archiveUrl, sizeLabel, textur
       <div
         ref={hostRef}
         className={`wisconsin-morph-shell${open ? " is-open" : ""}${closing ? " is-closing" : ""}${closing && launchVisible ? " is-launch-visible" : ""}`}
+        onTransitionEnd={(event) => {
+          if (event.target === event.currentTarget && event.propertyName === "height" && closing) {
+            setLaunchVisible(true);
+          }
+        }}
         role={open ? undefined : "button"}
         tabIndex={open ? undefined : 0}
         aria-label={open ? undefined : "View " + name + " in 3D"}
         onClick={!open ? () => { returnScrollYRef.current = window.scrollY; setClosing(false); setLaunchVisible(false); setError(""); setTextureMissing(false); setProgress(0); setStartDownload(false); setConfirmDownload(true); setOpen(true); } : undefined}
-        onKeyDown={!open ? (event) => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); returnScrollYRef.current = window.scrollY; setClosing(false); setError(""); setTextureMissing(false); setProgress(0); setStartDownload(false); setConfirmDownload(true); setOpen(true); } } : undefined}
+        onKeyDown={!open ? (event) => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); returnScrollYRef.current = window.scrollY; setClosing(false); setLaunchVisible(false); setError(""); setTextureMissing(false); setProgress(0); setStartDownload(false); setConfirmDownload(true); setOpen(true); } } : undefined}
       >
-        <div className="wisconsin-morph-launch">
+        <div
+          className="wisconsin-morph-launch"
+          onAnimationEnd={(event) => {
+            if (event.target === event.currentTarget && event.animationName === "wisconsin-launch-fade-in") {
+              setOpen(false);
+              setClosing(false);
+              setLaunchVisible(false);
+            }
+          }}
+        >
           <span>VIEW IN 3D</span>
           <span className="wisconsin-3d-launch-sub">{name}</span>
         </div>
