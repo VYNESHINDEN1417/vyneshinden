@@ -433,20 +433,17 @@ export function ShipViewer({ name, objUrl, mtlUrl, archiveUrl, sizeLabel, textur
     if (!closing) return;
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const targetY = returnScrollYRef.current;
-    if (targetY === null || reduceMotion) {
-      setOpen(false);
-      setClosing(false);
-      setLaunchVisible(false);
-      return;
+    if (targetY !== null) {
+      window.scrollTo({ top: targetY, behavior: reduceMotion ? "auto" : "smooth" });
     }
-    window.scrollTo({ top: targetY, behavior: "smooth" });
+    // The label reveal must still run when the device requests reduced motion.
+    // Only the page scroll behavior is reduced; the short opacity fade remains.
     const revealLaunch = window.setTimeout(() => setLaunchVisible(true), 680);
-    // Keep the closing state alive until the full 300ms launch-label fade has completed.
     const finish = window.setTimeout(() => {
       setOpen(false);
       setClosing(false);
       setLaunchVisible(false);
-    }, 1080);
+    }, 1250);
     return () => { window.clearTimeout(revealLaunch); window.clearTimeout(finish); };
   }, [closing]);
 
