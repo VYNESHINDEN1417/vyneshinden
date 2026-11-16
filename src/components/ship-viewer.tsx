@@ -497,8 +497,8 @@ export function ShipViewer({ name, objUrl, mtlUrl, archiveUrl, sizeLabel, textur
             }
           }}
         >
-          <span>VIEW IN 3D</span>
-          <span className="wisconsin-3d-launch-sub">{name}</span>
+          <span>3D VIEWER</span>
+          <span className="wisconsin-3d-launch-sub">{name.charAt(0) + name.slice(1).toLowerCase()}</span>
         </div>
         {open && (
           <div className="wisconsin-morph-content">
