@@ -155,6 +155,8 @@ async function rebuildModelAtlases(obj: string, names: string[]): Promise<Map<st
 type ShipViewerProps = { name: string; objUrl?: string; mtlUrl?: string; archiveUrl?: string; sizeLabel: string; textureBasePath?: string; textureUrls?: Record<string, string>; };
 export function ShipViewer({ name, objUrl, mtlUrl, archiveUrl, sizeLabel, textureBasePath, textureUrls }: ShipViewerProps) {
   const [open, setOpen] = useState(false);
+  const [closing, setClosing] = useState(false);
+  const returnScrollYRef = useRef<number | null>(null);
   const [confirmDownload, setConfirmDownload] = useState(false);
   const [startDownload, setStartDownload] = useState(false);
   const [status, setStatus] = useState("Preparing viewer…");
@@ -425,6 +427,24 @@ export function ShipViewer({ name, objUrl, mtlUrl, archiveUrl, sizeLabel, textur
     return () => document.removeEventListener("fullscreenchange", update);
   }, []);
 
+  // Return the page to its original position before unmounting the viewer.
+  useEffect(() => {
+    if (!closing) return;
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const targetY = returnScrollYRef.current;
+    if (targetY === null || reduceMotion) {
+      setOpen(false);
+      setClosing(false);
+      return;
+    }
+    window.scrollTo({ top: targetY, behavior: "smooth" });
+    const finish = window.setTimeout(() => {
+      setOpen(false);
+      setClosing(false);
+    }, 750);
+    return () => window.clearTimeout(finish);
+  }, [closing]);
+
   // Bring the newly opened viewer into focus without snapping the page.
   useEffect(() => {
     if (!open) return;
@@ -444,7 +464,7 @@ export function ShipViewer({ name, objUrl, mtlUrl, archiveUrl, sizeLabel, textur
   return (
     <section className="wisconsin-3d-section" aria-label={"Interactive " + name + " 3D model"}>
       {!open ? (
-        <button type="button" className="wisconsin-3d-launch" onClick={() => { setError(""); setTextureMissing(false); setProgress(0); setStartDownload(false); setConfirmDownload(true); setOpen(true); }}>
+        <button type="button" className="wisconsin-3d-launch" onClick={() => { returnScrollYRef.current = window.scrollY; setClosing(false); setError(""); setTextureMissing(false); setProgress(0); setStartDownload(false); setConfirmDownload(true); setOpen(true); }}>
           <span>VIEW IN 3D</span>
           <span className="wisconsin-3d-launch-sub">{name}</span>
         </button>
@@ -455,7 +475,7 @@ export function ShipViewer({ name, objUrl, mtlUrl, archiveUrl, sizeLabel, textur
             <div>
               <button type="button" onClick={reset} aria-label="Reset camera" title="Reset camera"><RotateCcw size={18} /></button>
               <button type="button" onClick={toggleFullscreen} aria-label="Toggle fullscreen" title="Fullscreen">{fullscreen ? <Minimize2 size={18} /> : <Maximize2 size={18} />}</button>
-              <button type="button" onClick={() => { setConfirmDownload(false); setStartDownload(false); setOpen(false); }} aria-label="Close 3D viewer" title="Close"><X size={18} /></button>
+              <button type="button" onClick={() => { setConfirmDownload(false); setStartDownload(false); setClosing(true); }} aria-label="Close 3D viewer" title="Close"><X size={18} /></button>
             </div>
           </div>
           <div className="wisconsin-viewer-stage">
