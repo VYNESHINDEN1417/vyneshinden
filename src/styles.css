@@ -974,11 +974,12 @@ html[data-view="mobile"] .detail-content--about-page { padding-top: 0; }
 .wisconsin-viewer-shell{overflow:hidden;border:1px solid #FF7300;border-radius:10px;background:#10151b;color:#fff}
 .wisconsin-viewer-shell{max-height:760px;transform-origin:top center;animation:wisconsin-viewer-expand .42s cubic-bezier(.2,.75,.25,1) both;will-change:transform,opacity,max-height;backface-visibility:hidden}
 .wisconsin-viewer-shell.is-closing{animation:wisconsin-viewer-collapse .68s cubic-bezier(.55,0,.8,.35) both;pointer-events:none}
-.wisconsin-3d-launch.is-returning{position:relative;z-index:1;animation:wisconsin-launch-return .3s ease-out .12s both}
+.wisconsin-3d-launch.is-viewer-open:not(.is-returning){height:0;min-height:0;max-height:0;padding-top:0;padding-bottom:0;border-width:0;opacity:0;overflow:hidden;pointer-events:none;box-shadow:none}
+.wisconsin-3d-launch.is-viewer-open.is-returning{position:relative;z-index:1;animation:wisconsin-launch-return .68s cubic-bezier(.2,.75,.25,1) both}
 @keyframes wisconsin-viewer-expand{from{opacity:0;transform:translateY(-8px) scaleY(.94);max-height:0}to{opacity:1;transform:translateY(0) scaleY(1);max-height:760px}}
 @keyframes wisconsin-viewer-collapse{from{opacity:1;transform:translateY(0) scaleY(1);max-height:760px}to{opacity:0;transform:translateY(-5px) scaleY(.025);max-height:0}}
-@keyframes wisconsin-launch-return{from{opacity:0;filter:brightness(1.25)}to{opacity:1;filter:brightness(1)}}
-@media(prefers-reduced-motion:reduce){.wisconsin-viewer-shell,.wisconsin-viewer-shell.is-closing,.wisconsin-3d-launch.is-returning{animation:none;will-change:auto}}
+@keyframes wisconsin-launch-return{from{height:0;min-height:0;max-height:0;padding-top:0;padding-bottom:0;border-width:0;opacity:0;filter:brightness(1.25)}to{height:86px;min-height:86px;max-height:86px;padding-top:initial;padding-bottom:initial;border-width:1px;opacity:1;filter:brightness(1)}}
+@media(prefers-reduced-motion:reduce){.wisconsin-viewer-shell,.wisconsin-viewer-shell.is-closing,.wisconsin-3d-launch.is-viewer-open.is-returning{animation:none;will-change:auto}}
 
 .wisconsin-viewer-toolbar{height:44px;padding:0 10px 0 14px;display:flex;align-items:center;justify-content:space-between;background:#FF7300;color:#fff;font:600 10px/1 inherit;letter-spacing:.12em}
 .wisconsin-viewer-toolbar>div{display:flex;gap:4px}
