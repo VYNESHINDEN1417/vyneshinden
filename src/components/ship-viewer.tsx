@@ -157,6 +157,7 @@ export function ShipViewer({ name, objUrl, mtlUrl, archiveUrl, sizeLabel, textur
   const [open, setOpen] = useState(false);
   const [closing, setClosing] = useState(false);
   const [launchVisible, setLaunchVisible] = useState(false);
+  const [entranceReady, setEntranceReady] = useState(false);
   const returnScrollYRef = useRef<number | null>(null);
   const [confirmDownload, setConfirmDownload] = useState(false);
   const [startDownload, setStartDownload] = useState(false);
@@ -445,31 +446,40 @@ export function ShipViewer({ name, objUrl, mtlUrl, archiveUrl, sizeLabel, textur
     }
   }, [closing]);
 
-  // Start viewport targeting on the same frame as the opening morph.
+  // Wait one animation frame after mounting the viewer content so its opacity transition has a real starting state.
   useEffect(() => {
-    if (!open) return;
-    const frame = requestAnimationFrame(() => {
-      const target = hostRef.current;
-      if (!target) return;
-      const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      target.scrollIntoView({
+    if (!open || closing) {
+      if (!open) setEntranceReady(false);
+      return;
+    }
+    const frame = requestAnimationFrame(() => setEntranceReady(true));
+    return () => cancelAnimationFrame(frame);
+  }, [open, closing]);
+
+  // Perform one focus correction near the end of the opening morph.
+  // A second early scroll caused a visible two-step movement on some screens.
+  useEffect(() => {
+    if (!open || closing) return;
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const focusViewport = () => {
+      hostRef.current?.scrollIntoView({
         behavior: reduceMotion ? "auto" : "smooth",
         block: "center",
         inline: "nearest",
       });
-    });
-    return () => cancelAnimationFrame(frame);
-  }, [open]);
+    };
+    const focusTimer = window.setTimeout(focusViewport, reduceMotion ? 0 : 520);
+    return () => window.clearTimeout(focusTimer);
+  }, [open, closing]);
 
   return (
     <section className="wisconsin-3d-section" aria-label={"Interactive " + name + " 3D model"}>
       <div
         ref={hostRef}
-        className={`wisconsin-morph-shell${open ? " is-open" : ""}${closing ? " is-closing" : ""}${closing && launchVisible ? " is-launch-visible" : ""}`}
+        className={`wisconsin-morph-shell${open ? " is-open" : ""}${closing ? " is-closing" : ""}${closing && launchVisible ? " is-launch-visible" : ""}${entranceReady ? " is-entrance-ready" : ""}`}
         onTransitionEnd={(event) => {
-          if (event.target === event.currentTarget && event.propertyName === "height" && closing) {
-            setLaunchVisible(true);
-          }
+          if (event.target !== event.currentTarget || event.propertyName !== "height") return;
+          if (closing) setLaunchVisible(true);
         }}
         role={open ? undefined : "button"}
         tabIndex={open ? undefined : 0}
@@ -500,7 +510,7 @@ export function ShipViewer({ name, objUrl, mtlUrl, archiveUrl, sizeLabel, textur
                 <button type="button" onClick={() => { setConfirmDownload(false); setStartDownload(false); setClosing(true); }} aria-label="Close 3D viewer" title="Close"><X size={18} /></button>
               </div>
             </div>
-            <div className="wisconsin-viewer-stage">
+            <div className={`wisconsin-viewer-stage${startDownload ? " has-model-background" : ""}`}>
               {confirmDownload ? (
                 <div className="wisconsin-download-notice" role="dialog" aria-labelledby="ship-download-title" aria-describedby="ship-download-description">
                   <div className="wisconsin-download-symbol" aria-hidden="true">!</div>
