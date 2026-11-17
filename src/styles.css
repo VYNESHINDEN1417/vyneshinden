@@ -348,7 +348,7 @@ html[data-view="mobile"] .detail-page { background-size: 170px 170px; }
 .about-paragraphs { display: grid; gap: 24px; }
 .about-paragraphs p { margin: 0; font-size: 15px; line-height: 1.9; color: var(--foreground); }
 .work-figure { margin: 0 0 32px; }
-.work-title { margin: 0 0 16px; font-size: 22px; font-weight: 600; color: var(--foreground); }
+.work-title { margin: 0 0 16px; font-size: clamp(10px, 4vw, 22px); font-weight: 600; color: var(--foreground); white-space: nowrap; }
 .work-image-button { display: block; padding: 0; width: 100%; height: auto; overflow: hidden; border-radius: 8px; }
 .work-image-button img { display: block; width: 100%; height: auto; }
 .work-caption-row { display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 16px; }
