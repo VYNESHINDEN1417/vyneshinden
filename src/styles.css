@@ -1031,3 +1031,14 @@ html[data-view="mobile"] .detail-content--about-page { padding-top: 0; }
 html[data-view="mobile"] .detail-content--project-detail {
   padding-top: 14px;
 }
+
+
+/* Keep the project name understated on individual project pages. */
+.detail-content--project-detail .project-detail-title {
+  margin: 0 0 24px;
+  font-size: 24px;
+  font-weight: 600;
+}
+html[data-view="mobile"] .detail-content--project-detail .project-detail-title {
+  font-size: 20px;
+}
