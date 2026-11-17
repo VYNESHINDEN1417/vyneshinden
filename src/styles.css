@@ -1044,30 +1044,10 @@ html[data-view="mobile"] .detail-content--project-detail .project-detail-title {
 }
 
 
-/* Force project rows and their titles to remain on one horizontal line. */
-.project-button > span {
-  display: flex !important;
-  flex-flow: row nowrap !important;
-  align-items: center;
-  width: 100%;
-  min-width: 0;
-}
-.project-button .project-thumb,
-.project-button .project-date {
-  flex: 0 0 auto !important;
-}
+/* Keep long project titles on one line without changing the row layout. */
 .project-button .project-name {
-  display: block !important;
-  flex: 1 1 0% !important;
-  min-width: 0 !important;
-  max-width: 100%;
   white-space: nowrap !important;
-  word-break: keep-all !important;
   overflow-wrap: normal !important;
-  overflow: hidden !important;
-  text-overflow: clip;
-  line-height: 1.2;
-}
-html[data-view="mobile"] .project-button .project-name {
-  font-size: clamp(7px, 2.5vw, 11px) !important;
+  word-break: normal !important;
+  font-size: clamp(7px, 2.5vw, 14px) !important;
 }
