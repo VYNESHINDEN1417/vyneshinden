@@ -57,7 +57,6 @@ export function ProjectGallery({ project }: { project: PortfolioProject }) {
           <div className={`gallery-fade gallery-fade-end${fadeEnd ? " is-visible" : ""}`} aria-hidden="true" />
         </div>
       )}
-      <h2 className="work-title">{project.title}</h2>
       <div className="work-caption-row">
         <figcaption style={{ color: "#FFD700" }}>Click the image to pinch zoom</figcaption>
         <Button variant="link" className="image-download" asChild><a href={image.src} download={filename} onPointerDown={playClickSoundOnPointerDown}>Download image</a></Button>

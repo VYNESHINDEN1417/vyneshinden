@@ -158,6 +158,36 @@ export function PortfolioPage({ section, project }: { section: "About me" | "My 
     if (typeof window === "undefined") return false;
     return window.localStorage.getItem("vyneshinden-button-theme") === "dark";
   });
+  const projectTitleRef = useRef<HTMLHeadingElement>(null);
+
+  useEffect(() => {
+    const heading = projectTitleRef.current;
+    if (!heading) return;
+
+    const fitTitle = () => {
+      const baseSize = Math.min(40, Math.max(16, window.innerWidth * 0.045));
+      heading.style.fontSize = `${baseSize}px`;
+      heading.style.whiteSpace = "nowrap";
+      heading.style.width = "100%";
+      heading.style.maxWidth = "100%";
+
+      let size = baseSize;
+      while (heading.scrollWidth > heading.clientWidth && size > 10) {
+        size -= 0.5;
+        heading.style.fontSize = `${size}px`;
+      }
+    };
+
+    fitTitle();
+    const observer = new ResizeObserver(fitTitle);
+    observer.observe(heading);
+    if (heading.parentElement) observer.observe(heading.parentElement);
+    window.addEventListener("resize", fitTitle);
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("resize", fitTitle);
+    };
+  }, [project?.id, project?.title]);
 
   useEffect(() => {
     if (!isProjectList) return;
@@ -181,8 +211,7 @@ export function PortfolioPage({ section, project }: { section: "About me" | "My 
         <span className="header-spacer" aria-hidden="true" />
       </header>
       <div className={`detail-content${isProjectList ? " detail-content--project-list" : ""}${section === "About me" ? " detail-content--simple-page detail-content--about-page" : ""}`}>
-        {!isProjectList && section !== "About me" && <p className="section-label">VYNESHINDEN / PORTFOLIO</p>}
-        <h1>{section}</h1>
+        {project && <h1 ref={projectTitleRef} style={{ fontSize: "clamp(16px, 4.5vw, 40px)", lineHeight: 1.3, whiteSpace: "nowrap", width: "100%", maxWidth: "100%" }}>{project.title}</h1>}
         {section === "About me" ? <>
           <section className="about-intro">
             <div className="placeholder-copy"><h2>Hi, Im Timothy Lomibao</h2><p>You may know me as VYNESHINDEN, im a builder on bedrock, i just use phone, YES I ONLY BUILD IN MY PHONE LOL. Granted i also have a laptop for renderings and such.</p></div>
@@ -194,7 +223,7 @@ export function PortfolioPage({ section, project }: { section: "About me" | "My 
             <p>I have always built on Bedrock, using a phone as my main tool rather than a powerful PC setup. That never stopped me from experimenting, improving my techniques, and taking on bigger projects. From battleships and cruisers to other scenes and ideas, every build has taught me something new. VYNESHINDEN is where I keep that journey alive: a place to share the things I have made, the progress behind them, and whatever I decide to build next. I am still learning, still experimenting, and definitely not done building.</p>
           </div>
         </> : project ? <>
-          {project.images.length > 0 ? <ProjectGallery key={project.id} project={project} /> : <><h2 className="work-title">{project.title}</h2><p className="work-description">Explore this Minecraft build through its interactive 3D model.</p></>}
+          {project.images.length > 0 ? <ProjectGallery key={project.id} project={project} /> : <p className="work-description">Explore this Minecraft build through its interactive 3D model.</p>}
           {project.id === "1" && <p className="work-description" style={{ textAlign: "justify" }}>USS Dwight D. Eisenhower (CVN-69) is a Minecraft recreation of one of the United States Navy’s Nimitz-class aircraft carriers. This project brings the ship’s imposing profile and unmistakable carrier layout into a block-built form, preserving its identity as a modern naval flagship while presenting the build through a collection of in-game views.</p>}
           {project.id === "8" && <p className="work-description">USS Wisconsin (BB-64) is an Iowa-class battleship built for the United States Navy (USN) in the 1940s, i built this ship on January 2022. A Big Minecraft military channel on YouTube made a tutorial for this built, he's name is <span className="work-creator">CraftyFoxe/MC Military Force</span>, here is the <a className="work-video-link" href="https://youtu.be/jkjA2PICDks" target="_blank" rel="noopener noreferrer" onPointerDown={playClickSoundOnPointerDown}>VIDEO LINK</a></p>}
           {project.id === "8" && <WisconsinViewer />}
