@@ -3,6 +3,7 @@ import { RotateCcw, Maximize2, Minimize2, X } from "lucide-react";
 import initWasm, { Viewer } from "@/lib/wasm/viewer/viewer";
 
 const WASM_URL = "https://raw.githubusercontent.com/VYNESHINDEN1417/view-pathfinder/2355a19d103221aba4a49a424579ee166b344050/public/wasm/viewer_bg.wasm";
+const VIEWPORT_RENDER_SCALE = 0.9;
 
 type ArchivedModel = { obj: string; mtl: string; textures: Map<string, Uint8Array> };
 async function loadModelArchive(url: string, signal: AbortSignal): Promise<ArchivedModel> {
@@ -228,8 +229,8 @@ export function ShipViewer({ name, objUrl, mtlUrl, archiveUrl, sizeLabel, textur
       if (!localViewer) return;
       const rect = canvas.getBoundingClientRect();
       const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
-      const width = Math.max(1, Math.round(rect.width * dpr));
-      const height = Math.max(1, Math.round(rect.height * dpr));
+      const width = Math.max(1, Math.round(rect.width * dpr * VIEWPORT_RENDER_SCALE));
+      const height = Math.max(1, Math.round(rect.height * dpr * VIEWPORT_RENDER_SCALE));
       if (canvas.width !== width || canvas.height !== height) {
         canvas.width = width;
         canvas.height = height;
@@ -277,8 +278,8 @@ export function ShipViewer({ name, objUrl, mtlUrl, archiveUrl, sizeLabel, textur
         // and uses the same dimensions when fitting its initial camera.
         const initialRect = canvas.getBoundingClientRect();
         const initialDpr = Math.min(window.devicePixelRatio || 1, 1.5);
-        canvas.width = Math.max(1, Math.round(initialRect.width * initialDpr));
-        canvas.height = Math.max(1, Math.round(initialRect.height * initialDpr));
+        canvas.width = Math.max(1, Math.round(initialRect.width * initialDpr * VIEWPORT_RENDER_SCALE));
+        canvas.height = Math.max(1, Math.round(initialRect.height * initialDpr * VIEWPORT_RENDER_SCALE));
         await initWasm(WASM_URL);
         if (!aliveRef.current) return;
         localViewer = await Viewer.create(canvas, obj, mtl, () => {});
