@@ -193,7 +193,13 @@ export function Panorama({ night = false }: { night?: boolean }) {
       observer.observe(scene);
       const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
       const tick = (now: number) => {
-        if (disposed || !morningLoaded || (initialNight && !eveningLoaded)) return;
+        if (disposed) return;
+        // Keep the RAF loop alive while the required cubemaps load. Returning here
+        // without scheduling another frame permanently stalls initial night renders.
+        if (!morningLoaded || (initialNight && !eveningLoaded)) {
+          frame = requestAnimationFrame(tick);
+          return;
+        }
         uniforms.yaw.value = reducedMotion.matches ? 0 : panoramaYaw((now - start) / 1000);
         uniforms.blend.value = advancePanoramaBlend(
           uniforms.blend.value,
