@@ -182,7 +182,7 @@ export function PortfolioPage({ section, project }: { section: "About me" | "My 
       </header>
       <div className={`detail-content${isProjectList ? " detail-content--project-list" : ""}${project ? " detail-content--project-detail" : ""}${section === "About me" ? " detail-content--simple-page detail-content--about-page" : ""}`}>
         {!isProjectList && !project && section !== "About me" && <p className="section-label">VYNESHINDEN / PORTFOLIO</p>}
-        <h1>{section}</h1>
+        <h1 className={project ? "project-detail-title" : undefined}>{project ? project.title.replace(/^\\d+\\.\\s*/, "") : section}</h1>
         {section === "About me" ? <>
           <section className="about-intro">
             <div className="placeholder-copy"><h2>Hi, Im Timothy Lomibao</h2><p>You may know me as VYNESHINDEN, im a builder on bedrock, i just use phone, YES I ONLY BUILD IN MY PHONE LOL. Granted i also have a laptop for renderings and such.</p></div>
