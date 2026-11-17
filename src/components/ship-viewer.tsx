@@ -2,7 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import { RotateCcw, Maximize2, Minimize2, X } from "lucide-react";
 import initWasm, { Viewer } from "@/lib/wasm/viewer/viewer";
 
-const WASM_URL = "https://raw.githubusercontent.com/VYNESHINDEN1417/view-pathfinder/1fc1a87b16e2f91990192e95b04d7a282f98e503/public/wasm/viewer_bg.wasm";
+const WASM_URL = "https://raw.githubusercontent.com/VYNESHINDEN1417/view-pathfinder/2355a19d103221aba4a49a424579ee166b344050/public/wasm/viewer_bg.wasm";
+const VIEWPORT_RENDER_SCALE = 0.9;
 
 type ArchivedModel = { obj: string; mtl: string; textures: Map<string, Uint8Array> };
 async function loadModelArchive(url: string, signal: AbortSignal): Promise<ArchivedModel> {
@@ -49,45 +50,49 @@ async function loadModelArchive(url: string, signal: AbortSignal): Promise<Archi
 
 
 const RESOURCE_PACK_URL = "/resource-pack/minecraft_resource_pack_1.18.zip";
-let packCache: Promise<Map<string, Blob>> | null = null;
-async function loadPack(): Promise<Map<string, Blob>> {
-  if (packCache) return packCache;
-  packCache = (async () => {
-    const response = await fetch(RESOURCE_PACK_URL);
-    if (!response.ok) throw new Error("Resource pack unavailable");
-    const buffer = await response.arrayBuffer();
-    const view = new DataView(buffer);
-    const decoder = new TextDecoder();
-    let end = -1;
-    for (let p = buffer.byteLength - 22; p >= Math.max(0, buffer.byteLength - 65558); p--) {
-      if (view.getUint32(p, true) === 0x06054b50) { end = p; break; }
-    }
-    if (end < 0) throw new Error("Invalid resource pack ZIP");
-    const count = view.getUint16(end + 10, true);
-    let offset = view.getUint32(end + 16, true);
-    const result = new Map<string, Blob>();
-    for (let i = 0; i < count; i++) {
-      if (view.getUint32(offset, true) !== 0x02014b50) break;
-      const method = view.getUint16(offset + 10, true);
-      const size = view.getUint32(offset + 20, true);
-      const nameLength = view.getUint16(offset + 28, true);
-      const extraLength = view.getUint16(offset + 30, true);
-      const commentLength = view.getUint16(offset + 32, true);
-      const local = view.getUint32(offset + 42, true);
-      const filename = decoder.decode(new Uint8Array(buffer, offset + 46, nameLength)).toLowerCase();
-      offset += 46 + nameLength + extraLength + commentLength;
-      if (!filename.endsWith(".png")) continue;
-      const start = local + 30 + view.getUint16(local + 26, true) + view.getUint16(local + 28, true);
-      const compressed = buffer.slice(start, start + size);
-      let data: ArrayBuffer;
-      if (method === 0) data = compressed;
-      else if (method === 8) data = await new Response(new Blob([compressed]).stream().pipeThrough(new DecompressionStream("deflate-raw"))).arrayBuffer();
-      else continue;
-      result.set(filename, new Blob([data], { type: "image/png" }));
-    }
-    return result;
-  })();
-  return packCache;
+// Retain the compressed archive once, not hundreds of decompressed PNG Blobs.
+// Each model extracts only the small set of block textures it actually uses.
+let packArchiveCache: Promise<ArrayBuffer> | null = null;
+async function loadPack(requiredFiles: Set<string>): Promise<Map<string, Blob>> {
+  if (!packArchiveCache) {
+    packArchiveCache = (async () => {
+      const response = await fetch(RESOURCE_PACK_URL);
+      if (!response.ok) throw new Error("Resource pack unavailable");
+      return response.arrayBuffer();
+    })();
+  }
+  const buffer = await packArchiveCache;
+  const view = new DataView(buffer);
+  const decoder = new TextDecoder();
+  let end = -1;
+  for (let p = buffer.byteLength - 22; p >= Math.max(0, buffer.byteLength - 65558); p--) {
+    if (view.getUint32(p, true) === 0x06054b50) { end = p; break; }
+  }
+  if (end < 0) throw new Error("Invalid resource pack ZIP");
+  const count = view.getUint16(end + 10, true);
+  let offset = view.getUint32(end + 16, true);
+  const result = new Map<string, Blob>();
+  for (let i = 0; i < count; i++) {
+    if (view.getUint32(offset, true) !== 0x02014b50) break;
+    const method = view.getUint16(offset + 10, true);
+    const size = view.getUint32(offset + 20, true);
+    const nameLength = view.getUint16(offset + 28, true);
+    const extraLength = view.getUint16(offset + 30, true);
+    const commentLength = view.getUint16(offset + 32, true);
+    const local = view.getUint32(offset + 42, true);
+    const filename = decoder.decode(new Uint8Array(buffer, offset + 46, nameLength)).toLowerCase();
+    offset += 46 + nameLength + extraLength + commentLength;
+    const basename = filename.split("/").pop() || filename;
+    if (!requiredFiles.has(basename)) continue;
+    const start = local + 30 + view.getUint16(local + 26, true) + view.getUint16(local + 28, true);
+    const compressed = buffer.slice(start, start + size);
+    let data: ArrayBuffer;
+    if (method === 0) data = compressed;
+    else if (method === 8) data = await new Response(new Blob([compressed]).stream().pipeThrough(new DecompressionStream("deflate-raw"))).arrayBuffer();
+    else continue;
+    result.set(filename, new Blob([data], { type: "image/png" }));
+  }
+  return result;
 }
 function blockTextureName(material: string): string {
   const aliases: Record<string, string> = { stationary_water: "water_still", mob_head: "skull", wall_sign: "oak_sign", block_of_gold: "gold_block", block_of_quartz: "quartz_block_side", monster_spawner: "mob_spawner", colored_terracotta: "hardened_clay", smooth_stone: "stone", dried_kelp_block: "dried_kelp_side" };
@@ -95,8 +100,6 @@ function blockTextureName(material: string): string {
   return aliases[key] || key;
 }
 async function rebuildModelAtlases(obj: string, names: string[]): Promise<Map<string, Uint8Array>> {
-  const pack = await loadPack();
-  const textures = [...pack.entries()];
   const uv: Array<[number, number]> = [];
   const tilesByMaterial = new Map<string, Set<string>>();
   let material = "";
@@ -123,6 +126,16 @@ async function rebuildModelAtlases(obj: string, names: string[]): Promise<Map<st
   // Never upload an empty transparent atlas: the renderer treats its alpha
   // as real material transparency, which would discard every model fragment.
   if (tilesByMaterial.size === 0) return new Map();
+
+  const requiredFiles = new Set<string>();
+  for (const mat of tilesByMaterial.keys()) {
+    const key = blockTextureName(mat);
+    requiredFiles.add(key + ".png");
+    requiredFiles.add(key + "_side.png");
+    requiredFiles.add(key + "_top.png");
+  }
+  const pack = await loadPack(requiredFiles);
+  const textures = [...pack.entries()];
 
   const canvas = document.createElement("canvas");
   canvas.width = canvas.height = 512;
@@ -166,6 +179,8 @@ export function ShipViewer({ name, objUrl, mtlUrl, archiveUrl, sizeLabel, textur
   const [error, setError] = useState("");
   const [fullscreen, setFullscreen] = useState(false);
   const [textureMissing, setTextureMissing] = useState(false);
+  const [fps, setFps] = useState(0);
+  const fpsStatsRef = useRef({ frames: 0, startedAt: 0 });
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const hostRef = useRef<HTMLDivElement>(null);
   const viewerRef = useRef<Viewer | null>(null);
@@ -175,6 +190,8 @@ export function ShipViewer({ name, objUrl, mtlUrl, archiveUrl, sizeLabel, textur
   useEffect(() => {
     if (!open || !startDownload || !canvasRef.current || !hostRef.current) return;
     aliveRef.current = true;
+    setFps(0);
+    fpsStatsRef.current = { frames: 0, startedAt: 0 };
     const canvas = canvasRef.current;
     const host = hostRef.current;
     const controller = new AbortController();
@@ -183,8 +200,23 @@ export function ShipViewer({ name, objUrl, mtlUrl, archiveUrl, sizeLabel, textur
 
     const render = () => {
       if (!aliveRef.current || !localViewer) return;
-      localViewer.frame();
-      if (localViewer.needs_redraw() || localViewer.animating()) {
+      const rendered = localViewer.frame();
+      if (rendered) {
+        const now = performance.now();
+        const stats = fpsStatsRef.current;
+        if (stats.startedAt === 0) stats.startedAt = now;
+        stats.frames++;
+        const elapsed = now - stats.startedAt;
+        if (elapsed >= 500) {
+          // Ignore the initial one-off draw; report only a real run of frames.
+          if (stats.frames >= 3) setFps(Math.round((stats.frames * 1000) / elapsed));
+          stats.frames = 0;
+          stats.startedAt = now;
+        }
+      }
+      // A successful frame clears the renderer's dirty flag, so avoid an
+      // additional JS-to-WASM status call on the common render path.
+      if (localViewer.animating() || (!rendered && localViewer.needs_redraw())) {
         rafRef.current = requestAnimationFrame(render);
       } else {
         rafRef.current = null;
@@ -197,8 +229,8 @@ export function ShipViewer({ name, objUrl, mtlUrl, archiveUrl, sizeLabel, textur
       if (!localViewer) return;
       const rect = canvas.getBoundingClientRect();
       const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
-      const width = Math.max(1, Math.round(rect.width * dpr));
-      const height = Math.max(1, Math.round(rect.height * dpr));
+      const width = Math.max(1, Math.round(rect.width * dpr * VIEWPORT_RENDER_SCALE));
+      const height = Math.max(1, Math.round(rect.height * dpr * VIEWPORT_RENDER_SCALE));
       if (canvas.width !== width || canvas.height !== height) {
         canvas.width = width;
         canvas.height = height;
@@ -246,8 +278,8 @@ export function ShipViewer({ name, objUrl, mtlUrl, archiveUrl, sizeLabel, textur
         // and uses the same dimensions when fitting its initial camera.
         const initialRect = canvas.getBoundingClientRect();
         const initialDpr = Math.min(window.devicePixelRatio || 1, 1.5);
-        canvas.width = Math.max(1, Math.round(initialRect.width * initialDpr));
-        canvas.height = Math.max(1, Math.round(initialRect.height * initialDpr));
+        canvas.width = Math.max(1, Math.round(initialRect.width * initialDpr * VIEWPORT_RENDER_SCALE));
+        canvas.height = Math.max(1, Math.round(initialRect.height * initialDpr * VIEWPORT_RENDER_SCALE));
         await initWasm(WASM_URL);
         if (!aliveRef.current) return;
         localViewer = await Viewer.create(canvas, obj, mtl, () => {});
@@ -524,6 +556,7 @@ export function ShipViewer({ name, objUrl, mtlUrl, archiveUrl, sizeLabel, textur
               ) : (
                 <>
                   <canvas ref={canvasRef} aria-label={"Drag to rotate " + name + ", scroll to zoom"} />
+                  <div className="wisconsin-viewer-fps" aria-label={fps + " frames per second"}>{fps > 0 ? fps : "—"}</div>
                   {error ? <div className="wisconsin-viewer-message" role="alert">{error}</div> : progress < 100 ? (
                     <div className="wisconsin-viewer-loading" role="status">
                       <span>{status}</span>
