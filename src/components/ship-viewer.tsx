@@ -183,8 +183,10 @@ export function ShipViewer({ name, objUrl, mtlUrl, archiveUrl, sizeLabel, textur
 
     const render = () => {
       if (!aliveRef.current || !localViewer) return;
-      localViewer.frame();
-      if (localViewer.needs_redraw() || localViewer.animating()) {
+      const rendered = localViewer.frame();
+      // A successful frame clears the renderer's dirty flag, so avoid an
+      // additional JS-to-WASM status call on the common render path.
+      if (localViewer.animating() || (!rendered && localViewer.needs_redraw())) {
         rafRef.current = requestAnimationFrame(render);
       } else {
         rafRef.current = null;
