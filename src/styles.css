@@ -1042,3 +1042,17 @@ html[data-view="mobile"] .detail-content--project-detail {
 html[data-view="mobile"] .detail-content--project-detail .project-detail-title {
   font-size: 20px;
 }
+
+
+/* Keep every project entry on a single line, scaling long names to fit mobile widths. */
+.project-button > span { min-width: 0; }
+.project-button .project-name {
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  overflow-wrap: normal;
+  text-overflow: clip;
+}
+html[data-view="mobile"] .project-button .project-name {
+  font-size: clamp(8px, 2.8vw, 12px);
+}
