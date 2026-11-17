@@ -178,6 +178,8 @@ export function ShipViewer({ name, objUrl, mtlUrl, archiveUrl, sizeLabel, textur
   const [error, setError] = useState("");
   const [fullscreen, setFullscreen] = useState(false);
   const [textureMissing, setTextureMissing] = useState(false);
+  const [fps, setFps] = useState(0);
+  const fpsStatsRef = useRef({ frames: 0, startedAt: 0 });
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const hostRef = useRef<HTMLDivElement>(null);
   const viewerRef = useRef<Viewer | null>(null);
@@ -196,6 +198,19 @@ export function ShipViewer({ name, objUrl, mtlUrl, archiveUrl, sizeLabel, textur
     const render = () => {
       if (!aliveRef.current || !localViewer) return;
       const rendered = localViewer.frame();
+      if (rendered) {
+        const now = performance.now();
+        const stats = fpsStatsRef.current;
+        if (stats.startedAt === 0) stats.startedAt = now;
+        stats.frames++;
+        const elapsed = now - stats.startedAt;
+        if (elapsed >= 500) {
+          // Ignore the initial one-off draw; report only a real run of frames.
+          if (stats.frames >= 3) setFps(Math.round((stats.frames * 1000) / elapsed));
+          stats.frames = 0;
+          stats.startedAt = now;
+        }
+      }
       // A successful frame clears the renderer's dirty flag, so avoid an
       // additional JS-to-WASM status call on the common render path.
       if (localViewer.animating() || (!rendered && localViewer.needs_redraw())) {
@@ -538,6 +553,7 @@ export function ShipViewer({ name, objUrl, mtlUrl, archiveUrl, sizeLabel, textur
               ) : (
                 <>
                   <canvas ref={canvasRef} aria-label={"Drag to rotate " + name + ", scroll to zoom"} />
+                  <div className="wisconsin-viewer-fps" aria-label={fps + " frames per second"}>{fps > 0 ? fps : "—"}</div>
                   {error ? <div className="wisconsin-viewer-message" role="alert">{error}</div> : progress < 100 ? (
                     <div className="wisconsin-viewer-loading" role="status">
                       <span>{status}</span>
