@@ -36,6 +36,8 @@ export function Panorama({ night = false }: { night?: boolean }) {
   useEffect(() => {
     const scene = sceneRef.current;
     if (!scene) return;
+    // Reuse the last rendered frame immediately while Three.js and cubemap assets load.
+    if (cachedPanoramaFrame) scene.style.backgroundImage = `url("${cachedPanoramaFrame}")`;
     let disposed = false;
     let frame = 0;
     let idleHandle: number | null = null;
@@ -211,6 +213,7 @@ export function Panorama({ night = false }: { night?: boolean }) {
         if (!hasRenderedMorning) {
           hasRenderedMorning = true;
           scene.dataset["sceneReady"] = "true";
+          scene.style.backgroundImage = "none";
           scene.querySelector<HTMLImageElement>(".panorama-fallback")?.remove();
           scheduleNightPreload();
         }
