@@ -49,45 +49,49 @@ async function loadModelArchive(url: string, signal: AbortSignal): Promise<Archi
 
 
 const RESOURCE_PACK_URL = "/resource-pack/minecraft_resource_pack_1.18.zip";
-let packCache: Promise<Map<string, Blob>> | null = null;
-async function loadPack(): Promise<Map<string, Blob>> {
-  if (packCache) return packCache;
-  packCache = (async () => {
-    const response = await fetch(RESOURCE_PACK_URL);
-    if (!response.ok) throw new Error("Resource pack unavailable");
-    const buffer = await response.arrayBuffer();
-    const view = new DataView(buffer);
-    const decoder = new TextDecoder();
-    let end = -1;
-    for (let p = buffer.byteLength - 22; p >= Math.max(0, buffer.byteLength - 65558); p--) {
-      if (view.getUint32(p, true) === 0x06054b50) { end = p; break; }
-    }
-    if (end < 0) throw new Error("Invalid resource pack ZIP");
-    const count = view.getUint16(end + 10, true);
-    let offset = view.getUint32(end + 16, true);
-    const result = new Map<string, Blob>();
-    for (let i = 0; i < count; i++) {
-      if (view.getUint32(offset, true) !== 0x02014b50) break;
-      const method = view.getUint16(offset + 10, true);
-      const size = view.getUint32(offset + 20, true);
-      const nameLength = view.getUint16(offset + 28, true);
-      const extraLength = view.getUint16(offset + 30, true);
-      const commentLength = view.getUint16(offset + 32, true);
-      const local = view.getUint32(offset + 42, true);
-      const filename = decoder.decode(new Uint8Array(buffer, offset + 46, nameLength)).toLowerCase();
-      offset += 46 + nameLength + extraLength + commentLength;
-      if (!filename.endsWith(".png")) continue;
-      const start = local + 30 + view.getUint16(local + 26, true) + view.getUint16(local + 28, true);
-      const compressed = buffer.slice(start, start + size);
-      let data: ArrayBuffer;
-      if (method === 0) data = compressed;
-      else if (method === 8) data = await new Response(new Blob([compressed]).stream().pipeThrough(new DecompressionStream("deflate-raw"))).arrayBuffer();
-      else continue;
-      result.set(filename, new Blob([data], { type: "image/png" }));
-    }
-    return result;
-  })();
-  return packCache;
+// Retain the compressed archive once, not hundreds of decompressed PNG Blobs.
+// Each model extracts only the small set of block textures it actually uses.
+let packArchiveCache: Promise<ArrayBuffer> | null = null;
+async function loadPack(requiredFiles: Set<string>): Promise<Map<string, Blob>> {
+  if (!packArchiveCache) {
+    packArchiveCache = (async () => {
+      const response = await fetch(RESOURCE_PACK_URL);
+      if (!response.ok) throw new Error("Resource pack unavailable");
+      return response.arrayBuffer();
+    })();
+  }
+  const buffer = await packArchiveCache;
+  const view = new DataView(buffer);
+  const decoder = new TextDecoder();
+  let end = -1;
+  for (let p = buffer.byteLength - 22; p >= Math.max(0, buffer.byteLength - 65558); p--) {
+    if (view.getUint32(p, true) === 0x06054b50) { end = p; break; }
+  }
+  if (end < 0) throw new Error("Invalid resource pack ZIP");
+  const count = view.getUint16(end + 10, true);
+  let offset = view.getUint32(end + 16, true);
+  const result = new Map<string, Blob>();
+  for (let i = 0; i < count; i++) {
+    if (view.getUint32(offset, true) !== 0x02014b50) break;
+    const method = view.getUint16(offset + 10, true);
+    const size = view.getUint32(offset + 20, true);
+    const nameLength = view.getUint16(offset + 28, true);
+    const extraLength = view.getUint16(offset + 30, true);
+    const commentLength = view.getUint16(offset + 32, true);
+    const local = view.getUint32(offset + 42, true);
+    const filename = decoder.decode(new Uint8Array(buffer, offset + 46, nameLength)).toLowerCase();
+    offset += 46 + nameLength + extraLength + commentLength;
+    const basename = filename.split("/").pop() || filename;
+    if (!requiredFiles.has(basename)) continue;
+    const start = local + 30 + view.getUint16(local + 26, true) + view.getUint16(local + 28, true);
+    const compressed = buffer.slice(start, start + size);
+    let data: ArrayBuffer;
+    if (method === 0) data = compressed;
+    else if (method === 8) data = await new Response(new Blob([compressed]).stream().pipeThrough(new DecompressionStream("deflate-raw"))).arrayBuffer();
+    else continue;
+    result.set(filename, new Blob([data], { type: "image/png" }));
+  }
+  return result;
 }
 function blockTextureName(material: string): string {
   const aliases: Record<string, string> = { stationary_water: "water_still", mob_head: "skull", wall_sign: "oak_sign", block_of_gold: "gold_block", block_of_quartz: "quartz_block_side", monster_spawner: "mob_spawner", colored_terracotta: "hardened_clay", smooth_stone: "stone", dried_kelp_block: "dried_kelp_side" };
@@ -95,8 +99,6 @@ function blockTextureName(material: string): string {
   return aliases[key] || key;
 }
 async function rebuildModelAtlases(obj: string, names: string[]): Promise<Map<string, Uint8Array>> {
-  const pack = await loadPack();
-  const textures = [...pack.entries()];
   const uv: Array<[number, number]> = [];
   const tilesByMaterial = new Map<string, Set<string>>();
   let material = "";
@@ -123,6 +125,16 @@ async function rebuildModelAtlases(obj: string, names: string[]): Promise<Map<st
   // Never upload an empty transparent atlas: the renderer treats its alpha
   // as real material transparency, which would discard every model fragment.
   if (tilesByMaterial.size === 0) return new Map();
+
+  const requiredFiles = new Set<string>();
+  for (const mat of tilesByMaterial.keys()) {
+    const key = blockTextureName(mat);
+    requiredFiles.add(key + ".png");
+    requiredFiles.add(key + "_side.png");
+    requiredFiles.add(key + "_top.png");
+  }
+  const pack = await loadPack(requiredFiles);
+  const textures = [...pack.entries()];
 
   const canvas = document.createElement("canvas");
   canvas.width = canvas.height = 512;
