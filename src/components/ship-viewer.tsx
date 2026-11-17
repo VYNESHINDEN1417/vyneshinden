@@ -189,6 +189,8 @@ export function ShipViewer({ name, objUrl, mtlUrl, archiveUrl, sizeLabel, textur
   useEffect(() => {
     if (!open || !startDownload || !canvasRef.current || !hostRef.current) return;
     aliveRef.current = true;
+    setFps(0);
+    fpsStatsRef.current = { frames: 0, startedAt: 0 };
     const canvas = canvasRef.current;
     const host = hostRef.current;
     const controller = new AbortController();
