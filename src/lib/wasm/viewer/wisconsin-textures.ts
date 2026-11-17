@@ -1,5 +1,5 @@
 const textureUrls: Record<string, string> = {
-  "tex/MWO_redstone_dust_line1_off.png": "https://raw.githubusercontent.com/VYNESHINDEN1417/view-pathfinder/15d0cfb48ba80953a009ed94445af79a02e001f2/public/models/tex/MWO_redstone_dust_line1_off.png",
+  "tex/MWO_redstone_dust_line1_off.png": "https://raw.githubusercontent.com/VYNESHINDEN1417/view-pathfinder/15d0cfb48ba80953a009ed94445af79a02e001f2/public/textures/blocks/redstone_dust_line.png",
   "tex/acacia_trapdoor.png": "https://raw.githubusercontent.com/VYNESHINDEN1417/view-pathfinder/15d0cfb48ba80953a009ed94445af79a02e001f2/public/textures/blocks/acacia_trapdoor.png",
   "tex/andesite.png": "https://raw.githubusercontent.com/VYNESHINDEN1417/view-pathfinder/15d0cfb48ba80953a009ed94445af79a02e001f2/public/textures/blocks/stone_andesite.png",
   "tex/anvil.png": "https://raw.githubusercontent.com/VYNESHINDEN1417/view-pathfinder/15d0cfb48ba80953a009ed94445af79a02e001f2/public/textures/blocks/anvil_base.png",
